@@ -2,7 +2,7 @@
 //  Person.m
 //  stackmob-ios-sdk
 //
-//  Created by Matt Vaznaian on 3/18/13.
+//  Created by Matt Vaznaian on 5/29/13.
 //  Copyright (c) 2013 StackMob. All rights reserved.
 //
 
@@ -20,5 +20,6 @@
 @dynamic favorites;
 @dynamic interests;
 @dynamic superpower;
+@dynamic todos;
 
 @end
