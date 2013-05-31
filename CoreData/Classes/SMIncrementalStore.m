@@ -27,7 +27,6 @@
 #import "SMSyncedObject.h"
 #import "FileManagement.h"
 #import "Common.h"
-#import "NSManagedObject+DeletePropagation.h"
 
 #define CACHE_MAP_FILE @"CacheMap.plist"
 #define SQL_DB @"CoreDataStore.sqlite"
@@ -3609,8 +3608,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
                 success = NO;
                 *stop = YES;
             } else {
-                // delete object from cache
-                //[cacheObject propagateDelete];
+                // Delete object from cache
                 [self.localManagedObjectContext deleteObject:cacheObject];
             }
         } else {
@@ -3673,7 +3671,6 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // Delete object from local context
         [self.localManagedObjectContext deleteObject:object];
-        //[object propagateDelete];
     }];
     
     [self.localManagedObjectContext processPendingChanges];
@@ -3710,78 +3707,11 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     return success;
 }
 
-/*
-- (BOOL)SM_purgeObjectFromCacheWithStackMobIDInfo:(NSDictionary *)objectInfo includeDirtyQueue:(BOOL)includeDirtyQueue
-{
-    if (SM_CORE_DATA_DEBUG) {DLog()}
-    
-    return [self SM_purgeObjectsFromCacheByStackMobIDInfo:[NSArray arrayWithObject:objectInfo] includeDirtyQueue:includeDirtyQueue];
-}
-
-- (BOOL)SM_purgeObjectsFromCacheByStackMobIDInfo:(NSArray *)arrayOfStackMobObjectIDInfo includeDirtyQueue:(BOOL)includeDirtyQueue
-{
-    if (SM_CORE_DATA_DEBUG) {DLog()}
-    
-    __block BOOL success = YES;
-    
-    NSMutableArray *arrayOfManagedObjectInfo = [NSMutableArray array];
-    
-    [arrayOfStackMobObjectIDInfo enumerateObjectsUsingBlock:^(id objectInfo, NSUInteger idx, BOOL *stop) {
-        
-        NSManagedObjectID *cacheObjectID = [self SM_retrieveCacheObjectForRemoteID:[objectInfo objectForKey:ObjectID] entityName:[objectInfo objectForKey:ObjectEntityName] createIfNeeded:NO];
-        
-        if (cacheObjectID) {
-            NSError *anError = nil;
-            NSManagedObject *cacheObject = [self.localManagedObjectContext existingObjectWithID:cacheObjectID error:&anError];
-            if (anError) {
-                DLog(@"Did not get cache object with error %@", anError)
-                success = NO;
-                *stop = YES;
-            } else {
-                // delete object from cache
-                [self.localManagedObjectContext deleteObject:cacheObject];
-            }
-        }
-    }];
-    
-    [self.localManagedObjectContext processPendingChanges];
-    
-    if (success && [self.localManagedObjectContext hasChanges]) {
-        
-        // Create object info for every deleted object
-        [[self.localManagedObjectContext deletedObjects] enumerateObjectsUsingBlock:^(id deletedObject, BOOL *stop) {
-            NSString *objectID = [deletedObject valueForKey:[deletedObject primaryKeyField]];
-            NSArray *array = [objectID componentsSeparatedByString:@":"];
-            objectID = [array count] > 1 ? [array objectAtIndex:0] : objectID;
-            NSDictionary *objectInfo = [NSDictionary dictionaryWithObjectsAndKeys:[[deletedObject entity] name], ObjectEntityName, objectID, ObjectID, nil];
-            [arrayOfManagedObjectInfo addObject:objectInfo];
-        }];
-        
-        NSError *anError = nil;
-        success = [self SM_saveCache:&anError];
-        
-        // Remove the entry from map table
-        if (success) {
-            [self SM_removeRemoteIDsFromCacheMap:arrayOfManagedObjectInfo];
-            if (includeDirtyQueue) {
-                [self SM_removeRemoteIDsFromDirtyQueue:arrayOfManagedObjectInfo];
-            }
-        } else {
-            if (SM_CORE_DATA_DEBUG) { DLog(@"Error saving cache: %@", anError) }
-        }
-    }
-    
-    return success;
-}
- */
-
 - (void)SM_didRecieveMarkObjectAsSyncedNotification:(NSNotification *)notification
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
     NSDictionary *userInfo = [notification userInfo];
-    // TODO have method to only remove from Dirty queue
-    
     
     if ([[userInfo objectForKey:@"Purge"] boolValue]) {
         [self SM_purgeSMManagedObjectIDFromCache:[userInfo objectForKey:@"ObjectID"] includeDirtyQueue:YES];
@@ -3806,34 +3736,6 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     }
     
 }
-
-/*
-- (BOOL)SM_removeSMIDsFromDirtyQueue:(NSArray *)objectIDsToPurge purgeFromCache:(BOOL)purgeFromCache
-{
-    if (SM_CORE_DATA_DEBUG) {DLog()}
-    
-    BOOL success = YES;
-    
-    if (!purgeFromCache) {
-        [self SM_purgeDirtyQueueOfManagedObjectIDs:objectIDsToPurge];
-    } else {
-        NSMutableArray *objectsInfo = [NSMutableArray arrayWithCapacity:[objectIDsToPurge count]];
-        [objectIDsToPurge enumerateObjectsUsingBlock:^(id objectID, NSUInteger idx, BOOL *stop) {
-            
-            if([[objectID persistentStore] class] == [SMIncrementalStore class]) {
-                
-                NSString *objectIDReference = [(SMIncrementalStore *)[objectID persistentStore] referenceObjectForObjectID:objectID];
-                NSDictionary *objectInfo = [NSDictionary dictionaryWithObjectsAndKeys:objectIDReference, ObjectID, [[objectID entity] name], ObjectEntityName, nil];
-                [objectsInfo addObject:objectInfo];
-            }
-        }];
-        
-        success = [self SM_purgeObjectsFromCacheByStackMobIDInfo:objectsInfo includeDirtyQueue:YES];
-    }
-    
-    return success;
-}
-*/
 
 - (void)SM_purgeDirtyQueueOfManagedObjectIDs:(NSArray *)arrayOfManagedObjectIDs
 {

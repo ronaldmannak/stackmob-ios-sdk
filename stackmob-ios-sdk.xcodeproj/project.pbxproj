@@ -68,8 +68,6 @@
 		D80DEBB427BC4CCC8E29CD71 /* libPods-integrationTestsCoreData.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F19DAB09E04A42F58CE99823 /* libPods-integrationTestsCoreData.a */; };
 		DE01742E1756A4BD00E4EA4B /* Person.h in Headers */ = {isa = PBXBuildFile; fileRef = DE01742C1756A4BD00E4EA4B /* Person.h */; };
 		DE01742F1756A4BD00E4EA4B /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = DE01742D1756A4BD00E4EA4B /* Person.m */; };
-		DE0174321757DCD500E4EA4B /* NSManagedObject+DeletePropagation.h in Headers */ = {isa = PBXBuildFile; fileRef = DE0174301757DCD500E4EA4B /* NSManagedObject+DeletePropagation.h */; };
-		DE0174331757DCD500E4EA4B /* NSManagedObject+DeletePropagation.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0174311757DCD500E4EA4B /* NSManagedObject+DeletePropagation.m */; };
 		DE01F13C16F78CE800453088 /* User3.m in Sources */ = {isa = PBXBuildFile; fileRef = DE01F13A16F78CE800453088 /* User3.m */; };
 		DE01F14016F7BEA700453088 /* SMClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB8474D159A74D000FF37A3 /* SMClientIntegrationSpec.m */; };
 		DE05E13D15E2BE8F00224E4E /* goatPic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DE05E13C15E2BE8A00224E4E /* goatPic.jpeg */; };
@@ -386,8 +384,6 @@
 		D56AD6E0A6D94C02B2D62C21 /* Pods-integrationTestsCoreData.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-integrationTestsCoreData.xcconfig"; path = "Pods/Pods-integrationTestsCoreData.xcconfig"; sourceTree = SOURCE_ROOT; };
 		DE01742C1756A4BD00E4EA4B /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		DE01742D1756A4BD00E4EA4B /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
-		DE0174301757DCD500E4EA4B /* NSManagedObject+DeletePropagation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+DeletePropagation.h"; sourceTree = "<group>"; };
-		DE0174311757DCD500E4EA4B /* NSManagedObject+DeletePropagation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+DeletePropagation.m"; sourceTree = "<group>"; };
 		DE01F13916F78CE800453088 /* User3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User3.h; sourceTree = "<group>"; };
 		DE01F13A16F78CE800453088 /* User3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User3.m; sourceTree = "<group>"; };
 		DE05E13C15E2BE8A00224E4E /* goatPic.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = goatPic.jpeg; sourceTree = "<group>"; };
@@ -904,8 +900,6 @@
 				1D83519516B9CD8B00814C71 /* SMPredicate.m */,
 				DE9BCBFE172F661B007CBA7F /* SMSyncedObject.h */,
 				DE9BCBFF172F661B007CBA7F /* SMSyncedObject.m */,
-				DE0174301757DCD500E4EA4B /* NSManagedObject+DeletePropagation.h */,
-				DE0174311757DCD500E4EA4B /* NSManagedObject+DeletePropagation.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -980,7 +974,6 @@
 				DE9BCC00172F661B007CBA7F /* SMSyncedObject.h in Headers */,
 				DE1F26691733375F00DA734F /* FileManagement.h in Headers */,
 				DE01742E1756A4BD00E4EA4B /* Person.h in Headers */,
-				DE0174321757DCD500E4EA4B /* NSManagedObject+DeletePropagation.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1373,7 +1366,6 @@
 				DE9BCC01172F661B007CBA7F /* SMSyncedObject.m in Sources */,
 				DE1F266A1733375F00DA734F /* FileManagement.m in Sources */,
 				DE01742F1756A4BD00E4EA4B /* Person.m in Sources */,
-				DE0174331757DCD500E4EA4B /* NSManagedObject+DeletePropagation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
