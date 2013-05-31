@@ -151,6 +151,7 @@
 		DE1D1F3E172F44EF00B60EB0 /* SMTestProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1D1F3D172F44EF00B60EB0 /* SMTestProperties.m */; };
 		DE1F26691733375F00DA734F /* FileManagement.h in Headers */ = {isa = PBXBuildFile; fileRef = DE1F26671733375F00DA734F /* FileManagement.h */; };
 		DE1F266A1733375F00DA734F /* FileManagement.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1F26681733375F00DA734F /* FileManagement.m */; };
+		DE2279EC175847AB009365C1 /* SMMergePolicyUpdatesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC111730994A007CBA7F /* SMMergePolicyUpdatesSpec.m */; };
 		DE2EA1A116CC7304001FA904 /* SMGeoPoint.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D83529416C5ACD000814C71 /* SMGeoPoint.h */; };
 		DE2EA1A216CC7304001FA904 /* SMLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D8352A716C8512400814C71 /* SMLocationManager.h */; };
 		DE2EA1A316CC7304001FA904 /* Common.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEEDC32616C984B4008B1CC2 /* Common.h */; };
@@ -183,7 +184,6 @@
 		DE9227F6161E439F00DA0D00 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE9227EC161E37EA00DA0D00 /* SystemConfiguration.framework */; };
 		DE9613AC173DC992004F9C32 /* FileManagement.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DE1F26671733375F00DA734F /* FileManagement.h */; };
 		DE9613AD173DC992004F9C32 /* SMSyncedObject.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DE9BCBFE172F661B007CBA7F /* SMSyncedObject.h */; };
-		DE96140717418CC4004F9C32 /* SMIncrementalStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0CC7A715CB5EA200E491C4 /* SMIncrementalStoreTest.m */; };
 		DE9784A6163B5880001119D1 /* NSEntityDescription+StackMobSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = DE9784A2163B5880001119D1 /* NSEntityDescription+StackMobSerialization.h */; };
 		DE9784A7163B5880001119D1 /* NSEntityDescription+StackMobSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9784A3163B5880001119D1 /* NSEntityDescription+StackMobSerialization.m */; };
 		DE9784A8163B5880001119D1 /* NSManagedObject+StackMobSerialization.h in Headers */ = {isa = PBXBuildFile; fileRef = DE9784A4163B5880001119D1 /* NSManagedObject+StackMobSerialization.h */; };
@@ -1399,7 +1399,7 @@
 				1D8351E016C0969A00814C71 /* SMCoreDataIntegrationTest.xcdatamodeld in Sources */,
 				DE01F13C16F78CE800453088 /* User3.m in Sources */,
 				DE1D1F3E172F44EF00B60EB0 /* SMTestProperties.m in Sources */,
-				DE96140717418CC4004F9C32 /* SMIncrementalStoreTest.m in Sources */,
+				DE2279EC175847AB009365C1 /* SMMergePolicyUpdatesSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

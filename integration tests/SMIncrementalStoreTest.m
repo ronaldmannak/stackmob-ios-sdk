@@ -25,7 +25,6 @@
 
 SPEC_BEGIN(SMIncrementalStoreTest)
 
-/*
 describe(@"with fixtures", ^{
     __block NSArray *fixturesToLoad;
     __block NSDictionary *fixtures;
@@ -1103,15 +1102,17 @@ describe(@"can update a field to null", ^{
     });
     
 });
-*/
+
 
 describe(@"Delete propagation with Cascade Rule", ^{
     __block SMTestProperties *testProperties = nil;
     beforeEach(^{
         SM_CACHE_ENABLED = YES;
+        //SM_CORE_DATA_DEBUG = YES;
         testProperties = [[SMTestProperties alloc] init];
     });
     afterEach(^{
+        testProperties = nil;
         SM_CACHE_ENABLED = NO;
     });
     it(@"properly propagates on standard delete online", ^{
@@ -1519,6 +1520,5 @@ describe(@"delete propagates on manual purge", ^{
     });
 
 });
-
 
 SPEC_END
