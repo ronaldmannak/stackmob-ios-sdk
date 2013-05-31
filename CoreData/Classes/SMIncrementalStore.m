@@ -2677,14 +2677,16 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
             [NSException raise:SMExceptionCacheError format:@"Could not obtain permanent IDs for objects %@ with error %@", cacheObject, permanentIdError];
         }
         
+        [self SM_insertRemoteID:remoteID withCacheObjectID:[cacheObject objectID] list:self.cacheMappingTable entityName:entityName serverLastModDate:serverLastModDate];
+        
         if (SM_CORE_DATA_DEBUG) { DLog(@"Creating new cache object, %@", cacheObject) }
     } else {
         // result count == 1
         cacheObject = [results lastObject];
-    }
-    
-    if (createIfNeeded) {
-        [self SM_insertRemoteID:remoteID withCacheObjectID:[cacheObject objectID] list:self.cacheMappingTable entityName:entityName serverLastModDate:serverLastModDate];
+        
+        if (serverLastModDate) {
+            [self SM_insertRemoteID:remoteID withCacheObjectID:[cacheObject objectID] list:self.cacheMappingTable entityName:entityName serverLastModDate:serverLastModDate];
+        }
     }
     
     return cacheObject ? [cacheObject objectID] : nil;
