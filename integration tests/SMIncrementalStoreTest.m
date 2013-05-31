@@ -1104,6 +1104,7 @@ describe(@"can update a field to null", ^{
     
 });
 */
+
 describe(@"Delete propagation with Cascade Rule", ^{
     __block SMTestProperties *testProperties = nil;
     beforeEach(^{
@@ -1285,7 +1286,6 @@ describe(@"Delete propagation with Cascade Rule", ^{
         
     });
 });
-
 describe(@"delete propagates on manual purge", ^{
     __block SMTestProperties *testProperties = nil;
     beforeEach(^{
@@ -1318,6 +1318,7 @@ describe(@"delete propagates on manual purge", ^{
         
         NSError *error = nil;
         [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
         
         // Check cache map
         __block NSDictionary *lcMapResults = nil;
@@ -1335,7 +1336,7 @@ describe(@"delete propagates on manual purge", ^{
         dispatch_group_t group = dispatch_group_create();
         dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
         dispatch_group_enter(group);
-        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 10 * NSEC_PER_SEC);
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC);
         dispatch_after(time, queue, ^{
             lcMapResults = nil;
             lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
@@ -1410,41 +1411,113 @@ describe(@"delete propagates on manual purge", ^{
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
     });
+    it(@"properly propagates on purge by stackmob info, online", ^{
+        NSManagedObject *person = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [person setValue:@"1234" forKey:[person primaryKeyField]];
+        
+        NSManagedObject *todo1 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
+        [todo1 setValue:@"1234" forKey:[todo1 primaryKeyField]];
+        NSManagedObject *todo2 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
+        [todo2 setValue:@"5678" forKey:[todo2 primaryKeyField]];
+        
+        [person setValue:[NSSet setWithObjects:todo1, todo2, nil] forKey:@"todos"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        // Check cache map
+        __block NSDictionary *lcMapResults = nil;
+        NSURL *cacheMapURL = [SMCoreDataIntegrationTestHelpers SM_getStoreURLForCacheMapTableWithPublicKey:testProperties.client.publicKey];
+        lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
+        
+        [lcMapResults shouldNotBeNil];
+        [[lcMapResults should] haveCountOf:2];
+        [[[lcMapResults objectForKey:@"Person"] should] haveCountOf:1];
+        [[[lcMapResults objectForKey:@"Todo"] should] haveCountOf:2];
+        
+        // Delete person
+        [testProperties.cds purgeCacheOfManagedObjectID:[person objectID]];
+        
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_group_enter(group);
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC);
+        dispatch_after(time, queue, ^{
+            lcMapResults = nil;
+            lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
+            [lcMapResults shouldNotBeNil];
+            [[lcMapResults should] haveCountOf:0];
+            dispatch_group_leave(group);
+        });
+        
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    });
+    it(@"properly propagates on purge by stackmob info, offline", ^{
+        NSArray *persistentStores = [testProperties.cds.persistentStoreCoordinator persistentStores];
+        SMIncrementalStore *store = [persistentStores lastObject];
+        [store stub:@selector(SM_checkNetworkAvailability) andReturn:theValue(NO)];
+        
+        NSManagedObject *person = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [person setValue:@"1234" forKey:[person primaryKeyField]];
+        
+        NSManagedObject *todo1 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
+        [todo1 setValue:@"1234" forKey:[todo1 primaryKeyField]];
+        NSManagedObject *todo2 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
+        [todo2 setValue:@"5678" forKey:[todo2 primaryKeyField]];
+        
+        [person setValue:[NSSet setWithObjects:todo1, todo2, nil] forKey:@"todos"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        
+        // Check cache map
+        __block NSDictionary *lcMapResults = nil;
+        NSURL *cacheMapURL = [SMCoreDataIntegrationTestHelpers SM_getStoreURLForCacheMapTableWithPublicKey:testProperties.client.publicKey];
+        lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
+        
+        [lcMapResults shouldNotBeNil];
+        [[lcMapResults should] haveCountOf:2];
+        [[[lcMapResults objectForKey:@"Person"] should] haveCountOf:1];
+        [[[lcMapResults objectForKey:@"Todo"] should] haveCountOf:2];
+        
+        // Check dirty queue
+        __block NSDictionary *dqResults = nil;
+        NSURL *dqURL = [SMCoreDataIntegrationTestHelpers SM_getStoreURLForDirtyQueueTableWithPublicKey:testProperties.client.publicKey];
+        dqResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[dqURL path]];
+        
+        [dqResults shouldNotBeNil];
+        [[[dqResults objectForKey:@"SMDirtyInsertedObjectKeys"] should] haveCountOf:3];
+        [[[dqResults objectForKey:@"SMDirtyUpdatedObjectKeys"] should] haveCountOf:0];
+        [[[dqResults objectForKey:@"SMDirtyDeletedObjectKeys"] should] haveCountOf:0];
+        
+        // Delete person
+        [testProperties.cds purgeCacheOfManagedObjectID:[person objectID]];
+        
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_group_enter(group);
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC);
+        dispatch_after(time, queue, ^{
+            lcMapResults = nil;
+            lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
+            [lcMapResults shouldNotBeNil];
+            [[lcMapResults should] haveCountOf:0];
+            
+            // Check dirty queue
+            dqResults = nil;
+            dqResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[dqURL path]];
+            
+            [dqResults shouldNotBeNil];
+            [[[dqResults objectForKey:@"SMDirtyInsertedObjectKeys"] should] haveCountOf:0];
+            [[[dqResults objectForKey:@"SMDirtyUpdatedObjectKeys"] should] haveCountOf:0];
+            [[[dqResults objectForKey:@"SMDirtyDeletedObjectKeys"] should] haveCountOf:0];
+            dispatch_group_leave(group);
+        });
+        
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    });
 
-    /*
-     it(@"properly propagates on purge by stackmob info", ^{
-     NSManagedObject *person = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
-     [person setValue:[person assignObjectId] forKey:[person primaryKeyField]];
-     
-     NSManagedObject *todo1 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
-     [todo1 setValue:[todo1 assignObjectId] forKey:[todo1 primaryKeyField]];
-     NSManagedObject *todo2 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
-     [todo2 setValue:[todo2 assignObjectId] forKey:[todo2 primaryKeyField]];
-     
-     NSError *error = nil;
-     [testProperties.moc saveAndWait:&error];
-     
-     // Check cache map
-     __block NSDictionary *lcMapResults = nil;
-     NSURL *cacheMapURL = [SMCoreDataIntegrationTestHelpers SM_getStoreURLForCacheMapTableWithPublicKey:testProperties.client.publicKey];
-     lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
-     
-     [lcMapResults shouldNotBeNil];
-     [[lcMapResults should] haveCountOf:2];
-     [[[lcMapResults objectForKey:@"Person"] should] haveCountOf:1];
-     [[[lcMapResults objectForKey:@"Todo"] should] haveCountOf:2];
-     
-     // Delete person
-     [testProperties.moc deleteObject:person];
-     error = nil;
-     [testProperties.moc saveAndWait:&error];
-     
-     lcMapResults = nil;
-     lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
-     [lcMapResults shouldNotBeNil];
-     [[lcMapResults should] haveCountOf:0];
-     });
-     */
 });
 
 

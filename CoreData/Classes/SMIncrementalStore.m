@@ -27,6 +27,7 @@
 #import "SMSyncedObject.h"
 #import "FileManagement.h"
 #import "Common.h"
+#import "NSManagedObject+DeletePropagation.h"
 
 #define CACHE_MAP_FILE @"CacheMap.plist"
 #define SQL_DB @"CoreDataStore.sqlite"
@@ -965,7 +966,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     dispatch_group_wait(callbackGroup, DISPATCH_TIME_FOREVER);
     
     if (SM_CACHE_ENABLED && success && [deletedObjectIDs count] > 0) {
-        [self SM_purgeObjectsFromCacheByStackMobIDInfo:deletedObjectIDs checkDirtyQueue:NO];
+        [self SM_purgeObjectsFromCacheByStackMobIDInfo:deletedObjectIDs includeDirtyQueue:NO];
     }
     
 #if !OS_OBJECT_USE_OBJC
@@ -995,7 +996,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
     }];
     
-    BOOL purgeSuccess = [self SM_purgeObjectsFromCacheByStackMobIDInfo:deletedObjectInfo checkDirtyQueue:NO];
+    BOOL purgeSuccess = [self SM_purgeObjectsFromCacheByStackMobIDInfo:deletedObjectInfo includeDirtyQueue:NO];
     if (!purgeSuccess) {
         
     }
@@ -1365,12 +1366,12 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         }
         
         if ([cacheResults count] > 0) {
-            NSMutableArray *cacheObjectsToBeDeleted = [NSMutableArray array];
+            NSMutableArray *cacheObjectIDsForPurge = [NSMutableArray array];
             [cacheResults enumerateObjectsUsingBlock:^(id cacheObject, NSUInteger idx, BOOL *stop) {
-                [cacheObjectsToBeDeleted addObject:cacheObject];
+                [cacheObjectIDsForPurge addObject:[cacheObject objectID]];
             }];
             
-            BOOL purgeSuccess = [self SM_purgeCacheManagedObjectsFromCache:cacheObjectsToBeDeleted checkDirtyQueue:YES];
+            BOOL purgeSuccess = [self SM_removeSMIDsFromDirtyQueue:cacheObjectIDsForPurge purgeFromCache:YES];
             if (!purgeSuccess) {
                 if (SM_CORE_DATA_DEBUG) { DLog(@"Purge Unsuccessful") }
             }
@@ -2386,7 +2387,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     if ([relationship isToMany]) {
         
         // Purge relationship from cacheParentObject 
-        [self SM_purgeCacheManagedObjectsFromCache:[cacheParentObject valueForKey:[relationship name]] checkDirtyQueue:NO];
+        [self SM_purgeCacheManagedObjectsFromCache:[cacheParentObject valueForKey:[relationship name]] includeDirtyQueue:NO];
         
         // Using NSObject here as NSMutableSet and NSMutableOrderedSet don't share a mutable base class
         // By doing this and casting in the right place we avoid having to duplicate a lot of code
@@ -2435,7 +2436,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         NSManagedObject *relationshipContentsFromCache = [cacheParentObject valueForKey:[relationship name]];
         if (relationshipContentsFromCache) {
-            [self SM_purgeCacheManagedObjectFromCache:relationshipContentsFromCache checkDirtyQueue:NO];
+            [self SM_purgeCacheManagedObjectFromCache:relationshipContentsFromCache includeDirtyQueue:NO];
         }
         
         if (relationshipContents) {
@@ -2585,6 +2586,8 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
                         
                         [objectRelationshipSet addObject:objectToAdd];
                     }];
+                    
+                    [object setValue:objectRelationshipSet forKey:propertyName];
                 }
             
             } else {
@@ -3285,7 +3288,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         }
         
         if ([objectsToPurgeFromCache count] > 0) {
-            [self SM_purgeCacheManagedObjectsFromCache:objectsToPurgeFromCache checkDirtyQueue:NO];
+            [self SM_purgeCacheManagedObjectsFromCache:objectsToPurgeFromCache includeDirtyQueue:NO];
         }
         
         if ([entriesToPurgeFromDirtyQueue count] > 0) {
@@ -3521,11 +3524,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     NSDictionary *notificationUserInfo = [notification userInfo];
     NSManagedObjectID *objectID = [notificationUserInfo objectForKey:SMCachePurgeManagedObjectID];
     
-    if ([[objectID persistentStore] class] == [SMIncrementalStore class]) {
-        NSString *objectIDReference = [(SMIncrementalStore *)[objectID persistentStore] referenceObjectForObjectID:objectID];
-        NSDictionary *objectInfo = [NSDictionary dictionaryWithObjectsAndKeys:objectIDReference, ObjectID, [[objectID entity] name], ObjectEntityName, nil];
-        [self SM_purgeObjectFromCacheWithStackMobIDInfo:objectInfo checkDirtyQueue:YES];
-    }
+    [self SM_removeSMIDsFromDirtyQueue:[NSArray arrayWithObject:objectID] purgeFromCache:YES];
 }
 
 - (void)SM_didRecievePurgeObjectsFromCacheNotification:(NSNotification *)notification
@@ -3534,21 +3533,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     NSDictionary *notificationUserInfo = [notification userInfo];
     NSArray *objectIDsToPurge = [notificationUserInfo objectForKey:SMCachePurgeArrayOfManageObjectIDs];
     
-    NSMutableArray *objectsInfo = [NSMutableArray arrayWithCapacity:[objectIDsToPurge count]];
-    [objectIDsToPurge enumerateObjectsUsingBlock:^(id objectID, NSUInteger idx, BOOL *stop) {
-        
-        if([[objectID persistentStore] class] == [SMIncrementalStore class]) {
-            NSString *objectIDReference = [(SMIncrementalStore *)[objectID persistentStore] referenceObjectForObjectID:objectID];
-            // Get
-            NSDictionary *objectInfo = [NSDictionary dictionaryWithObjectsAndKeys:objectIDReference, ObjectID, [[objectID entity] name], ObjectEntityName, nil];
-            [objectsInfo addObject:objectInfo];
-        }
-    }];
-    
-    BOOL success = [self SM_purgeObjectsFromCacheByStackMobIDInfo:objectsInfo];
-    if (success) {
-        [self SM_removeRemoteIDsFromDirtyQueue:objectsInfo];
-    }
+    [self SM_removeSMIDsFromDirtyQueue:objectIDsToPurge purgeFromCache:YES];
     
 }
 
@@ -3560,7 +3545,8 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     NSError *error = nil;
     NSArray *results = [self.localManagedObjectContext executeFetchRequest:request error:&error];
     if (!error) {
-        [self SM_purgeCacheManagedObjectsFromCache:results error:nil];
+        [self SM_purgeCacheManagedObjectsFromCache:results includeDirtyQueue:YES];
+        
     }
 }
 
@@ -3590,30 +3576,30 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     [self SM_saveDirtyQueue];
 }
 
-- (BOOL)SM_purgeCacheManagedObjectFromCache:(NSManagedObject *)object
+- (BOOL)SM_purgeCacheManagedObjectFromCache:(NSManagedObject *)object includeDirtyQueue:(BOOL)includeDirtyQueue
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
-    BOOL success = [self SM_purgeCacheManagedObjectsFromCache:[NSArray arrayWithObject:object]];
+    BOOL success = [self SM_purgeCacheManagedObjectsFromCache:[NSArray arrayWithObject:object] includeDirtyQueue:includeDirtyQueue];
     
     return success;
 }
 
-- (BOOL)SM_purgeCacheManagedObjectsFromCache:(NSArray *)arrayOfManagedObjects
+- (BOOL)SM_purgeCacheManagedObjectsFromCache:(NSArray *)arrayOfManagedObjects includeDirtyQueue:(BOOL)includeDirtyQueue
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
     __block BOOL success = YES;
     
     NSMutableArray *arrayOfManagedObjectInfo = [NSMutableArray array];
-    
     [arrayOfManagedObjects enumerateObjectsUsingBlock:^(id object, NSUInteger idx, BOOL *stop) {
         
         // Delete object from local context
-        [self.localManagedObjectContext deleteObject:object];
+        //[self.localManagedObjectContext deleteObject:object];
+        [object propagateDelete];
     }];
     
-    [self.localManagedObjectContext processPendingChanges];
+    //[self.localManagedObjectContext processPendingChanges];
     
     if ([self.localManagedObjectContext hasChanges]) {
         
@@ -3633,6 +3619,9 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
             
             // Remove Cache Map references
             [self SM_removeRemoteIDsFromCacheMap:arrayOfManagedObjectInfo];
+            if (includeDirtyQueue) {
+                [self SM_removeRemoteIDsFromDirtyQueue:arrayOfManagedObjectInfo];
+            }
         } else {
             
             if (SM_CORE_DATA_DEBUG) {
@@ -3644,14 +3633,14 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     return success;
 }
 
-- (BOOL)SM_purgeObjectFromCacheWithStackMobIDInfo:(NSDictionary *)objectInfo
+- (BOOL)SM_purgeObjectFromCacheWithStackMobIDInfo:(NSDictionary *)objectInfo includeDirtyQueue:(BOOL)includeDirtyQueue
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
-    return [self SM_purgeObjectsFromCacheByStackMobIDInfo:[NSArray arrayWithObject:objectInfo] checkDirtyQueue:checkDirtyQueue];
+    return [self SM_purgeObjectsFromCacheByStackMobIDInfo:[NSArray arrayWithObject:objectInfo] includeDirtyQueue:includeDirtyQueue];
 }
 
-- (BOOL)SM_purgeObjectsFromCacheByStackMobIDInfo:(NSArray *)arrayOfStackMobObjectIDInfo
+- (BOOL)SM_purgeObjectsFromCacheByStackMobIDInfo:(NSArray *)arrayOfStackMobObjectIDInfo includeDirtyQueue:(BOOL)includeDirtyQueue
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
@@ -3696,6 +3685,9 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         // Remove the entry from map table
         if (success) {
             [self SM_removeRemoteIDsFromCacheMap:arrayOfManagedObjectInfo];
+            if (includeDirtyQueue) {
+                [self SM_removeRemoteIDsFromDirtyQueue:arrayOfManagedObjectInfo];
+            }
         } else {
             if (SM_CORE_DATA_DEBUG) { DLog(@"Error saving cache: %@", anError) }
         }
@@ -3709,7 +3701,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
     NSDictionary *userInfo = [notification userInfo];
-    [self SM_markObjectsAsSynced:[NSArray arrayWithObject:[userInfo objectForKey:@"ObjectID"]] purge:[[userInfo objectForKey:@"Purge"] boolValue]];
+    [self SM_removeSMIDsFromDirtyQueue:[NSArray arrayWithObject:[userInfo objectForKey:@"ObjectID"]] purgeFromCache:[[userInfo objectForKey:@"Purge"] boolValue]];
 }
 
 - (void)SM_didRecieveMarkArrayOfObjectsAsSyncedNotification:(NSNotification *)notification
@@ -3718,17 +3710,19 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     
     NSDictionary *userInfo = [notification userInfo];
     NSArray *objectIDsToPurge = [userInfo objectForKey:@"ObjectIDs"];
-    [self SM_markObjectsAsSynced:objectIDsToPurge purge:[[userInfo objectForKey:@"Purge"] boolValue]];
+    [self SM_removeSMIDsFromDirtyQueue:objectIDsToPurge purgeFromCache:[[userInfo objectForKey:@"Purge"] boolValue]];
     
 }
 
-- (void)SM_markObjectsAsSynced:(NSArray *)objectIDsToPurge purge:(BOOL)purge
+- (BOOL)SM_removeSMIDsFromDirtyQueue:(NSArray *)objectIDsToPurge purgeFromCache:(BOOL)purgeFromCache
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
-    [self SM_purgeDirtyQueueOfManagedObjectIDs:objectIDsToPurge];
+    BOOL success = YES;
     
-    if (purge) {
+    if (!purgeFromCache) {
+        [self SM_purgeDirtyQueueOfManagedObjectIDs:objectIDsToPurge];
+    } else {
         NSMutableArray *objectsInfo = [NSMutableArray arrayWithCapacity:[objectIDsToPurge count]];
         [objectIDsToPurge enumerateObjectsUsingBlock:^(id objectID, NSUInteger idx, BOOL *stop) {
             
@@ -3740,8 +3734,10 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
             }
         }];
         
-        [self SM_purgeObjectsFromCacheByStackMobIDInfo:objectsInfo];
+        success = [self SM_purgeObjectsFromCacheByStackMobIDInfo:objectsInfo includeDirtyQueue:YES];
     }
+    
+    return success;
 }
 
 - (void)SM_purgeDirtyQueueOfManagedObjectIDs:(NSArray *)arrayOfManagedObjectIDs
@@ -3908,6 +3904,16 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
                 NSEntityDescription *entityDescriptionForRelationship = [NSEntityDescription entityForName:[[relationshipValue destinationEntity] name] inManagedObjectContext:context];
                 if ([relationshipContents isKindOfClass:[NSString class]]) {
                     NSManagedObjectID *relationshipObjectID = [self newObjectIDForEntity:entityDescriptionForRelationship referenceObject:relationshipContents];
+                    [serializedDictionary setObject:relationshipObjectID forKey:relationshipName];
+                } else if ([relationshipContents isKindOfClass:[NSDictionary class]]) {
+                    NSString *relationshipPrimaryKeyField = nil;
+                    if ([[[entityDescriptionForRelationship name] lowercaseString] isEqualToString:[self.coreDataStore.session userSchema]]) {
+                        relationshipPrimaryKeyField = [self.coreDataStore.session userPrimaryKeyField];
+                    } else {
+                        relationshipPrimaryKeyField = [entityDescriptionForRelationship primaryKeyField];
+                    }
+                    NSString *referenceObject = [relationshipContents objectForKey:relationshipPrimaryKeyField];
+                    NSManagedObjectID *relationshipObjectID = [self newObjectIDForEntity:entityDescriptionForRelationship referenceObject:referenceObject];
                     [serializedDictionary setObject:relationshipObjectID forKey:relationshipName];
                 }
             } else {
