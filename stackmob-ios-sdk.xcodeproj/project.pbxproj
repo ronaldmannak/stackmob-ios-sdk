@@ -69,7 +69,6 @@
 		DE01742E1756A4BD00E4EA4B /* Person.h in Headers */ = {isa = PBXBuildFile; fileRef = DE01742C1756A4BD00E4EA4B /* Person.h */; };
 		DE01742F1756A4BD00E4EA4B /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = DE01742D1756A4BD00E4EA4B /* Person.m */; };
 		DE01F13C16F78CE800453088 /* User3.m in Sources */ = {isa = PBXBuildFile; fileRef = DE01F13A16F78CE800453088 /* User3.m */; };
-		DE01F14016F7BEA700453088 /* SMClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB8474D159A74D000FF37A3 /* SMClientIntegrationSpec.m */; };
 		DE05E13D15E2BE8F00224E4E /* goatPic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DE05E13C15E2BE8A00224E4E /* goatPic.jpeg */; };
 		DE05E13E15E2BE9000224E4E /* goatPic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DE05E13C15E2BE8A00224E4E /* goatPic.jpeg */; };
 		DE05E13F15E2BE9200224E4E /* goatPic.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = DE05E13C15E2BE8A00224E4E /* goatPic.jpeg */; };
@@ -159,12 +158,7 @@
 		DE227A0517594CFA009365C1 /* SMMergePolicyUpdatesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC111730994A007CBA7F /* SMMergePolicyUpdatesSpec.m */; };
 		DE227A0617594CFD009365C1 /* SMMergePolicyDeletesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC1317309959007CBA7F /* SMMergePolicyDeletesSpec.m */; };
 		DE227A0717594D01009365C1 /* SMMergePolicyMiscSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC1517309974007CBA7F /* SMMergePolicyMiscSpec.m */; };
-		DE227A0817595DD7009365C1 /* CRUDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C33B0641591355A00BE2570 /* CRUDTests.m */; };
-		DE227A0917595DDB009365C1 /* QueryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 619EDF11159292AC0075BB93 /* QueryTests.m */; };
-		DE227A0A17595DDE009365C1 /* QueryTestsWithPermissionsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1BDE2D1682BFEC009282BA /* QueryTestsWithPermissionsSpec.m */; };
-		DE227A0B17595DE4009365C1 /* SMNetworkReachabilitySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9EEBE164B4F24006B7326 /* SMNetworkReachabilitySpec.m */; };
-		DE227A0C17595DE8009365C1 /* SMPushClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9ED78164B1D43006B7326 /* SMPushClientIntegrationSpec.m */; };
-		DE227A0D17595DEB009365C1 /* SMCusCodeReqIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB16BCB15DC606300893EE5 /* SMCusCodeReqIntegrationSpec.m */; };
+		DE227A0E175AC993009365C1 /* SMClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB8474D159A74D000FF37A3 /* SMClientIntegrationSpec.m */; };
 		DE2EA1A116CC7304001FA904 /* SMGeoPoint.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D83529416C5ACD000814C71 /* SMGeoPoint.h */; };
 		DE2EA1A216CC7304001FA904 /* SMLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D8352A716C8512400814C71 /* SMLocationManager.h */; };
 		DE2EA1A316CC7304001FA904 /* Common.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEEDC32616C984B4008B1CC2 /* Common.h */; };
@@ -1315,13 +1309,7 @@
 				1DDAE4691656EF15001DFAEF /* SMNetworkReachabilityHelper.m in Sources */,
 				1D8351CF16C08D7000814C71 /* Random.m in Sources */,
 				1D8351DF16C0969900814C71 /* SMCoreDataIntegrationTest.xcdatamodeld in Sources */,
-				DE01F14016F7BEA700453088 /* SMClientIntegrationSpec.m in Sources */,
-				DE227A0817595DD7009365C1 /* CRUDTests.m in Sources */,
-				DE227A0917595DDB009365C1 /* QueryTests.m in Sources */,
-				DE227A0A17595DDE009365C1 /* QueryTestsWithPermissionsSpec.m in Sources */,
-				DE227A0B17595DE4009365C1 /* SMNetworkReachabilitySpec.m in Sources */,
-				DE227A0C17595DE8009365C1 /* SMPushClientIntegrationSpec.m in Sources */,
-				DE227A0D17595DEB009365C1 /* SMCusCodeReqIntegrationSpec.m in Sources */,
+				DE227A0E175AC993009365C1 /* SMClientIntegrationSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

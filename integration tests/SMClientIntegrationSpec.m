@@ -32,21 +32,27 @@ describe(@"refresh token fail block", ^{
     });
     it(@"refresh token fail block should get called", ^{
         __block BOOL tokenFailure = NO;
-        syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [client setTokenRefreshFailureBlock:^(NSError *error, SMFailureBlock originalFailureBlock) {
-                tokenFailure = YES;
-                originalFailureBlock(error);
-                syncReturn(semaphore);
-            }];
-            [[client.dataStore.session stubAndReturn:@"1234"] refreshToken];
-            [[client.dataStore.session stubAndReturn:theValue(YES)] accessTokenHasExpired];
-            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                NSLog(@"Schema is %@", schema);
-                NSLog(@"Failure with error: %@", theError);
-            }];
-        });
+        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_group_t group = dispatch_group_create();
+        
+        dispatch_group_enter(group);
+        
+        [client setTokenRefreshFailureBlock:^(NSError *error, SMFailureBlock originalFailureBlock) {
+            tokenFailure = YES;
+            originalFailureBlock(error);
+            dispatch_group_leave(group);
+        }];
+        [[client.dataStore.session stubAndReturn:@"1234"] refreshToken];
+        [[client.dataStore.session stubAndReturn:theValue(YES)] accessTokenHasExpired];
+        [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            
+        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            NSLog(@"Schema is %@", schema);
+            NSLog(@"Failure with error: %@", theError);
+        }];
+        
+        dispatch_time_t timeout = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 30);
+        dispatch_group_wait(group, timeout);
         
         [[theValue(tokenFailure) should] beYes];
     });

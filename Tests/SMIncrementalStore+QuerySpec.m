@@ -40,7 +40,7 @@ describe(@"-queryForEntity:predicate:error", ^{
         });
         it(@"returns an error", ^{
             query = [store queryForEntity:entity predicate:predicate error:&error];
-            [[error should] beNonNil];
+            [error shouldNotBeNil];
         });
     });
     describe(@"when the right-hand side is not a constant", ^{
@@ -49,7 +49,7 @@ describe(@"-queryForEntity:predicate:error", ^{
         });
         it(@"returns an error", ^{
             query = [store queryForEntity:entity predicate:predicate error:&error];
-            [[error should] beNonNil];
+            [error shouldNotBeNil];
         });
     });
     describe(@"==", ^{

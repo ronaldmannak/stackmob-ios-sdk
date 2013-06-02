@@ -77,10 +77,10 @@ describe(@"Generating a request", ^{
         req = [client requestWithMethod:@"GET" path:@"hello" parameters:[NSDictionary dictionaryWithObjectsAndKeys:@"worl!@#(%#^+_)d", @"hello", nil]];
     });
     it(@"should not be nil", ^{
-        [[req should] beNonNil]; 
+        [req shouldNotBeNil];
     });
     it(@"should have an api key header", ^{
-        [[[req valueForHTTPHeaderField:@"X-StackMob-API-Key"] should] beNonNil]; 
+        [[req valueForHTTPHeaderField:@"X-StackMob-API-Key"] shouldNotBeNil];
     });
     describe(@"content-type header", ^{
         context(@"on POST", ^{
