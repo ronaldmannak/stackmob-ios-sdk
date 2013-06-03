@@ -57,11 +57,15 @@ describe(@"with a prepopulated database of people", ^{
         });
         
         [SMIntegrationTestHelpers destroyAllForFixturesNamed:fixtureNames];
+        
+        fixtures = [SMIntegrationTestHelpers loadFixturesNamed:fixtureNames];
+        [fixtures shouldNotBeNil];
     });
     
     afterAll(^{
-        // Logout
+        [SMIntegrationTestHelpers destroyAllForFixturesNamed:fixtureNames];
         
+        // Logout
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             [client logoutOnSuccess:^(NSDictionary *result) {
                 NSLog(@"Logged out");
@@ -75,15 +79,6 @@ describe(@"with a prepopulated database of people", ^{
         BOOL deleteSuccess = [SMIntegrationTestHelpers deleteUser:@"dude" dataStore:client.dataStore];
         [[theValue(deleteSuccess) should] beYes];
         
-    });
-    
-    beforeEach(^{
-        fixtures = [SMIntegrationTestHelpers loadFixturesNamed:fixtureNames];
-        [fixtures shouldNotBeNil];
-    });
-    
-    afterEach(^{
-        [SMIntegrationTestHelpers destroyAllForFixturesNamed:fixtureNames];
     });
     
     describe(@"-query with initWithSchema", ^{
@@ -173,6 +168,27 @@ describe(@"with a prepopulated database of people", ^{
                 NSArray *sortedResults = [results sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"last_name" ascending:YES]]];
                 [[[[sortedResults objectAtIndex:0] objectForKey:@"last_name"] should] equal:@"Cooper"];
                 [[[[sortedResults objectAtIndex:1] objectForKey:@"last_name"] should] equal:@"Williams"];
+            }, ^(NSError *error){
+                [error shouldBeNil];
+            });
+        });
+        it(@"-where:isNotIn", ^{
+            [query where:@"first_name" isNotIn:[NSArray arrayWithObject:@"Matt"]];
+            synchronousQuery(sm, query, ^(NSArray *results) {
+                [[results should] haveCountOf:2];
+                NSArray *sortedResults = [results sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"last_name" ascending:YES]]];
+                [[[[sortedResults objectAtIndex:0] objectForKey:@"last_name"] should] equal:@"Cooper"];
+                [[[[sortedResults objectAtIndex:1] objectForKey:@"last_name"] should] equal:@"Williams"];
+            }, ^(NSError *error){
+                [error shouldBeNil];
+            });
+        });
+        it(@"-where:isNotIn Again", ^{
+            [query where:@"first_name" isNotIn:[NSArray arrayWithObjects:@"Jon", @"Jonah", nil]];
+            synchronousQuery(sm, query, ^(NSArray *results) {
+                [[results should] haveCountOf:1];
+                NSArray *sortedResults = [results sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"last_name" ascending:YES]]];
+                [[[[sortedResults objectAtIndex:0] objectForKey:@"last_name"] should] equal:@"Vaznaian"];
             }, ^(NSError *error){
                 [error shouldBeNil];
             });

@@ -17,139 +17,173 @@
 #import <Kiwi/Kiwi.h>
 #import "SMCoreDataIntegrationTestHelpers.h"
 #import "SMIntegrationTestHelpers.h"
+#import "SMTestProperties.h"
 
 SPEC_BEGIN(SMCoreDataStoreTest)
 
 describe(@"create an instance of SMCoreDataStore from SMClient", ^{
-    __block SMClient *client = nil;
-    __block SMCoreDataStore *coreDataStore = nil;
-    __block NSManagedObjectContext *moc = nil;
+    __block SMTestProperties *testProperties = nil;
     beforeEach(^{
-        client = [SMIntegrationTestHelpers defaultClient];
-        [SMClient setDefaultClient:client];
-        NSBundle *classBundle = [NSBundle bundleForClass:[self class]];
-        NSURL *modelURL = [classBundle URLForResource:@"SMCoreDataIntegrationTest" withExtension:@"momd"];
-        NSManagedObjectModel *aModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-        coreDataStore = [client coreDataStoreWithManagedObjectModel:aModel];
+        testProperties = [[SMTestProperties alloc] init];
         
     });
-    describe(@"obtaining a managedObjectContext hooked to SM", ^{
-        beforeEach(^{
-            moc = [coreDataStore contextForCurrentThread];
-        });
-        it(@"is not nil", ^{
-            [moc shouldNotBeNil];
-        });
+    it(@"obtaining a managedObjectContext hooked to SM is not nil", ^{
+        testProperties.moc = [testProperties.cds contextForCurrentThread];
+        [testProperties.moc shouldNotBeNil];
     });
-    describe(@"with a managedObjectContext from SMCoreDataStore", ^{
-        beforeEach(^{
-            moc = [coreDataStore contextForCurrentThread];
-            [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-        });
+});
+
+describe(@"with a managedObjectContext from SMCoreDataStore", ^{
+    __block SMTestProperties *testProperties = nil;
+    __block NSManagedObject *aPerson = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [testProperties.moc deleteObject:obj];
+        }];
+        if ([testProperties.moc hasChanges]) {
+            error = nil;
+            BOOL success = [testProperties.moc saveAndWait:&error];
+            [[theValue(success) should] beYes];
+        }
+    });
+    it(@"the context should have inserted objects", ^{
+        aPerson = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [aPerson setValue:@"the" forKey:@"first_name"];
+        [aPerson setValue:@"dude" forKey:@"last_name"];
+        [aPerson setValue:[aPerson assignObjectId] forKey:[aPerson primaryKeyField]];
+        [[theValue([[testProperties.moc insertedObjects] count]) should] beGreaterThan:theValue(0)];
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:testProperties.moc withBlock:^(NSError *error) {
+            [error shouldBeNil];
+            [[theValue([[testProperties.moc insertedObjects] count]) should] equal:theValue(0)];
+        }];
+    });
+});
+
+describe(@"with a managedObjectContext from SMCoreDataStore", ^{
+    __block SMTestProperties *testProperties = nil;
+    __block NSManagedObject *aPerson = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         
-        describe(@"inserting an object", ^{
-            __block NSManagedObject *aPerson = nil;
-            beforeEach(^{
-                aPerson = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:moc];
-                [aPerson setValue:@"the" forKey:@"first_name"];
-                [aPerson setValue:@"dude" forKey:@"last_name"];
-                [aPerson setValue:[aPerson assignObjectId] forKey:[aPerson primaryKeyField]];
-            });
-            afterEach(^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                [moc deleteObject:aPerson];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-                    [error shouldBeNil]; 
-                }];
-            });
-            it(@"the context should have inserted objects", ^{
-                [[theValue([[moc insertedObjects] count]) should] beGreaterThan:theValue(0)];
-            });
-            it(@"a call to save should not fail", ^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-                    [error shouldBeNil];
-                    [[theValue([[moc insertedObjects] count]) should] equal:theValue(0)];
-                }];
-            });
+        aPerson = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [aPerson setValue:@"the" forKey:@"first_name"];
+        [aPerson setValue:@"dude" forKey:@"last_name"];
+        [aPerson setValue:[aPerson assignObjectId] forKey:[aPerson primaryKeyField]];
+        [[theValue([[testProperties.moc insertedObjects] count]) should] beGreaterThan:theValue(0)];
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:testProperties.moc withBlock:^(NSError *error) {
+            [error shouldBeNil];
+            [[theValue([[testProperties.moc insertedObjects] count]) should] equal:theValue(0)];
+        }];
+        
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [testProperties.moc deleteObject:obj];
+        }];
+        if ([testProperties.moc hasChanges]) {
+            error = nil;
+            BOOL success = [testProperties.moc saveAndWait:&error];
+            [[theValue(success) should] beYes];
+        }
+    });
+    it(@"reads the object", ^{
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"last_name = 'dude'"];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:testProperties.moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:testProperties.moc] andBlock:^(NSArray *results, NSError *error) {
+            [error shouldBeNil];
+            [[theValue([results count]) should] equal:theValue(1)];
+            NSManagedObject *theDude = [results objectAtIndex:0];
+            [[[theDude valueForKey:@"first_name"] should] equal:@"the"];
+        }];
+    });
+    it(@"updates the object", ^{
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        [aPerson setValue:@"matt" forKey:@"first_name"];
+        [aPerson setValue:@"StackMob" forKey:@"company"];
+        [[theValue([[testProperties.moc updatedObjects] count]) should] beGreaterThan:theValue(0)];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:testProperties.moc withBlock:^(NSError *error) {
+            [error shouldBeNil];
+        }];
+    });
+});
+
+describe(@"read, update", ^{
+    __block SMTestProperties *testProperties = nil;
+    __block NSManagedObject *aPerson = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        aPerson = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [aPerson setValue:@"the" forKey:@"first_name"];
+        [aPerson setValue:@"dude" forKey:@"last_name"];
+        [aPerson setValue:[aPerson assignObjectId] forKey:[aPerson primaryKeyField]];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:testProperties.moc withBlock:^(NSError *error) {
+            [error shouldBeNil];
+        }];
+    });
+    afterEach(^{
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [testProperties.moc deleteObject:obj];
+        }];
+        if ([testProperties.moc hasChanges]) {
+            error = nil;
+            BOOL success = [testProperties.moc saveAndWait:&error];
+            [[theValue(success) should] beYes];
+        }
+    });
+    describe(@"after sending a request for a field that doesn't exist", ^{
+        __block NSFetchRequest *theRequest = nil;
+        beforeEach(^{
+            [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"not_a_field = 'hello'"];
+            theRequest = [SMCoreDataIntegrationTestHelpers makeFavoriteFetchRequest:predicate context:testProperties.moc];
         });
-        describe(@"read, update", ^{
-            __block NSManagedObject *aPerson = nil;
-            beforeEach(^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                aPerson = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:moc];
-                [aPerson setValue:@"the" forKey:@"first_name"];
-                [aPerson setValue:@"dude" forKey:@"last_name"];
-                [aPerson setValue:[aPerson assignObjectId] forKey:[aPerson primaryKeyField]];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-                    [error shouldBeNil];
-                }];
-            });
-            afterEach(^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                [moc deleteObject:aPerson];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-                    [error shouldBeNil]; 
-                }];
-            });
-            it(@"reads the object", ^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"last_name = 'dude'"];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:moc] andBlock:^(NSArray *results, NSError *error) {
-                    [error shouldBeNil];
-                    [[theValue([results count]) should] equal:theValue(1)];
-                    NSManagedObject *theDude = [results objectAtIndex:0];
-                    [[[theDude valueForKey:@"first_name"] should] equal:@"the"];
-                }];
-            });
-            
-            it(@"updates the object", ^{
-                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                [aPerson setValue:@"matt" forKey:@"first_name"];
-                [aPerson setValue:@"StackMob" forKey:@"company"];
-                [[theValue([[moc updatedObjects] count]) should] beGreaterThan:theValue(0)];
-                [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-                    [error shouldBeNil]; 
-                }];
-            });
-            describe(@"after sending a request for a field that doesn't exist", ^{
-                __block NSFetchRequest *theRequest = nil;
-                beforeEach(^{
-                    [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"not_a_field = 'hello'"];
-                    theRequest = [SMCoreDataIntegrationTestHelpers makeFavoriteFetchRequest:predicate context:moc];
-                });
-                it(@"the fetch request should fail, and the error should contain the info", ^{
-                    [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                    __block NSArray *results = nil;
-                    [moc performBlockAndWait:^{
-                        NSError *__autoreleasing error = nil;
-                        results = [moc executeFetchRequest:theRequest error:&error];
-                        [error shouldNotBeNil];
-                    }];
-                    [results shouldBeNil];
-                });
-            });
-            describe(@"after trying inserting an object to a schema with permission Allow any logged in user when we are not logged in", ^{
-                __block NSManagedObject *newManagedObject = nil;
-                beforeEach(^{
-                    newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Oauth2test" inManagedObjectContext:moc];
-                    [newManagedObject setValue:@"fail" forKey:@"name"];
-                    [newManagedObject setValue:[newManagedObject assignObjectId] forKey:[newManagedObject primaryKeyField]];
-                });
-                it(@"a call to save: should fail, and the error should contain the info", ^{
-                    [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-                    __block BOOL saveSuccess = NO;
-                    
-                    NSError *anError = nil;
-                    saveSuccess = [moc saveAndWait:&anError];
-                    [anError shouldNotBeNil];
-                    [[theValue(saveSuccess) should] beNo];
-                });
-            });
+        it(@"the fetch request should fail, and the error should contain the info", ^{
+            [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+            __block NSArray *results = nil;
+            NSError *error = nil;
+            results = [testProperties.moc executeFetchRequestAndWait:theRequest error:&error];
+            [error shouldNotBeNil];
+            [results shouldBeNil];
         });
     });
 });
 
+describe(@"inserting to a schema with permission Allow any logged in user when we are not logged in", ^{
+    __block NSManagedObject *newManagedObject = nil;
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    it(@"a call to save: should fail, and the error should contain the info", ^{
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Oauth2test" inManagedObjectContext:testProperties.moc];
+        [newManagedObject setValue:@"fail" forKey:@"name"];
+        [newManagedObject setValue:[newManagedObject assignObjectId] forKey:[newManagedObject primaryKeyField]];
+        
+        __block BOOL saveSuccess = NO;
+        NSError *anError = nil;
+        saveSuccess = [testProperties.moc saveAndWait:&anError];
+        [anError shouldNotBeNil];
+        [[theValue(saveSuccess) should] beNo];
+    });
+});
 
 SPEC_END
