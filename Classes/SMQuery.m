@@ -138,6 +138,15 @@
     self.requestParameters = [NSDictionary dictionaryWithDictionary:requestParametersCopy];
 }
 
+- (void)where:(NSString *)field isNotIn:(NSArray *)valuesArray
+{
+    NSMutableDictionary *requestParametersCopy = [self.requestParameters mutableCopy];
+    NSString *possibleValues = [valuesArray componentsJoinedByString:@","];
+    [requestParametersCopy setObject:possibleValues
+                              forKey:CONCAT(field, @"[nin]")];
+    self.requestParameters = [NSDictionary dictionaryWithDictionary:requestParametersCopy];
+}
+
 - (void)where:(NSString *)field isWithin:(CLLocationDistance)miles milesOf:(CLLocationCoordinate2D)point
 {
     NSMutableDictionary *requestParametersCopy = [self.requestParameters mutableCopy];
