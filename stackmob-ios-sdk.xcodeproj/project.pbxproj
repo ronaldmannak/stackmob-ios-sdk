@@ -165,6 +165,7 @@
 		DE227A36175D5898009365C1 /* QueryTestsWithPermissionsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1BDE2D1682BFEC009282BA /* QueryTestsWithPermissionsSpec.m */; };
 		DE227A37175D589E009365C1 /* SMPushClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9ED78164B1D43006B7326 /* SMPushClientIntegrationSpec.m */; };
 		DE227A38175D58A1009365C1 /* SMNetworkReachabilitySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9EEBE164B4F24006B7326 /* SMNetworkReachabilitySpec.m */; };
+		DE227A39175D5B14009365C1 /* AFHTTPRequestOperation+RemoveContentType.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEC253471750303F0023BEDA /* AFHTTPRequestOperation+RemoveContentType.h */; };
 		DE2EA1A116CC7304001FA904 /* SMGeoPoint.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D83529416C5ACD000814C71 /* SMGeoPoint.h */; };
 		DE2EA1A216CC7304001FA904 /* SMLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D8352A716C8512400814C71 /* SMLocationManager.h */; };
 		DE2EA1A316CC7304001FA904 /* Common.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEEDC32616C984B4008B1CC2 /* Common.h */; };
@@ -298,6 +299,7 @@
 			dstPath = "~/Desktop/Headers";
 			dstSubfolderSpec = 0;
 			files = (
+				DE227A39175D5B14009365C1 /* AFHTTPRequestOperation+RemoveContentType.h in Copy Headers */,
 				DE9613AC173DC992004F9C32 /* FileManagement.h in Copy Headers */,
 				DE9613AD173DC992004F9C32 /* SMSyncedObject.h in Copy Headers */,
 				DE2EA1A116CC7304001FA904 /* SMGeoPoint.h in Copy Headers */,
