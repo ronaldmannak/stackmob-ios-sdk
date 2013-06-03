@@ -159,6 +159,16 @@
 - (void)where:(NSString *)field isIn:(NSArray *)valuesArray;
 
 /**
+ Add the query criteria: field is not in the array valuesArray.
+ 
+ @param field The field in the StackMob schema that is to be compared.
+ @param valuesArray An array containing values with which to compare `field`.
+ 
+ @since Available in iOS SDK 2.0.0 and later.
+ */
+- (void)where:(NSString *)field isNotIn:(NSArray *)valuesArray;
+
+/**
  Add the query criteria: `field`'s location is within `miles` of `point`.
  
  @note StackMob will generate a field `distance` and insert it into the response. This field is the distance between the query `field`'s location and `point`.

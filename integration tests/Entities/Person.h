@@ -2,7 +2,7 @@
 //  Person.h
 //  stackmob-ios-sdk
 //
-//  Created by Matt Vaznaian on 3/18/13.
+//  Created by Matt Vaznaian on 5/29/13.
 //  Copyright (c) 2013 StackMob. All rights reserved.
 //
 
@@ -21,6 +21,7 @@
 @property (nonatomic, retain) NSSet *favorites;
 @property (nonatomic, retain) NSSet *interests;
 @property (nonatomic, retain) Superpower *superpower;
+@property (nonatomic, retain) NSSet *todos;
 @end
 
 @interface Person (CoreDataGeneratedAccessors)
@@ -29,10 +30,12 @@
 - (void)removeFavoritesObject:(NSManagedObject *)value;
 - (void)addFavorites:(NSSet *)values;
 - (void)removeFavorites:(NSSet *)values;
-
 - (void)addInterestsObject:(NSManagedObject *)value;
 - (void)removeInterestsObject:(NSManagedObject *)value;
 - (void)addInterests:(NSSet *)values;
 - (void)removeInterests:(NSSet *)values;
-
+- (void)addTodosObject:(NSManagedObject *)value;
+- (void)removeTodosObject:(NSManagedObject *)value;
+- (void)addTodos:(NSSet *)values;
+- (void)removeTodos:(NSSet *)values;
 @end
