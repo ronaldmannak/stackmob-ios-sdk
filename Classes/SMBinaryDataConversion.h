@@ -31,14 +31,12 @@
  
     [newManagedObject setValue:picData forKey:@"pic"];
  
-    NSError *error = nil;
-    // context is your managed object context
-    if (![context save:&error]) {
-    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-    abort();
-    } else {
-    [context refreshObject:newManagedObject mergeChanges:YES];
-    }
+    NSManagedObjectContext *context = [[[SMClient defaultClient] coreDataStore] contextForCurrentThread];
+    [context saveOnSuccess:^{
+        [context refreshObject:newManagedObject mergeChanges:YES];
+    } onFailure:^(NSError *error) {
+        // Error
+    }];
  
  `[newManagedObject valueForKey:@"pic"]` now returns the s3 url for the data.
  
