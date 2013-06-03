@@ -24,6 +24,9 @@
 #import "AFHTTPRequestOperation+RemoveContentType.h"
 
 #define SM_VENDOR_SPECIFIC_JSON @"application/vnd.stackmob+json"
+#define SM_JSON @"application/json"
+#define SM_TEXT_PLAIN @"text/plain"
+#define SM_OCTET_STREAM @"application/octet-stream"
 
 @implementation SMDataStore (SpecialCondition)
 
@@ -176,7 +179,6 @@
             });
         }
     } else {
-        //__block SMRequestOptions *options = [SMRequestOptions options];
         [options setTryRefreshToken:NO];
         __block dispatch_queue_t newQueueForRefresh = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         [self.session refreshTokenWithSuccessCallbackQueue:newQueueForRefresh failureCallbackQueue:newQueueForRefresh onSuccess:^(NSDictionary *userObject) {
@@ -214,7 +216,6 @@
             });
         }
     } else {
-        //__block SMRequestOptions *options = [SMRequestOptions options];
         [options setTryRefreshToken:NO];
         __block dispatch_queue_t newQueueForRefresh = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
         [self.session refreshTokenWithSuccessCallbackQueue:newQueueForRefresh failureCallbackQueue:newQueueForRefresh onSuccess:^(NSDictionary *userObject) {
@@ -374,26 +375,6 @@
 
 - (void)queueCustomCodeRequest:(NSURLRequest *)request customCodeRequestInstance:(SMCustomCodeRequest *)customCodeRequest options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMFullResponseSuccessBlock)onSuccess onFailure:(SMFullResponseFailureBlock)onFailure
 {
-    if (options.headers && [options.headers count] > 0) {
-        // Enumerate through options and add them to the request header.
-        NSMutableURLRequest *tempRequest = [request mutableCopy];
-        [options.headers enumerateKeysAndObjectsUsingBlock:^(id headerField, id headerValue, BOOL *stop) {
-            
-            // Error checks for functionality not supported
-            if ([headerField isEqualToString:@"X-StackMob-Expand"]) {
-                if ([[request HTTPMethod] isEqualToString:@"POST"] || [[request HTTPMethod] isEqualToString:@"PUT"]) {
-                    [NSException raise:SMExceptionIncompatibleObject format:@"Expand depth is not supported for creates or updates.  Please check your requests and edit accordingly."];
-                }
-            }
-            
-            [tempRequest setValue:headerValue forHTTPHeaderField:headerField];
-        }];
-        request = tempRequest;
-        
-        // Set the headers dictionary to empty, to prevent unnecessary enumeration during recursion.
-        options.headers = [NSDictionary dictionary];
-    }
-    
     if ([self.session eligibleForTokenRefresh:options]) {
         [self refreshAndRetryCustomCode:request customCodeRequestInstance:customCodeRequest originalError:nil requestSuccessCallbackQueue:successCallbackQueue requestFailureCallbackQueue:failureCallbackQueue options:options onSuccess:onSuccess onFailure:onFailure];
     }
@@ -406,7 +387,7 @@
             }
             
             NSString *contentType = [[[operation response] allHeaderFields] objectForKey:@"Content-Type"];
-            if ([contentType rangeOfString:SM_VENDOR_SPECIFIC_JSON].location != NSNotFound) {
+            if ([contentType rangeOfString:SM_VENDOR_SPECIFIC_JSON].location != NSNotFound || [contentType rangeOfString:SM_JSON].location != NSNotFound) {
                 id returnValue = nil;
                 NSError *error = nil;
                 returnValue = [NSJSONSerialization JSONObjectWithData:responseObject options:kNilOptions error:&error];
@@ -418,6 +399,12 @@
                     onSuccess(operation.request, operation.response, returnValue);
                 }
                 
+            } else if ([contentType rangeOfString:SM_TEXT_PLAIN].location != NSNotFound) {
+                if (onSuccess) {
+                    NSString *returnValue = nil;
+                    returnValue = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+                    onSuccess(operation.request, operation.response, returnValue);
+                }
             } else if (onSuccess) {
                 onSuccess(operation.request, operation.response, responseObject);
             }
@@ -464,10 +451,11 @@
         
         AFHTTPRequestOperation *op = [[self.session oauthClientWithHTTPS:options.isSecure] HTTPRequestOperationWithRequest:request success:successBlock failure:retryBlock];
         
+        NSSet *whitelistedContentTypes = [NSSet setWithObjects:SM_VENDOR_SPECIFIC_JSON, SM_JSON, SM_TEXT_PLAIN, SM_OCTET_STREAM, nil];
         if (customCodeRequest.responseContentType) {
-            [AFHTTPRequestOperation addAcceptableContentTypes:[NSSet setWithObjects:SM_VENDOR_SPECIFIC_JSON,customCodeRequest.responseContentType, nil]];
+            [AFHTTPRequestOperation addAcceptableContentTypes:[whitelistedContentTypes setByAddingObject:customCodeRequest.responseContentType]];
         } else {
-            [AFHTTPRequestOperation addAcceptableContentTypes:[NSSet setWithObject:SM_VENDOR_SPECIFIC_JSON]];
+            [AFHTTPRequestOperation addAcceptableContentTypes:whitelistedContentTypes];
         }
         
         if (successCallbackQueue) {
