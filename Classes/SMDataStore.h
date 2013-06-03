@@ -488,9 +488,17 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMCountSu
 /**
  Calls <performCustomCodeRequest:options:onSuccess:onFailure:> with `[SMRequestOptions options]` for the parameter `options`.
  
+ You can expect the **responseBody** parameter of the success callback to be in the form of:
+ 
+ * Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.
+ * A string (NSString) if the content type of the response is text/plain.
+ * Raw data (NSData) for any other response content type.
+ 
+ To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.
+ 
  @param customCodeRequest The request to execute.
- @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)</i>. A block object to call on the main thread upon success.
- @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.
+ @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id responseBody)</i>. A block object to call on the main thread upon success.
+ @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
@@ -498,12 +506,18 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMCountSu
 /**
  Execute a custom code method on StackMob.
  
- See [Getting Started With Custom Code](https://stackmob.com/devcenter/docs/Getting-Started:-Custom-Code-SDK) for more information.
+ You can expect the **responseBody** parameter of the success callback to be in the form of:
+ 
+ * Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.
+ * A string (NSString) if the content type of the response is text/plain.
+ * Raw data (NSData) for any other response content type.
+ 
+ To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.
  
  @param customCodeRequest The request to execute.
  @param options The options for this request.
- @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)</i>. A block object to call on the main thread upon success.
- @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.
+ @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id responseBody)</i>. A block object to call on the main thread upon success.
+ @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
@@ -512,14 +526,20 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMCountSu
 /**
  Execute a custom code method on StackMob.
  
- See [Getting Started With Custom Code](https://stackmob.com/devcenter/docs/Getting-Started:-Custom-Code-SDK) for more information.
+ You can expect the **responseBody** parameter of the success callback to be in the form of:
+ 
+ * Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.
+ * A string (NSString) if the content type of the response is text/plain.
+ * Raw data (NSData) for any other response content type.
+ 
+ To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.
  
  @param customCodeRequest The request to execute.
  @param options The options for this request.
  @param successCallbackQueue The dispatch queue used to execute the success block. If nil is passed, the main queue is used.
  @param failureCallbackQueue The dispatch queue used to execute the failure block. If nil is passed, the main queue is used.
- @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)</i>. A block object to call on the successCallbackQueue upon success.
- @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)</i>. A block object to call on the failureCallbackQueue upon failure.
+ @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id responseBody)</i>. A block object to call on the successCallbackQueue upon success.
+ @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody)</i>. A block object to call on the failureCallbackQueue upon failure.
  
  @since Available in iOS SDK 1.2.0 and later.
  */
@@ -532,8 +552,8 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMCountSu
  
  @param request The request to execute.
  @param options The options for this request.
- @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)</i>. A block object to call on the main thread upon success.
- @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.
+ @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id responseBody)</i>. A block object to call on the main thread upon success.
+ @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
@@ -548,8 +568,8 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMCountSu
  @param options The options for this request.
  @param successCallbackQueue The dispatch queue used to execute the success block. If nil is passed, the main queue is used.
  @param failureCallbackQueue The dispatch queue used to execute the failure block. If nil is passed, the main queue is used.
- @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)</i>. A block object to call on the successCallbackQueue upon success.
- @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)</i>. A block object to call on the failureCallbackQueue upon failure.
+ @param successBlock <i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest *request, NSHTTPURLResponse *response, id responseBody)</i>. A block object to call on the successCallbackQueue upon success.
+ @param failureBlock <i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody  )</i>. A block object to call on the failureCallbackQueue upon failure.
  
  @since Available in iOS SDK 1.2.0 and later.
  */
