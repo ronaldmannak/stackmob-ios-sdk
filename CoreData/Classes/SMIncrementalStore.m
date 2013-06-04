@@ -35,6 +35,7 @@
 NSString *const SMIncrementalStoreType = @"SMIncrementalStore";
 NSString *const SM_DataStoreKey = @"SM_DataStoreKey";
 NSString *const StackMobRelationsKey = @"X-StackMob-Relations";
+NSString *const StackMobFieldTypesKey = @"X-StackMob-FieldTypes";
 NSString *const SerializedDictKey = @"SerializedDict";
 
 NSString *const SMInsertedObjectFailures = @"SMInsertedObjectFailures";
@@ -587,11 +588,21 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         if (!*stop) {
             if (SM_CORE_DATA_DEBUG) { DLog(@"Serialized object dictionary: %@", truncateOutputIfExceedsMaxLogLength(serializedObjDict)) }
-            // add relationship headers if needed
-            NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
-            if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
-                [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
-                [options setHeaders:headerDict];
+            
+            if ([self.coreDataStore.session.regularOAuthClient.version isEqualToString:@"0"]) {
+                
+                // Add relationship and field type headers if needed, only in dev environment
+                NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
+                if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
+                    [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
+                }
+                if ([serializedObjDict objectForKey:StackMobFieldTypesKey]) {
+                    [headerDict setObject:[serializedObjDict objectForKey:StackMobFieldTypesKey] forKey:StackMobFieldTypesKey];
+                }
+                
+                if ([headerDict count] > 0) {
+                    [options setHeaders:headerDict];
+                }
             }
             
             dispatch_group_enter(callbackGroup);
@@ -805,17 +816,21 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // if there are relationships present in the update, send as a POST
         AFJSONRequestOperation *op = nil;
-        if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
+        
+        if ([self.coreDataStore.session.regularOAuthClient.version isEqualToString:@"0"] && ([serializedObjDict objectForKey:StackMobRelationsKey] || [serializedObjDict objectForKey:StackMobFieldTypesKey])) {
             
-            // add relationship headers if needed
+            // Add relationship and field type headers if needed, only in dev environment
             NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
             if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
                 [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
-                [options setHeaders:headerDict];
+            }
+            if ([serializedObjDict objectForKey:StackMobFieldTypesKey]) {
+                [headerDict setObject:[serializedObjDict objectForKey:StackMobFieldTypesKey] forKey:StackMobFieldTypesKey];
             }
             
-            op = [[self coreDataStore] postOperationForObject:[serializedObjDict objectForKey:SerializedDictKey] inSchema:schemaName options:options successCallbackQueue:queue failureCallbackQueue:queue onSuccess:operationSuccesBlock onFailure:operationFailureBlock];
+            [options setHeaders:headerDict];
             
+            op = [[self coreDataStore] postOperationForObject:[serializedObjDict objectForKey:SerializedDictKey] inSchema:schemaName options:options successCallbackQueue:queue failureCallbackQueue:queue onSuccess:operationSuccesBlock onFailure:operationFailureBlock];
             
         } else {
             

@@ -75,7 +75,8 @@
 - (NSDictionary *)SMDictionarySerialization:(BOOL)serializeFullObjects sendLocalTimestamps:(BOOL)sendLocalTimestamps
 {
     NSMutableArray *arrayOfRelationshipHeaders = [NSMutableArray array];
-    NSMutableDictionary *contentsOfSerializedObject = [NSMutableDictionary dictionaryWithObject:[self SMDictionarySerializationByTraversingRelationshipsExcludingObjects:nil entities:nil relationshipHeaderValues:&arrayOfRelationshipHeaders relationshipKeyPath:nil serializeFullObjects:serializeFullObjects sendLocalTimestamps:sendLocalTimestamps] forKey:@"SerializedDict"];
+    NSMutableArray *arrayOfFieldTypeHeaders = [NSMutableArray array];
+    NSMutableDictionary *contentsOfSerializedObject = [NSMutableDictionary dictionaryWithObject:[self SMDictionarySerializationByTraversingRelationshipsExcludingObjects:nil entities:nil relationshipHeaderValues:&arrayOfRelationshipHeaders fieldTypeHeaderValues:&arrayOfFieldTypeHeaders relationshipKeyPath:nil serializeFullObjects:serializeFullObjects sendLocalTimestamps:sendLocalTimestamps] forKey:@"SerializedDict"];
     
     if ([arrayOfRelationshipHeaders count] > 0) {
         
@@ -83,11 +84,16 @@
         [contentsOfSerializedObject setObject:[arrayOfRelationshipHeaders componentsJoinedByString:@"&"] forKey:@"X-StackMob-Relations"];
     }
     
+    if ([arrayOfFieldTypeHeaders count] > 0) {
+        // add array joined by & to contentsDict
+        [contentsOfSerializedObject setObject:[arrayOfFieldTypeHeaders componentsJoinedByString:@"&"] forKey:@"X-StackMob-FieldTypes"];
+    }
+    
     return contentsOfSerializedObject;
     
 }
 
-- (NSDictionary *)SMDictionarySerializationByTraversingRelationshipsExcludingObjects:(NSMutableSet *)processedObjects entities:(NSMutableSet *)processedEntities relationshipHeaderValues:(NSMutableArray *__autoreleasing *)values relationshipKeyPath:(NSString *)keyPath serializeFullObjects:(BOOL)serializeFullObjects sendLocalTimestamps:(BOOL)sendLocalTimestamps
+- (NSDictionary *)SMDictionarySerializationByTraversingRelationshipsExcludingObjects:(NSMutableSet *)processedObjects entities:(NSMutableSet *)processedEntities relationshipHeaderValues:(NSMutableArray *__autoreleasing *)relationshipHeaderValues fieldTypeHeaderValues:(NSMutableArray *__autoreleasing *)fieldTypeHeaderValues relationshipKeyPath:(NSString *)keyPath serializeFullObjects:(BOOL)serializeFullObjects sendLocalTimestamps:(BOOL)sendLocalTimestamps
 {
     if (processedObjects == nil) {
         processedObjects = [NSMutableSet set];
@@ -110,23 +116,23 @@
         if ([property isKindOfClass:[NSAttributeDescription class]]) {
             NSAttributeDescription *attributeDescription = (NSAttributeDescription *)property;
             if (attributeDescription.attributeType != NSUndefinedAttributeType) {
+                NSString *propertyFieldName = [selfEntity SMFieldNameForProperty:property];
                 if (attributeDescription.attributeType == NSDateAttributeType) {
                     if (propertyValue != nil && propertyValue != [NSNull null]) {
                         NSDate *dateValue = propertyValue;
                         long double convertedDate = (long double)[dateValue timeIntervalSince1970] * 1000.0000;
-                        //unsigned long long convertedDate = (unsigned long long)[dateValue timeIntervalSince1970] * 1000;
                         NSNumber *numberToSet = [NSNumber numberWithUnsignedLongLong:convertedDate];
-                        [objectDictionary setObject:numberToSet forKey:[selfEntity SMFieldNameForProperty:property]];
+                        [objectDictionary setObject:numberToSet forKey:propertyFieldName];
                     }
                 } else if (attributeDescription.attributeType == NSBooleanAttributeType) {
                     // make sure that boolean values are serialized as true or false
                     id value = propertyValue;
                     if (value != nil) {
                         if ([value boolValue]) {
-                            [objectDictionary setObject:[NSNumber numberWithBool:YES] forKey:[selfEntity SMFieldNameForProperty:property]];
+                            [objectDictionary setObject:[NSNumber numberWithBool:YES] forKey:propertyFieldName];
                         }
                         else {
-                            [objectDictionary setObject:[NSNumber numberWithBool:NO] forKey:[selfEntity SMFieldNameForProperty:property]];
+                            [objectDictionary setObject:[NSNumber numberWithBool:NO] forKey:propertyFieldName];
                         }
                     }
                 }  else if (attributeDescription.attributeType == NSTransformableAttributeType) {
@@ -134,12 +140,16 @@
                     // make sure geopoint values are serialized as dictionaries
                     NSData *data = propertyValue;
                     NSDictionary *geoDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-                    [objectDictionary setObject:geoDictionary forKey:[selfEntity SMFieldNameForProperty:property]];
+                    [objectDictionary setObject:geoDictionary forKey:propertyFieldName];
+                    
+                    NSString *fieldKeyPath = keyPath ? [NSString stringWithFormat:@"%@.%@", keyPath, propertyFieldName] : propertyFieldName;
+                    [*fieldTypeHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", fieldKeyPath, @"geopoint"]];
+                    
                     
                 } else {
                     id value = propertyValue;
                     if (value != nil) {
-                        [objectDictionary setObject:value forKey:[selfEntity SMFieldNameForProperty:property]];
+                        [objectDictionary setObject:value forKey:propertyFieldName];
                     }
                 }
             }
@@ -165,7 +175,7 @@
                     }
                     [relationshipKeyPath appendString:[selfEntity SMFieldNameForProperty:relationship]];
                     
-                    [*values addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
+                    [*relationshipHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
                 }
                 [objectDictionary setObject:relatedObjectDictionaries forKey:[selfEntity SMFieldNameForProperty:property]];
             } else {
@@ -180,7 +190,7 @@
                     }
                     [relationshipKeyPath appendString:[selfEntity SMFieldNameForProperty:relationship]];
                     
-                    [*values addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
+                    [*relationshipHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
                     
                     NSPropertyDescription *primaryKeyProperty = [[[relationship destinationEntity] propertiesByName] objectForKey:[propertyValue primaryKeyField]];
                     [objectDictionary setObject:[NSDictionary dictionaryWithObject:[propertyValue SMObjectId] forKey:[[relationship destinationEntity] SMFieldNameForProperty:primaryKeyProperty]] forKey:[selfEntity SMFieldNameForProperty:property]];
@@ -192,9 +202,9 @@
                     }
                     [relationshipKeyPath appendString:[selfEntity SMFieldNameForProperty:relationship]];
                     
-                    [*values addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
+                    [*relationshipHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", relationshipKeyPath, [[relationship destinationEntity] SMSchema]]];
                     
-                    [objectDictionary setObject:[propertyValue SMDictionarySerializationByTraversingRelationshipsExcludingObjects:processedObjects entities:processedEntities relationshipHeaderValues:values relationshipKeyPath:relationshipKeyPath serializeFullObjects:serializeFullObjects sendLocalTimestamps:sendLocalTimestamps] forKey:[selfEntity SMFieldNameForProperty:property]];
+                    [objectDictionary setObject:[propertyValue SMDictionarySerializationByTraversingRelationshipsExcludingObjects:processedObjects entities:processedEntities relationshipHeaderValues:relationshipHeaderValues fieldTypeHeaderValues:fieldTypeHeaderValues relationshipKeyPath:relationshipKeyPath serializeFullObjects:serializeFullObjects sendLocalTimestamps:sendLocalTimestamps] forKey:[selfEntity SMFieldNameForProperty:property]];
                 }
             }
         }
