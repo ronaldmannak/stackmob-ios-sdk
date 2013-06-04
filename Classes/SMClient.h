@@ -72,9 +72,9 @@
  
  Check out the [SMCoreDataStore class](http://stackmob.github.com/stackmob-ios-sdk/Classes/SMCoreDataStore.html) for a list of all methods and functionality for interacting with the Core Data integration.
  
- For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](http://stackmob.github.com/stackmob-ios-sdk/CoreDataSupportSpecs.html).
+ For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](https://developer.stackmob.com/ios-sdk/core-data-guide#SupportSpecifications).
  
- Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](http://stackmob.github.com/stackmob-ios-sdk/index.html\#coding\_practices)!
+ Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](https://developer.stackmob.com/ios-sdk/core-data-guide#CodingPractices)!
  
  ## The User Schema ##
  
