@@ -54,4 +54,17 @@
     return range.location == NSNotFound;
 }
 
++ (BOOL)dataContainsURL:(NSData *)data
+{
+    NSString *stringFromData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    NSRange range = [stringFromData rangeOfString:@"s3.amazonaws.com"];
+    return range.location != NSNotFound;
+}
+
++ (NSURL *)URLFromData:(NSData *)data
+{
+    NSString *stringFromData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return [[NSURL alloc] initWithString:stringFromData];
+}
+
 @end

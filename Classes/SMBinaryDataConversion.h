@@ -102,5 +102,8 @@
 + (BOOL)stringContainsURL:(NSString *)value;
 
 
++ (BOOL)dataContainsURL:(NSData *)data;
+
++ (NSURL *)URLFromData:(NSData *)data;
 
 @end

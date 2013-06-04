@@ -19,6 +19,7 @@
 #import "SMUserManagedObject.h"
 #import "SMError.h"
 #import "NSEntityDescription+StackMobSerialization.h"
+#import "SMBinaryDataConversion.h"
 
 @implementation NSManagedObject (StackMobSerialization)
 
@@ -146,6 +147,13 @@
                     [*fieldTypeHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", fieldKeyPath, @"geopoint"]];
                     
                     
+                } else if (attributeDescription.attributeType == NSBinaryDataAttributeType) {
+                    NSData *value = propertyValue;
+                    NSString *convertedData = [SMBinaryDataConversion stringForBinaryData:value name:@"myfile" contentType:@"image/png"];
+                    [objectDictionary setObject:convertedData forKey:propertyFieldName];
+                    
+                    NSString *fieldKeyPath = keyPath ? [NSString stringWithFormat:@"%@.%@", keyPath, propertyFieldName] : propertyFieldName;
+                    [*fieldTypeHeaderValues addObject:[NSString stringWithFormat:@"%@=%@", fieldKeyPath, @"binary"]];
                 } else {
                     id value = propertyValue;
                     if (value != nil) {
