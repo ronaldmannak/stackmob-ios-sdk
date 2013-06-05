@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 
-#define SDK_VERSION @"2.0.0beta.1"
+#define SDK_VERSION @"2.0.0"

@@ -587,11 +587,14 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         if (!*stop) {
             if (SM_CORE_DATA_DEBUG) { DLog(@"Serialized object dictionary: %@", truncateOutputIfExceedsMaxLogLength(serializedObjDict)) }
-            // add relationship headers if needed
-            NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
-            if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
-                [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
-                [options setHeaders:headerDict];
+            
+            if ([self.coreDataStore.session.regularOAuthClient.version isEqualToString:@"0"]) {
+                // Add relationship headers if needed
+                NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
+                if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
+                    [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
+                    [options setHeaders:headerDict];
+                }
             }
             
             dispatch_group_enter(callbackGroup);
@@ -807,11 +810,13 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         AFJSONRequestOperation *op = nil;
         if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
             
-            // add relationship headers if needed
-            NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
-            if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
-                [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
-                [options setHeaders:headerDict];
+            if ([self.coreDataStore.session.regularOAuthClient.version isEqualToString:@"0"]) {
+                // Add relationship headers if needed
+                NSMutableDictionary *headerDict = [NSMutableDictionary dictionary];
+                if ([serializedObjDict objectForKey:StackMobRelationsKey]) {
+                    [headerDict setObject:[serializedObjDict objectForKey:StackMobRelationsKey] forKey:StackMobRelationsKey];
+                    [options setHeaders:headerDict];
+                }
             }
             
             op = [[self coreDataStore] postOperationForObject:[serializedObjDict objectForKey:SerializedDictKey] inSchema:schemaName options:options successCallbackQueue:queue failureCallbackQueue:queue onSuccess:operationSuccesBlock onFailure:operationFailureBlock];
