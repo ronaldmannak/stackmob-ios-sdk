@@ -577,9 +577,9 @@ describe(@"setExpandDepth", ^{
              }];
         }) should] raiseWithReason:@"Expand depth is not supported for creates or updates.  Please check your requests and edit accordingly."];
     });
-    
-    
 });
+
+
 
 
 SPEC_END
