@@ -72,9 +72,9 @@
  
  Check out the [SMCoreDataStore class](http://stackmob.github.com/stackmob-ios-sdk/Classes/SMCoreDataStore.html) for a list of all methods and functionality for interacting with the Core Data integration.
  
- For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](http://stackmob.github.com/stackmob-ios-sdk/CoreDataSupportSpecs.html).
+ For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](https://developer.stackmob.com/ios-sdk/core-data-guide#SupportSpecifications).
  
- Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](http://stackmob.github.com/stackmob-ios-sdk/index.html\#coding\_practices)!
+ Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](https://developer.stackmob.com/ios-sdk/core-data-guide#CodingPractices)!
  
  ## The User Schema ##
  
@@ -171,6 +171,13 @@
  */
 @property(nonatomic, readonly, strong) SMUserSession * session;
 
+/**
+ Points to the `networkMonitor` instance of this client's `SMUserSession` instance.
+ 
+ Allows the network monitor interface to be accessed by `[[SMClient defaultClient] networkMonitor];`
+ 
+ @since Available in iOS SDK 2.0.0 and later.
+ */
 @property (nonatomic, readonly, strong) SMNetworkReachability *networkMonitor;
 
 
@@ -406,6 +413,8 @@
  @since Available in iOS SDK 1.4.0 and later.
  */
 - (void)setTokenRefreshFailureBlock:(void (^)(NSError *error, SMFailureBlock originalFailureBlock))block;
+
+- (void)addAcceptableContentTypes:(NSSet *)contentTypes;
 
 #pragma mark Retrieve User
 ///-------------------------------

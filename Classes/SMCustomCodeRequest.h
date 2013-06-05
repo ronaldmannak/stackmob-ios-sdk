@@ -55,6 +55,20 @@
  */
 @property (nonatomic, strong) NSString *httpVerb;
 
+/**
+ Set this property to specify the expected content type for the response of this custom code request.
+ 
+ Use when your custom code method returns a response content type other than the following:
+ 
+ * application/vnd.stackmob+json (StackMob vendor specific)
+ * application/json
+ * text/plain
+ * application/octet-stream
+ 
+ @since Available in iOS SDK 2.0.0 and later.
+ */
+@property (nonatomic, strong) NSString *responseContentType;
+
 ///-------------------------------
 /// @name Initialize
 ///-------------------------------

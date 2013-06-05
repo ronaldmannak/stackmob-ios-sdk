@@ -19,7 +19,6 @@
 #import "SMIntegrationTestHelpers.h"
 #import "SMTestProperties.h"
 
-
 SPEC_BEGIN(SMCoreDataStoreTest)
 
 describe(@"create an instance of SMCoreDataStore from SMClient", ^{
@@ -308,9 +307,27 @@ describe(@"Writing Default Values Offline", ^{
         [[[[results objectAtIndex:0] valueForKey:@"title"] should] equal:@"What!"];
         
         [[theValue([testProperties.cds isDirtyObject:[[results objectAtIndex:0] objectID]]) should] beNo];
-        
     });
 });
 
+describe(@"inserting to a schema with permission Allow any logged in user when we are not logged in", ^{
+    __block NSManagedObject *newManagedObject = nil;
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    it(@"a call to save: should fail, and the error should contain the info", ^{
+        [[testProperties.client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:@"Oauth2test" inManagedObjectContext:testProperties.moc];
+        [newManagedObject setValue:@"fail" forKey:@"name"];
+        [newManagedObject setValue:[newManagedObject assignObjectId] forKey:[newManagedObject primaryKeyField]];
+        
+        __block BOOL saveSuccess = NO;
+        NSError *anError = nil;
+        saveSuccess = [testProperties.moc saveAndWait:&anError];
+        [anError shouldNotBeNil];
+        [[theValue(saveSuccess) should] beNo];
+    });
+});
 
 SPEC_END
