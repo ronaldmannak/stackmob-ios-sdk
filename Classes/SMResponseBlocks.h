@@ -128,14 +128,14 @@ typedef void (^SMCountSuccessBlock)(NSNumber *count);
  @param request The original request in `NSURLRequest` form.
  @param response The response from the server.
  @param error The error, if any.
- @param JSON the JSON result from the response.
+ @param responseBody the body of the response.
  @param options The SMRequestOption instance passed to the request.
  @param successBlock The block to invoke on success.
  @param failureBlock The block to invoke on failure.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-typedef void (^SMFailureRetryBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON, SMRequestOptions *options, SMFullResponseSuccessBlock successBlock, SMFullResponseFailureBlock failureBlock);
+typedef void (^SMFailureRetryBlock)(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id responseBody, SMRequestOptions *options, SMFullResponseSuccessBlock successBlock, SMFullResponseFailureBlock failureBlock);
 
 /**
  Used internally for requests that fail during a core data save.
