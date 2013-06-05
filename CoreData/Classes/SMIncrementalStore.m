@@ -971,7 +971,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     dispatch_group_wait(callbackGroup, DISPATCH_TIME_FOREVER);
     
     if (SM_CACHE_ENABLED && success && [deletedObjectIDs count] > 0) {
-        [self SM_purgeSMManagedObjectIDsFromCache:deletedObjectIDs includeDirtyQueue:NO];
+        success = [self SM_purgeSMManagedObjectIDsFromCache:deletedObjectIDs includeDirtyQueue:NO];
     }
     
 #if !OS_OBJECT_USE_OBJC
