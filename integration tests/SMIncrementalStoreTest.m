@@ -1143,9 +1143,7 @@ describe(@"Delete propagation with Cascade Rule", ^{
         [testProperties.moc deleteObject:person];
         error = nil;
         [testProperties.moc saveAndWait:&error];
-        
-        [NSThread sleepForTimeInterval:3.0];
-        
+                
         lcMapResults = nil;
         lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
         [lcMapResults shouldNotBeNil];

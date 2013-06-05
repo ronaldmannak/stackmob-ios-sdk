@@ -41,7 +41,9 @@ describe(@"updating an object only persists changed fields", ^{
         [person setValue:@"jean" forKey:@"first_name"];
         [person setValue:[person assignObjectId] forKey:[person primaryKeyField]];
         NSDictionary *personDict = [person SMDictionarySerialization:NO sendLocalTimestamps:NO];
-        [[theValue([[[personDict objectForKey:@"SerializedDict"] allKeys] count]) should] equal:theValue(2)];
+        
+        // Add 1 for default values
+        [[theValue([[[personDict objectForKey:@"SerializedDict"] allKeys] count]) should] equal:theValue(3)];
         
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             [error shouldBeNil];
@@ -60,7 +62,9 @@ describe(@"updating an object only persists changed fields", ^{
         NSDictionary *personDict = [person SMDictionarySerialization:NO sendLocalTimestamps:NO];
         [[[personDict objectForKey:@"SerializedDict"] objectForKey:@"first_name"] shouldNotBeNil];
         [[[personDict objectForKey:@"SerializedDict"] objectForKey:@"person_id"] shouldNotBeNil];
-        [[theValue([[[personDict objectForKey:@"SerializedDict"] allKeys] count]) should] equal:theValue(2)];
+        
+        // Add 1 for default values
+        [[theValue([[[personDict objectForKey:@"SerializedDict"] allKeys] count]) should] equal:theValue(3)];
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             [error shouldBeNil];
         }];
