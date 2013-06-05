@@ -1144,6 +1144,8 @@ describe(@"Delete propagation with Cascade Rule", ^{
         error = nil;
         [testProperties.moc saveAndWait:&error];
         
+        [NSThread sleepForTimeInterval:3.0];
+        
         lcMapResults = nil;
         lcMapResults = [SMCoreDataIntegrationTestHelpers getContentsOfFileAtPath:[cacheMapURL path]];
         [lcMapResults shouldNotBeNil];
