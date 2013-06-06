@@ -340,7 +340,9 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to false", ^{
             }
             NSLog(@"results is %@", results);
             [[theValue([results count]) should] equal:theValue(1)];
-            [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
+            if ([results count] == 1) {
+                [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
+            }
         }];
     });
      it(@"Will save and read without error after update", ^{

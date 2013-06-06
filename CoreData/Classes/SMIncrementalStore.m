@@ -569,7 +569,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // Create operation for inserted object
         
-        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps];
+        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps forInsert:YES];
         NSString *schemaName = [managedObject SMSchema];
         __block NSString *insertedObjectID = [managedObject SMObjectId];
         
@@ -764,7 +764,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // Create operation for updated object
         
-        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps];
+        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps forInsert:NO];
         NSString *schemaName = [managedObject SMSchema];
         __block NSString *updatedObjectID = [managedObject SMObjectId];
         

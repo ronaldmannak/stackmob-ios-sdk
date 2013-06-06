@@ -262,7 +262,7 @@ describe(@"NSManagedObject_StackMobSerialization", ^{
             describe(@"properties", ^{
                 __block NSDictionary *dictionary = nil;
                 beforeEach(^{
-                    dictionary = [[iMadeYouACookie SMDictionarySerialization:NO sendLocalTimestamps:NO] objectForKey:@"SerializedDict"];
+                    dictionary = [[iMadeYouACookie SMDictionarySerialization:NO sendLocalTimestamps:NO forInsert:YES] objectForKey:@"SerializedDict"];
                 });
                 /*
                 it(@"includes nil properties", ^{
@@ -279,7 +279,7 @@ describe(@"NSManagedObject_StackMobSerialization", ^{
             describe(@"relationships", ^{
                 __block NSDictionary *dictionary = nil;
                 beforeEach(^{
-                    dictionary = [[iMadeYouACookie SMDictionarySerialization:NO sendLocalTimestamps:NO] objectForKey:@"SerializedDict"];
+                    dictionary = [[iMadeYouACookie SMDictionarySerialization:NO sendLocalTimestamps:NO forInsert:YES] objectForKey:@"SerializedDict"];
                 });
                 /*
                 it(@"includes nil relationships", ^{
@@ -289,7 +289,7 @@ describe(@"NSManagedObject_StackMobSerialization", ^{
                 describe(@"circular relationships", ^{
                     it(@"survives circular references", ^{
                         [[[[[[hooman valueForKey:@"lolcats"] anyObject] valueForKey:@"photo"] valueForKey:@"photographer"] should] equal:hooman];
-                        [[hooman SMDictionarySerialization:NO sendLocalTimestamps:NO] shouldNotBeNil];
+                        [[hooman SMDictionarySerialization:NO sendLocalTimestamps:NO forInsert:YES] shouldNotBeNil];
                     });
                 });
             });
@@ -408,7 +408,7 @@ describe(@"sendLocalTimestamps", ^{
         [todo setValue:[NSDate date] forKey:@"createddate"];
         [todo setValue:[NSDate date] forKey:@"lastmoddate"];
         
-        NSDictionary *serializedDict = [todo SMDictionarySerialization:YES sendLocalTimestamps:NO];
+        NSDictionary *serializedDict = [todo SMDictionarySerialization:YES sendLocalTimestamps:NO forInsert:YES];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"createddate"]) should] equal:theValue(NSNotFound)];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"lastmoddate"]) should] equal:theValue(NSNotFound)];
     });
@@ -419,7 +419,7 @@ describe(@"sendLocalTimestamps", ^{
         [todo setValue:[NSDate date] forKey:@"createddate"];
         [todo setValue:[NSDate date] forKey:@"lastmoddate"];
         
-        NSDictionary *serializedDict = [todo SMDictionarySerialization:YES sendLocalTimestamps:YES];
+        NSDictionary *serializedDict = [todo SMDictionarySerialization:YES sendLocalTimestamps:YES forInsert:YES];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"createddate"]) shouldNot] equal:theValue(NSNotFound)];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"lastmoddate"]) shouldNot] equal:theValue(NSNotFound)];
     });
@@ -431,7 +431,7 @@ describe(@"sendLocalTimestamps", ^{
         [todo setValue:[NSDate date] forKey:@"createddate"];
         [todo setValue:[NSDate date] forKey:@"lastmoddate"];
         
-        NSDictionary *serializedDict = [todo SMDictionarySerialization:NO sendLocalTimestamps:NO];
+        NSDictionary *serializedDict = [todo SMDictionarySerialization:NO sendLocalTimestamps:NO forInsert:YES];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"createddate"]) shouldNot] equal:theValue(NSNotFound)];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"lastmoddate"]) shouldNot] equal:theValue(NSNotFound)];
     });
@@ -442,7 +442,7 @@ describe(@"sendLocalTimestamps", ^{
         [todo setValue:[NSDate date] forKey:@"createddate"];
         [todo setValue:[NSDate date] forKey:@"lastmoddate"];
         
-        NSDictionary *serializedDict = [todo SMDictionarySerialization:NO sendLocalTimestamps:YES];
+        NSDictionary *serializedDict = [todo SMDictionarySerialization:NO sendLocalTimestamps:YES forInsert:YES];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"createddate"]) shouldNot] equal:theValue(NSNotFound)];
         [[theValue([[[serializedDict objectForKey:@"SerializedDict"] allKeys] indexOfObject:@"lastmoddate"]) shouldNot] equal:theValue(NSNotFound)];
     });

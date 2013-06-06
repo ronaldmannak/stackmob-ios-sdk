@@ -222,6 +222,132 @@ describe(@"Writing Default Values Online, Strings", ^{
         
     });
 });
+ 
+describe(@"Writing Default Values Online with Update, Integers", ^{
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [testProperties.moc deleteObject:[results objectAtIndex:0]];
+            error = nil;
+            [testProperties.moc saveAndWait:&error];
+        }
+    });
+    it(@"Works when online", ^{
+        
+        // Insert 
+        NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [todo setValue:@"1234" forKey:[todo primaryKeyField]];
+        [todo setValue:[NSNumber numberWithInt:13] forKey:@"armor_class"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [[[[results objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        }
+        
+        // Update
+        
+        NSManagedObject *fetchedTodo = [results objectAtIndex:0];
+        [fetchedTodo setValue:@"bobby" forKey:@"first_name"];
+        
+        error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        // Fetch should still return original armor class, default value should not overwrite
+        
+        NSFetchRequest *fetch2 = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch2 setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        error = nil;
+        NSArray *results2 = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results2 should] haveCountOf:1];
+        
+        if ([results2 count] == 1) {
+            [[[[results2 objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        }
+        
+    });
+});
+
+describe(@"Writing Default Values Online with Update, Boolean", ^{
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [testProperties.moc deleteObject:[results objectAtIndex:0]];
+            error = nil;
+            [testProperties.moc saveAndWait:&error];
+        }
+    });
+    it(@"Works when online", ^{
+        
+        // Insert
+        NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:testProperties.moc];
+        [todo setValue:@"1234" forKey:[todo primaryKeyField]];
+        [todo setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
+        }
+        
+        // Update
+        
+        NSManagedObject *fetchedTodo = [results objectAtIndex:0];
+        [fetchedTodo setValue:@"bobby" forKey:@"name"];
+        
+        error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        // Fetch should still return original done value, default value should not overwrite
+        
+        NSFetchRequest *fetch2 = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch2 setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        error = nil;
+        NSArray *results2 = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results2 should] haveCountOf:1];
+        
+        if ([results2 count] == 1) {
+            [[[[results2 objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
+        }
+        
+    });
+});
 
 describe(@"Writing Default Values Online, Integers", ^{
     __block SMTestProperties *testProperties = nil;
@@ -476,6 +602,118 @@ describe(@"Writing Default Values Offline, Integer", ^{
         [[theValue([testProperties.cds isDirtyObject:[[results objectAtIndex:0] objectID]]) should] beNo];
     });
 });
+
+describe(@"Writing Default Values Offline with Update, Integer", ^{
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        SM_CACHE_ENABLED = YES;
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [testProperties.moc deleteObject:[results objectAtIndex:0]];
+            error = nil;
+            [testProperties.moc saveAndWait:&error];
+        }
+        SM_CACHE_ENABLED = NO;
+    });
+    it(@"Works before and after sync", ^{
+        
+        NSArray *persistentStores = [testProperties.cds.persistentStoreCoordinator persistentStores];
+        SMIncrementalStore *store = [persistentStores lastObject];
+        [store stub:@selector(SM_checkNetworkAvailability) andReturn:theValue(NO)];
+        
+        NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Person" inManagedObjectContext:testProperties.moc];
+        [todo setValue:@"1234" forKey:[todo primaryKeyField]];
+        [todo setValue:[NSNumber numberWithInt:13] forKey:@"armor_class"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        [[theValue([testProperties.cds isDirtyObject:[todo objectID]]) should] beYes];
+        
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        error = nil;
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [[[[results objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        }
+        
+        // Update
+        NSManagedObject *person = [results objectAtIndex:0];
+        [person setValue:@"bobby" forKey:@"first_name"];
+        
+        error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        [[theValue([testProperties.cds isDirtyObject:[todo objectID]]) should] beYes];
+        
+        NSFetchRequest *fetch2 = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        [fetch2 setPredicate:[NSPredicate predicateWithFormat:@"person_id == '1234'"]];
+        error = nil;
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSArray *results2 = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results2 should] haveCountOf:1];
+        
+        if ([results2 count] == 1) {
+            [[[[results2 objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        }
+        
+        [store stub:@selector(SM_checkNetworkAvailability) andReturn:theValue(YES)];
+        
+        
+        // Sync
+        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_group_t group = dispatch_group_create();
+        
+        [testProperties.cds setSyncCallbackQueue:queue];
+        [testProperties.cds setDefaultSMMergePolicy:SMMergePolicyClientWins];
+        [testProperties.cds setSyncCompletionCallback:^(NSArray *objects) {
+            [[objects should] haveCountOf:1];
+            if ([objects count] == 1) {
+                [[theValue([[objects objectAtIndex:0] actionTaken]) should] equal:theValue(SMSyncActionInsertedOnServer)];
+            }
+            dispatch_group_leave(group);
+        }];
+        
+        dispatch_group_enter(group);
+        
+        [testProperties.cds syncWithServer];
+        
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+        
+        // Check cache
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSFetchRequest *cacheFetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        error = nil;
+        results = [testProperties.moc executeFetchRequestAndWait:cacheFetch error:&error];
+        [[results should] haveCountOf:1];
+        [[[[results objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        
+        // Check server
+        [testProperties.cds setCachePolicy:SMCachePolicyTryNetworkOnly];
+        NSFetchRequest *serverFetch = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+        error = nil;
+        results = [testProperties.moc executeFetchRequestAndWait:serverFetch error:&error];
+        [[results should] haveCountOf:1];
+        [[[[results objectAtIndex:0] valueForKey:@"armor_class"] should] equal:theValue(13)];
+        
+        [[theValue([testProperties.cds isDirtyObject:[[results objectAtIndex:0] objectID]]) should] beNo];
+    });
+});
+
 describe(@"Writing Default Values Offline, Boolean", ^{
     __block SMTestProperties *testProperties = nil;
     beforeEach(^{
@@ -559,6 +797,117 @@ describe(@"Writing Default Values Offline, Boolean", ^{
         results = [testProperties.moc executeFetchRequestAndWait:serverFetch error:&error];
         [[results should] haveCountOf:1];
         [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(NO)];
+        
+        [[theValue([testProperties.cds isDirtyObject:[[results objectAtIndex:0] objectID]]) should] beNo];
+    });
+});
+
+describe(@"Writing Default Values Offline with Udpate, Boolean", ^{
+    __block SMTestProperties *testProperties = nil;
+    beforeEach(^{
+        SM_CACHE_ENABLED = YES;
+        testProperties = [[SMTestProperties alloc] init];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        NSError *error = nil;
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [testProperties.moc deleteObject:[results objectAtIndex:0]];
+            error = nil;
+            [testProperties.moc saveAndWait:&error];
+        }
+        SM_CACHE_ENABLED = NO;
+    });
+    it(@"Works before and after sync", ^{
+        
+        NSArray *persistentStores = [testProperties.cds.persistentStoreCoordinator persistentStores];
+        SMIncrementalStore *store = [persistentStores lastObject];
+        [store stub:@selector(SM_checkNetworkAvailability) andReturn:theValue(NO)];
+        
+        NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:testProperties.moc];
+        [todo setValue:@"1234" forKey:[todo primaryKeyField]];
+        [todo setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
+        
+        NSError *error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        [[theValue([testProperties.cds isDirtyObject:[todo objectID]]) should] beYes];
+        
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        error = nil;
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSArray *results = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
+        }
+        
+        // Update
+        
+        NSManagedObject *random = [results objectAtIndex:0];
+        [random setValue:@"bobby" forKey:@"name"];
+        
+        error = nil;
+        [testProperties.moc saveAndWait:&error];
+        [error shouldBeNil];
+        
+        [[theValue([testProperties.cds isDirtyObject:[todo objectID]]) should] beYes];
+        
+        NSFetchRequest *fetch2 = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        [fetch2 setPredicate:[NSPredicate predicateWithFormat:@"randomId == '1234'"]];
+        error = nil;
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSArray *results2 = [testProperties.moc executeFetchRequestAndWait:fetch error:&error];
+        [[results2 should] haveCountOf:1];
+        
+        if ([results count] == 1) {
+            [[[[results2 objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
+        }
+        
+        [store stub:@selector(SM_checkNetworkAvailability) andReturn:theValue(YES)];
+        
+        // Sync
+        dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
+        dispatch_group_t group = dispatch_group_create();
+        
+        [testProperties.cds setSyncCallbackQueue:queue];
+        [testProperties.cds setDefaultSMMergePolicy:SMMergePolicyClientWins];
+        [testProperties.cds setSyncCompletionCallback:^(NSArray *objects) {
+            [[objects should] haveCountOf:1];
+            if ([objects count] == 1) {
+                [[theValue([[objects objectAtIndex:0] actionTaken]) should] equal:theValue(SMSyncActionInsertedOnServer)];
+            }
+            dispatch_group_leave(group);
+        }];
+        
+        dispatch_group_enter(group);
+        
+        [testProperties.cds syncWithServer];
+        
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+        
+        // Check cache
+        [testProperties.cds setCachePolicy:SMCachePolicyTryCacheOnly];
+        NSFetchRequest *cacheFetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        error = nil;
+        results = [testProperties.moc executeFetchRequestAndWait:cacheFetch error:&error];
+        [[results should] haveCountOf:1];
+        [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
+        
+        // Check server
+        [testProperties.cds setCachePolicy:SMCachePolicyTryNetworkOnly];
+        NSFetchRequest *serverFetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        error = nil;
+        results = [testProperties.moc executeFetchRequestAndWait:serverFetch error:&error];
+        [[results should] haveCountOf:1];
+        [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:theValue(YES)];
         
         [[theValue([testProperties.cds isDirtyObject:[[results objectAtIndex:0] objectID]]) should] beNo];
     });
