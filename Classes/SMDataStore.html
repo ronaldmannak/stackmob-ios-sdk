@@ -1388,12 +1388,12 @@ SMDataStore *dataStore = [[self client] dataStore];
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>successBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id JSON)</i>. A block object to call on the main thread upon success.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id responseBody)</i>. A block object to call on the main thread upon success.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>failureBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.</p></dd>
 		</dl>
 		
 	</div>
@@ -1408,6 +1408,20 @@ SMDataStore *dataStore = [[self client] dataStore];
 	</div>
 	
 	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>You can expect the <strong>responseBody</strong> parameter of the success callback to be in the form of:</p>
+
+<ul>
+<li>Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.</li>
+<li>A string (NSString) if the content type of the response is text/plain.</li>
+<li>Raw data (NSData) for any other response content type.</li>
+</ul>
+
+
+<p>To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.</p>
+	</div>
 	
 	
 	
@@ -1454,12 +1468,12 @@ SMDataStore *dataStore = [[self client] dataStore];
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>successBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id JSON)</i>. A block object to call on the main thread upon success.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id responseBody)</i>. A block object to call on the main thread upon success.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>failureBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.</p></dd>
 		</dl>
 		
 	</div>
@@ -1477,7 +1491,16 @@ SMDataStore *dataStore = [[self client] dataStore];
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>See <a href="https://stackmob.com/devcenter/docs/Getting-Started:-Custom-Code-SDK">Getting Started With Custom Code</a> for more information.</p>
+		<p>You can expect the <strong>responseBody</strong> parameter of the success callback to be in the form of:</p>
+
+<ul>
+<li>Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.</li>
+<li>A string (NSString) if the content type of the response is text/plain.</li>
+<li>Raw data (NSData) for any other response content type.</li>
+</ul>
+
+
+<p>To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.</p>
 	</div>
 	
 	
@@ -1535,12 +1558,12 @@ SMDataStore *dataStore = [[self client] dataStore];
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>successBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id JSON)</i>. A block object to call on the successCallbackQueue upon success.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id responseBody)</i>. A block object to call on the successCallbackQueue upon success.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>failureBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id JSON)</i>. A block object to call on the failureCallbackQueue upon failure.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id responseBody)</i>. A block object to call on the failureCallbackQueue upon failure.</p></dd>
 		</dl>
 		
 	</div>
@@ -1558,7 +1581,16 @@ SMDataStore *dataStore = [[self client] dataStore];
 	
 	<div class="method-subsection discussion-section">
 		<h4 class="method-subtitle">Discussion</h4>
-		<p>See <a href="https://stackmob.com/devcenter/docs/Getting-Started:-Custom-Code-SDK">Getting Started With Custom Code</a> for more information.</p>
+		<p>You can expect the <strong>responseBody</strong> parameter of the success callback to be in the form of:</p>
+
+<ul>
+<li>Serialized JSON (NSDictionary/NSArray) if the content type of the response is application/vnd.stackmob+json or application/json.</li>
+<li>A string (NSString) if the content type of the response is text/plain.</li>
+<li>Raw data (NSData) for any other response content type.</li>
+</ul>
+
+
+<p>To get started writing custom code methods, check out the <a href="https://developer.stackmob.com/customcode-sdk/developer-guide" target="_blank">Custom Code Developer Guide</a>.</p>
 	</div>
 	
 	
@@ -2027,12 +2059,12 @@ SMDataStore *dataStore = [[self client] dataStore];
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>successBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id JSON)</i>. A block object to call on the main thread upon success.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id responseBody)</i>. A block object to call on the main thread upon success.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>failureBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id JSON)</i>. A block object to call on the main thread upon failure.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id responseBody)</i>. A block object to call on the main thread upon failure.</p></dd>
 		</dl>
 		
 	</div>
@@ -2108,12 +2140,12 @@ SMDataStore *dataStore = [[self client] dataStore];
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>successBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id JSON)</i>. A block object to call on the successCallbackQueue upon success.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseSuccessBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, id responseBody)</i>. A block object to call on the successCallbackQueue upon success.</p></dd>
 		</dl>
 		
 		<dl class="argument-def parameter-def">
 			<dt><em>failureBlock</em></dt>
-			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id JSON)</i>. A block object to call on the failureCallbackQueue upon failure.</p></dd>
+			<dd><p><i>typedef void (^SMFullResponseFailureBlock)(NSURLRequest <em>request, NSHTTPURLResponse </em>response, NSError *error, id responseBody  )</i>. A block object to call on the failureCallbackQueue upon failure.</p></dd>
 		</dl>
 		
 	</div>
@@ -2642,7 +2674,7 @@ SMDataStore *dataStore = [[self client] dataStore];
 				<div id="footer">
 					<hr />
 					<div class="footer-copyright">
-						<p><span class="copyright">&copy; 2013 StackMob. All rights reserved. (Last updated: 2013-05-20)</span><br />
+						<p><span class="copyright">&copy; 2013 StackMob. All rights reserved. (Last updated: 2013-06-06)</span><br />
 						
 						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.0.5 (build 789)</a>.</span></p>
 						
