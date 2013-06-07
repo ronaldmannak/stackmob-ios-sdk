@@ -569,7 +569,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // Create operation for inserted object
         
-        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps forInsert:YES];
+        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps];
         NSString *schemaName = [managedObject SMSchema];
         __block NSString *insertedObjectID = [managedObject SMObjectId];
         
@@ -764,7 +764,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         // Create operation for updated object
         
-        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps forInsert:NO];
+        NSDictionary *serializedObjDict = [managedObject SMDictionarySerialization:serializeFullObjects sendLocalTimestamps:self.coreDataStore.sendLocalTimestamps];
         NSString *schemaName = [managedObject SMSchema];
         __block NSString *updatedObjectID = [managedObject SMObjectId];
         
@@ -3912,7 +3912,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
                     if ([[[entityDescriptionForRelationship name] lowercaseString] isEqualToString:[self.coreDataStore.session userSchema]]) {
                         relationshipPrimaryKeyField = [self.coreDataStore.session userPrimaryKeyField];
                     } else {
-                        relationshipPrimaryKeyField = [entityDescriptionForRelationship primaryKeyField];
+                        relationshipPrimaryKeyField = [entityDescriptionForRelationship SMPrimaryKeyField];
                     }
                     NSString *referenceObject = [relationshipContents objectForKey:relationshipPrimaryKeyField];
                     NSManagedObjectID *relationshipObjectID = [self newObjectIDForEntity:entityDescriptionForRelationship referenceObject:referenceObject];

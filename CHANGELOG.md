@@ -8,7 +8,7 @@
 * Add SM_ALLOW_CACHE_RESET flag. Use during development when changing your Core Data model often to allow the local Core Data stack to reset itself.
 * Updates to Custom Code methods to support custom response content types. 
 * Support NOT IN queries and predicates. 
-* Support Core Data attribute default values. (issue #41)
+* Support Core Data attribute default values. **Check your attributes with number types** because they automatically default to 0 unless you deselect the `Default` checkbox. (issue #41)
 
 **Fixes**
 

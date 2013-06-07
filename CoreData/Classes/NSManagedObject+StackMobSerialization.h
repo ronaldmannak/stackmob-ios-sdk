@@ -87,7 +87,7 @@
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-- (NSDictionary *)SMDictionarySerialization:(BOOL)serializeFullObjects sendLocalTimestamps:(BOOL)sendLocalTimestamps forInsert:(BOOL)forInsert;
+- (NSDictionary *)SMDictionarySerialization:(BOOL)serializeFullObjects sendLocalTimestamps:(BOOL)sendLocalTimestamps;
 
 /**
  Use to retrieve the value of a relationship.  
