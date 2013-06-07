@@ -34,7 +34,7 @@ describe(@"with fixtures", ^{
     __block NSPredicate *predicate;
     //[SMCoreDataIntegrationTestHelpers registerForMOCNotificationsWithContext:[SMCoreDataIntegrationTestHelpers moc]];
     
-    beforeEach(^{
+    beforeAll(^{
         fixturesToLoad = [NSArray arrayWithObjects:@"person", nil];
         fixtures = [SMIntegrationTestHelpers loadFixturesNamed:fixturesToLoad];
         client = [SMIntegrationTestHelpers defaultClient];
@@ -47,7 +47,7 @@ describe(@"with fixtures", ^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
     });
     
-    afterEach(^{
+    afterAll(^{
         [SMIntegrationTestHelpers destroyAllForFixturesNamed:fixturesToLoad];
     });
     describe(@"compound predicates", ^{
@@ -73,7 +73,7 @@ describe(@"with fixtures", ^{
                 predicate = [NSCompoundPredicate notPredicateWithSubpredicate:
                              [NSPredicate predicateWithFormat:@"last_name == %@", @"Vaznaian"]];
             });
-            it(@"returns an error", ^{
+            it(@"returns an error when NOT IN", ^{
                 [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
                 [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:moc] andBlock:^(NSArray *results, NSError *error) {
                     [[error should] beNonNil];
@@ -496,10 +496,96 @@ describe(@"with fixtures", ^{
                 }];
             });
         });
+        describe(@"NOT IN", ^{
+            __block NSArray *first_names;
+            beforeEach(^{
+                first_names = [NSArray arrayWithObjects:@"Aaron", @"Bob", @"Clyde", @"Ducksworth", @"Elliott", @"Matt", nil];
+                predicate = [NSPredicate predicateWithFormat:@"!(first_name IN %@)", first_names];
+            });
+            it(@"works", ^{
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:moc] andBlock:^(NSArray *results, NSError *error) {
+                    [error shouldBeNil];
+                    [[results should] haveCountOf:2];
+                    [[[[results objectAtIndex:0] valueForKey:@"first_name"] should] equal:@"Jon"];
+                    [[[[results objectAtIndex:1] valueForKey:@"first_name"] should] equal:@"Jonah"];
+                }];
+            });
+        });
+        describe(@"NOT IN with multiple", ^{
+            __block NSArray *first_names;
+            beforeEach(^{
+                first_names = [NSArray arrayWithObjects:@"Aaron", @"Bob", @"Clyde", @"Ducksworth", @"Elliott", @"Matt", nil];
+                predicate = [NSPredicate predicateWithFormat:@"!(first_name IN %@) AND last_name == 'Williams'", first_names];
+            });
+            it(@"works", ^{
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:moc] andBlock:^(NSArray *results, NSError *error) {
+                    [error shouldBeNil];
+                    [[results should] haveCountOf:1];
+                    [[[[results objectAtIndex:0] valueForKey:@"first_name"] should] equal:@"Jonah"];
+                }];
+            });
+        });
+        describe(@"NOT IN with multiple reversed", ^{
+            __block NSArray *first_names;
+            beforeEach(^{
+                first_names = [NSArray arrayWithObjects:@"Aaron", @"Bob", @"Clyde", @"Ducksworth", @"Elliott", @"Matt", nil];
+                predicate = [NSPredicate predicateWithFormat:@"last_name == 'Williams' AND !(first_name IN %@)", first_names];
+            });
+            it(@"works", ^{
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:[SMCoreDataIntegrationTestHelpers makePersonFetchRequest:predicate context:moc] andBlock:^(NSArray *results, NSError *error) {
+                    [error shouldBeNil];
+                    [[results should] haveCountOf:1];
+                    [[[[results objectAtIndex:0] valueForKey:@"first_name"] should] equal:@"Jonah"];
+                }];
+            });
+        });
+        describe(@"NOT IN with OR", ^{
+            __block NSArray *first_names;
+            beforeEach(^{
+                first_names = [NSArray arrayWithObjects:@"Aaron", @"Bob", @"Clyde", @"Ducksworth", @"Elliott", @"Matt", nil];
+                predicate = [NSPredicate predicateWithFormat:@"last_name == 'Williams' OR !(first_name IN %@)", first_names];
+            });
+            it(@"works correctly", ^{
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+                [request setPredicate:predicate];
+                NSError *error = nil;
+                NSArray *results = [moc executeFetchRequestAndWait:request error:&error];
+                [error shouldBeNil];
+                [[results should] haveCountOf:2];
+                if ([results count] == 2) {
+                    NSArray *array = [NSArray arrayWithObjects:[[results objectAtIndex:0] valueForKey:@"first_name"], [[results objectAtIndex:1] valueForKey:@"first_name"], nil];
+                    [[array should] contain:@"Jon"];
+                    [[array should] contain:@"Jonah"];
+                }
+            });
+        });
+        describe(@"NOT IN with OR reversed", ^{
+            __block NSArray *first_names;
+            beforeEach(^{
+                first_names = [NSArray arrayWithObjects:@"Aaron", @"Bob", @"Clyde", @"Ducksworth", @"Elliott", @"Matt", nil];
+                predicate = [NSPredicate predicateWithFormat:@"!(first_name IN %@) OR last_name == 'Williams'", first_names];
+            });
+            it(@"works correctly", ^{
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Person"];
+                [request setPredicate:predicate];
+                NSError *error = nil;
+                NSArray *results = [moc executeFetchRequestAndWait:request error:&error];
+                [error shouldBeNil];
+                [[results should] haveCountOf:2];
+                if ([results count] == 2) {
+                    NSArray *array = [NSArray arrayWithObjects:[[results objectAtIndex:0] valueForKey:@"first_name"], [[results objectAtIndex:1] valueForKey:@"first_name"], nil];
+                    [[array should] contain:@"Jon"];
+                    [[array should] contain:@"Jonah"];
+                }
+            });
+        });
     });
 });
-
-
 
 describe(@"OR query from network should return same as cache", ^{
     __block User3 *user1 = nil;
@@ -930,18 +1016,27 @@ describe(@"empty string", ^{
         todoObject2 = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:moc];
         [todoObject2 setValue:@"5678" forKey:@"todoId"];
         [todoObject2 setValue:@"full" forKey:@"title"];
+        
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
+            [error shouldBeNil];
+        }];
     });
     afterEach(^{
-        [moc deleteObject:todoObject1];
-        [moc deleteObject:todoObject2];
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Todo"];
+        NSError *anError = nil;
+        __block NSManagedObjectContext *context = [cds contextForCurrentThread];
+        NSArray *results = [context executeFetchRequestAndWait:request error:&anError];
+        [anError shouldBeNil];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [context deleteObject:obj];
+            [context deleteObject:obj];
+        }];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             [error shouldBeNil];
         }];
     });
     it(@"equal to empty string", ^{
-        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-            [error shouldBeNil];
-        }];
         
         NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Todo"];
         [fetch setPredicate:[NSPredicate predicateWithFormat:@"title == ''"]];
@@ -973,6 +1068,5 @@ describe(@"empty string", ^{
         
     });
 });
-
 
 SPEC_END

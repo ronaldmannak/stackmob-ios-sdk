@@ -15,7 +15,6 @@
  */
 
 #import <Kiwi/Kiwi.h>
-//#import "SMNetworkReachability.h"
 #import "SMNetworkReachabilityHelper.h"
 #import "SMIntegrationTestHelpers.h"
 

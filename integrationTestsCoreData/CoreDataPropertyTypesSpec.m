@@ -35,26 +35,34 @@ describe(@"Testing CRUD on an Entity with an NSDate attribute", ^{
         NSURL *modelURL = [classBundle URLForResource:@"SMCoreDataIntegrationTest" withExtension:@"momd"];
         NSManagedObjectModel *aModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         cds = [client coreDataStoreWithManagedObjectModel:aModel];
-        moc = [cds contextForCurrentThread];
+    });
+    afterEach(^{
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        NSError *fetchError = nil;
+        NSArray *results = [[cds contextForCurrentThread] executeFetchRequestAndWait:fetch error:&fetchError];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [moc deleteObject:obj];
+        }];
+        
+        if ([[cds contextForCurrentThread] hasChanges]) {
+            [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
+                if (error != nil) {
+                    DLog(@"Error userInfo is %@", [error userInfo]);
+                    [error shouldBeNil];
+                }
+            }];
+        }
+    });
+    
+    it(@"Will save without error after creation", ^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        moc = [cds contextForCurrentThread];
         date = [NSDate date];
         camelCaseObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
         [camelCaseObject setValue:@"new" forKey:@"name"];
         [camelCaseObject setValue:date forKey:@"time"];
         [camelCaseObject setValue:[camelCaseObject assignObjectId] forKey:[camelCaseObject primaryKeyField]];
-    });
-    afterEach(^{
-        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-        [moc deleteObject:camelCaseObject];
-        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-            if (error != nil) {
-                DLog(@"Error userInfo is %@", [error userInfo]);
-                [error shouldBeNil];
-            }
-        }];
-    });
-    
-    it(@"Will save without error after creation", ^{
+        
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
@@ -65,6 +73,14 @@ describe(@"Testing CRUD on an Entity with an NSDate attribute", ^{
     });
     
     it(@"Will successfully read", ^{
+        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        moc = [cds contextForCurrentThread];
+        date = [NSDate date];
+        camelCaseObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [camelCaseObject setValue:@"new" forKey:@"name"];
+        [camelCaseObject setValue:date forKey:@"time"];
+        [camelCaseObject setValue:[camelCaseObject assignObjectId] forKey:[camelCaseObject primaryKeyField]];
+        
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
@@ -86,6 +102,13 @@ describe(@"Testing CRUD on an Entity with an NSDate attribute", ^{
     });
     it(@"Will successfully read with NSDate in the predicate", ^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        moc = [cds contextForCurrentThread];
+        date = [NSDate date];
+        camelCaseObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [camelCaseObject setValue:@"new" forKey:@"name"];
+        [camelCaseObject setValue:date forKey:@"time"];
+        [camelCaseObject setValue:[camelCaseObject assignObjectId] forKey:[camelCaseObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -107,6 +130,14 @@ describe(@"Testing CRUD on an Entity with an NSDate attribute", ^{
         }];
     });
     it(@"Will save and read without error after update", ^{
+        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        moc = [cds contextForCurrentThread];
+        date = [NSDate date];
+        camelCaseObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [camelCaseObject setValue:@"new" forKey:@"name"];
+        [camelCaseObject setValue:date forKey:@"time"];
+        [camelCaseObject setValue:[camelCaseObject assignObjectId] forKey:[camelCaseObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -152,25 +183,35 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to True", ^{
         NSURL *modelURL = [classBundle URLForResource:@"SMCoreDataIntegrationTest" withExtension:@"momd"];
         NSManagedObjectModel *aModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         cds = [client coreDataStoreWithManagedObjectModel:aModel];
+    });
+    afterEach(^{
+        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        NSError *fetchError = nil;
+        NSArray *results = [[cds contextForCurrentThread] executeFetchRequestAndWait:fetch error:&fetchError];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [moc deleteObject:obj];
+        }];
+        
+        if ([[cds contextForCurrentThread] hasChanges]) {
+            [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
+                if (error != nil) {
+                    DLog(@"Error userInfo is %@", [error userInfo]);
+                    [error shouldBeNil];
+                }
+            }];
+        }
+    });
+    
+    it(@"Will save without error after creation", ^{
         moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
         [booleanObject setValue:@"TRUUUUUUUUU" forKey:@"name"];
         [booleanObject setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
         [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
-    });
-    afterEach(^{
-        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-        [moc deleteObject:booleanObject];
-        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-            if (error != nil) {
-                DLog(@"Error userInfo is %@", [error userInfo]);
-                [error shouldBeNil];
-            }
-        }];
-    });
-    
-    it(@"Will save without error after creation", ^{
+        
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
@@ -181,7 +222,13 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to True", ^{
     });
     
     it(@"Will successfully read with done == true", ^{
+        moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"TRUUUUUUUUU" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -203,7 +250,13 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to True", ^{
         }];
     });
     it(@"Will successfully read with done != false", ^{
+        moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"TRUUUUUUUUU" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -225,7 +278,13 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to True", ^{
         }];
     });
     it(@"Will save and read without error after update", ^{
+        moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"TRUUUUUUUUU" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:YES] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -270,12 +329,7 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to false", ^{
         NSURL *modelURL = [classBundle URLForResource:@"SMCoreDataIntegrationTest" withExtension:@"momd"];
         NSManagedObjectModel *aModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
         cds = [client coreDataStoreWithManagedObjectModel:aModel];
-        moc = [cds contextForCurrentThread];
-        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
-        [booleanObject setValue:@"Should be False" forKey:@"name"];
-        [booleanObject setValue:[NSNumber numberWithBool:NO] forKey:@"done"];
-        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
     });
     afterEach(^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
@@ -288,7 +342,13 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to false", ^{
         }];
     });
     it(@"Will save without error after creation", ^{
+        moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"Should be False" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:NO] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -299,30 +359,43 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to false", ^{
     
     
      
-     it(@"Will successfully read with done == false", ^{
-         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
-             if (error != nil) {
-                 DLog(@"Error userInfo is %@", [error userInfo]);
-                 [error shouldBeNil];
-             }
-         }];
-     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Random" inManagedObjectContext:moc];
-     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-     [fetchRequest setEntity:entity];
-     [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"done == %@", [NSNumber numberWithBool:NO]]];
-     [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:fetchRequest andBlock:^(NSArray *results, NSError *error) {
-         if (error != nil) {
-             DLog(@"Error userInfo is %@", [error userInfo]);
-             [error shouldBeNil];
-         }
-         NSLog(@"results is %@", results);
-         [[theValue([results count]) should] equal:theValue(1)];
-         [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
-        }];
-     });
-    it(@"Will successfully read with done != true", ^{
+    it(@"Will successfully read with done == false", ^{
+        moc = [cds contextForCurrentThread];
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"Should be False" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:NO] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
+        [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
+            if (error != nil) {
+                DLog(@"Error userInfo is %@", [error userInfo]);
+                [error shouldBeNil];
+            }
+        }];
+        
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Random" inManagedObjectContext:moc];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"done == %@", [NSNumber numberWithBool:NO]]];
+        [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:fetchRequest andBlock:^(NSArray *results, NSError *error) {
+            if (error != nil) {
+                DLog(@"Error userInfo is %@", [error userInfo]);
+                [error shouldBeNil];
+            }
+            NSLog(@"results is %@", results);
+            [[theValue([results count]) should] equal:theValue(1)];
+            [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
+        }];
+    });
+    it(@"Will successfully read with done != true", ^{
+        moc = [cds contextForCurrentThread];
+        [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+        booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+        [booleanObject setValue:@"Should be False" forKey:@"name"];
+        [booleanObject setValue:[NSNumber numberWithBool:NO] forKey:@"done"];
+        [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+        
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);
@@ -340,11 +413,19 @@ describe(@"Testing CRUD on an Entity with a Boolean attribute set to false", ^{
             }
             NSLog(@"results is %@", results);
             [[theValue([results count]) should] equal:theValue(1)];
-            [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
+            if ([results count] == 1) {
+                [[[[results objectAtIndex:0] valueForKey:@"done"] should] equal:[NSNumber numberWithBool:NO]];
+            }
         }];
     });
      it(@"Will save and read without error after update", ^{
+         moc = [cds contextForCurrentThread];
          [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+         booleanObject = [NSEntityDescription insertNewObjectForEntityForName:@"Random" inManagedObjectContext:moc];
+         [booleanObject setValue:@"Should be False" forKey:@"name"];
+         [booleanObject setValue:[NSNumber numberWithBool:NO] forKey:@"done"];
+         [booleanObject setValue:[booleanObject assignObjectId] forKey:[booleanObject primaryKeyField]];
+         
          [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
              if (error != nil) {
                  DLog(@"Error userInfo is %@", [error userInfo]);
@@ -436,8 +517,12 @@ describe(@"Testing CRUD on an Entity with a GeoPoint attribute", ^{
     });
     afterEach(^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
-        [moc deleteObject:geoObject];
-        [moc deleteObject:geoObject2];
+        NSFetchRequest *fetch = [[NSFetchRequest alloc] initWithEntityName:@"Random"];
+        NSError *fetchError = nil;
+        NSArray *results = [[cds contextForCurrentThread] executeFetchRequestAndWait:fetch error:&fetchError];
+        [results enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            [moc deleteObject:obj];
+        }];
         [SMCoreDataIntegrationTestHelpers executeSynchronousSave:moc withBlock:^(NSError *error) {
             if (error != nil) {
                 DLog(@"Error userInfo is %@", [error userInfo]);

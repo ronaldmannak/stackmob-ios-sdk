@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'StackMob'
-  s.version  = '2.0.0beta.1'
+  s.version  = '2.0.0'
   s.license  = 'Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)'
   s.summary  = "StackMob's SDK for accessing the StackMob Services on iOS."
   s.homepage = 'http://stackmob.com'
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.7'
   s.osx.frameworks = 'CoreServices'
   s.source_files = 'Classes/*.{h,m}', 'Utility/*.{h,m}', 'CoreData/Classes/*.{h,m}', 'Push/*.{h,m}'
-  s.dependency 'AFNetworking', '1.1.0'
+  s.dependency 'AFNetworking', '~> 1.1.0'
   s.frameworks = 'CoreData', 'CoreLocation', 'Security', 'SystemConfiguration'
   s.requires_arc = true
   s.documentation = {

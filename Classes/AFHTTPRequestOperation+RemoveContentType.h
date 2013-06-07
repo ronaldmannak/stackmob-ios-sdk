@@ -14,19 +14,10 @@
  * limitations under the License.
  */
 
-#import "SMQuery.h"
-#import "SMDataStore.h"
+#import "AFHTTPRequestOperation.h"
 
-typedef void (^SynchronousQuerySuccessBlock)(NSArray *results);
-typedef void (^SynchronousQueryFailureBlock)(NSError *error);
+@interface AFHTTPRequestOperation (RemoveContentType)
 
-void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQuerySuccessBlock successBlock, SynchronousQueryFailureBlock failureBlock);
-
-void syncWithSemaphore(void (^block)(dispatch_semaphore_t semaphore));
-
-void syncReturn(dispatch_semaphore_t semaphore);
-
-@interface Synchronization : NSObject
++ (void)removeAcceptableContentType:(NSString *)contentType;
 
 @end
-

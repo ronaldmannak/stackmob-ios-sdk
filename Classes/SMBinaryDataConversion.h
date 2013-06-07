@@ -31,14 +31,12 @@
  
     [newManagedObject setValue:picData forKey:@"pic"];
  
-    NSError *error = nil;
-    // context is your managed object context
-    if (![context save:&error]) {
-    NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-    abort();
-    } else {
-    [context refreshObject:newManagedObject mergeChanges:YES];
-    }
+    NSManagedObjectContext *context = [[[SMClient defaultClient] coreDataStore] contextForCurrentThread];
+    [context saveOnSuccess:^{
+        [context refreshObject:newManagedObject mergeChanges:YES];
+    } onFailure:^(NSError *error) {
+        // Error
+    }];
  
  `[newManagedObject valueForKey:@"pic"]` now returns the s3 url for the data.
  
@@ -70,7 +68,7 @@
  @param name A name for the content.  This can be any arbitrary name.
  @param contentType The content type of the data. See [Internet Media Type](http://en.wikipedia.org/wiki/Internet%5fmedia%5ftype) for a full list.
  
- @return A string formatted for StackMob to persist data to s3.
+ @return A string formatted for StackMob to persist data to S3.
  @since Available in iOS SDK 1.0.0 and later.
  */
 + (NSString *)stringForBinaryData:(NSData *)data name:(NSString *)name contentType:(NSString *)contentType;
@@ -78,7 +76,7 @@
 /**
  Returns the data representation of a string created with <stringForBinaryData:name:contentType:>.
  
- Use this method when pulling the attribute value when the object has not yet been synced with the server, i.e. does not yet contain a proper s3 url.
+ Use this method when pulling the attribute value when the object has not yet been synced with the server, i.e. does not yet contain a proper S3 URL.
  
  @param string The string to convert to data.
  
@@ -90,13 +88,13 @@
 + (NSData *)dataForString:(NSString *)string;
 
 /**
- Given a string attribute which maps to a Binary field on StackMob, returns whether the string contains an s3 URL.
+ Given a string attribute which maps to a Binary field on StackMob, returns whether the string contains an S3 URL.
  
- If the object has already been saved and persisted to StackMob, the string will contain the s3 url which maps to the data.  Otherwise the object will contain a data representation, ready to be saved to StackMob. In order to properly read it the data must be extracted from the string and decoded using the <dataForString:> method.
+ If the object has already been saved and persisted to StackMob, the string will contain the S3 URL which maps to the data.  Otherwise the object will contain a data representation, ready to be saved to StackMob. In order to properly read it the data must be extracted from the string and decoded using the <dataForString:> method.
  
  @param value The string to evaluate.
  
- @return YES if the string contains an s3 url, otherwise NO.
+ @return YES if the string contains an S3 URL, otherwise NO.
  
  @since Available in iOS SDK 2.0.0 and later.
  

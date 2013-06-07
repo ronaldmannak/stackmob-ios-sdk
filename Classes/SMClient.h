@@ -72,9 +72,9 @@
  
  Check out the [SMCoreDataStore class](http://stackmob.github.com/stackmob-ios-sdk/Classes/SMCoreDataStore.html) for a list of all methods and functionality for interacting with the Core Data integration.
  
- For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](http://stackmob.github.com/stackmob-ios-sdk/CoreDataSupportSpecs.html).
+ For the full list of Core Data functionality that is supported by our integration, as well as work arounds for that which is not, check out the [StackMob <--> Core Data Support Specifications](https://developer.stackmob.com/ios-sdk/core-data-guide#SupportSpecifications).
  
- Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](http://stackmob.github.com/stackmob-ios-sdk/index.html\#coding\_practices)!
+ Last but not least, make sure to adhere to the [StackMob <--> Core Data Coding Practices](https://developer.stackmob.com/ios-sdk/core-data-guide#CodingPractices)!
  
  ## The User Schema ##
  
@@ -171,6 +171,13 @@
  */
 @property(nonatomic, readonly, strong) SMUserSession * session;
 
+/**
+ Points to the `networkMonitor` instance of this client's `SMUserSession` instance.
+ 
+ Allows the network monitor interface to be accessed by `[[SMClient defaultClient] networkMonitor];`
+ 
+ @since Available in iOS SDK 2.0.0 and later.
+ */
 @property (nonatomic, readonly, strong) SMNetworkReachability *networkMonitor;
 
 
@@ -407,6 +414,8 @@
  */
 - (void)setTokenRefreshFailureBlock:(void (^)(NSError *error, SMFailureBlock originalFailureBlock))block;
 
+- (void)addAcceptableContentTypes:(NSSet *)contentTypes;
+
 #pragma mark Retrieve User
 ///-------------------------------
 /// @name Retrieve the Logged In User
@@ -456,6 +465,10 @@
                          onSuccess:(SMResultSuccessBlock)successBlock
                          onFailure:(SMFailureBlock)failureBlock;
 
+#pragma mark Check Logged In Status
+///-------------------------------
+/// @name Check Status
+///-------------------------------
 
 /**
  Check whether the current user is logged in.
@@ -557,7 +570,7 @@
 
 #pragma mark Facebook
 ///-------------------------------
-/// @name Facebook Authentication
+/// @name Create a User with Facebook
 ///-------------------------------
 
 /**
@@ -606,6 +619,10 @@
                failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                           onSuccess:(SMResultSuccessBlock)successBlock
                           onFailure:(SMFailureBlock)failureBlock;
+
+///-------------------------------
+/// @name Link/Unlink a User From Facebook
+///-------------------------------
 
 /**
  Link the logged in user with a Facebook account.
@@ -662,6 +679,10 @@
                              failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                                         onSuccess:(SMSuccessBlock)successBlock
                                         onFailure:(SMFailureBlock)failureBlock;
+
+///-------------------------------
+/// @name Login with Facebook
+///-------------------------------
 
 /**
  Login a user to your app with a Facebook token.
@@ -733,6 +754,10 @@
                      onSuccess:(SMResultSuccessBlock)successBlock
                      onFailure:(SMFailureBlock)failureBlock;
 
+///-------------------------------
+/// @name Update Facebook Status
+///-------------------------------
+
 /**
  Update the logged in users's Facebook status.
  
@@ -769,6 +794,10 @@
                               onSuccess:(SMResultSuccessBlock)successBlock
                               onFailure:(SMFailureBlock)failureBlock;
 
+///-------------------------------
+/// @name Get Facebook User Info
+///-------------------------------
+
 /**
  Get Facebook info for the logged in users.
  
@@ -804,7 +833,7 @@
 
 #pragma mark twitter
 ///-------------------------------
-/// @name Twitter Authentication
+/// @name Create a User With Twitter
 ///-------------------------------
 
 /**
@@ -860,6 +889,10 @@
               failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                          onSuccess:(SMResultSuccessBlock)successBlock
                          onFailure:(SMFailureBlock)failureBlock;
+
+///-------------------------------
+/// @name Link/Unlink a User From Twitter
+///-------------------------------
 
 /**
  Link the logged in user with a Twitter account.
@@ -920,6 +953,10 @@
                             failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                                        onSuccess:(SMSuccessBlock)successBlock
                                        onFailure:(SMFailureBlock)failureBlock;
+
+///-------------------------------
+/// @name Login With Twitter
+///-------------------------------
 
 /**
  Login a user to your app with twitter credentials.
@@ -1004,6 +1041,10 @@
                     onSuccess:(SMResultSuccessBlock)successBlock
                     onFailure:(SMFailureBlock)failureBlock;
 
+///-------------------------------
+/// @name Update Twitter Status
+///-------------------------------
+
 /**
  Update the logged in users's Twitter status.
  
@@ -1040,6 +1081,10 @@
                              onSuccess:(SMResultSuccessBlock)successBlock
                              onFailure:(SMFailureBlock)failureBlock;
 
+///-------------------------------
+/// @name Get Twitter User Info
+///-------------------------------
+
 /**
  Get Twitter info for the logged in users.
  
@@ -1075,7 +1120,7 @@
 
 #pragma mark - Gigya
 ///-------------------------------
-/// @name Gigya Authentication
+/// @name Link/Unlink User From Gigya
 ///-------------------------------
 
 /**
@@ -1138,6 +1183,10 @@
  @since Available in iOS SDK 1.4.0 and later.
  */
 - (void)unlinkLoggedInUserFromGigyaWithOptions:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMSuccessBlock)successBlock onFailure:(SMFailureBlock)failureBlock;
+
+///-------------------------------
+/// @name Login With Gigya
+///-------------------------------
 
 /**
  Login with Gigya, providing the m_pDict property of the GSObject user parameter provided by the gsLoginUIDidLogin:user:context: delegate method.

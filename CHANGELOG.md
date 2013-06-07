@@ -1,5 +1,24 @@
 <h2>StackMob iOS SDK Change Log</h2>
 
+<h3>v2.0.0 - June 6, 2013</h3>
+
+**Features**
+
+* Offline Sync - Save and read data when a device is offline. When network connection is restored, data will be synced with the server. Includes fully customizable conflict resolution behavior. Visit the <a href="https://developer.stackmob.com/ios-sdk/offline-sync-guide" target="blank">Offline Sync Guide</a> for all the details and available settings.
+* Add SM_ALLOW_CACHE_RESET flag. Use during development when changing your Core Data model often to allow the local Core Data stack to reset itself.
+* Updates to Custom Code methods to support custom response content types. 
+* Support NOT IN queries and predicates. 
+* Support Core Data attribute default values. **Check your attributes with number types** because they automatically default to 0 unless you deselect the `Default` checkbox. (issue #41)
+
+**Fixes**
+
+* Delete propagation fix for relationships with Cascade delete rule.
+* Improvements to purge methods.
+
+**Upgrade Notes**
+
+This is a major upgrade. If you are currently using the cache functionality, you should either call the <code>SMCoreDataStore</code> <code><i>resetCache</i></code> method once or remove the application from the device, as v2.0.0+ includes a new and improved cache structure.
+
 <h3>v2.0.0beta.1 - May 13, 2013</h3>
 
 **Features**

@@ -44,8 +44,6 @@ describe(@"Insert 1 Online, Update 1 Offline, NO CONFLICT", ^{
         SM_CACHE_ENABLED = NO;
         
     });
-    
-    
     it(@"Should send object as an update, no merge policy should get called", ^{
         NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
         [todo setValue:@"1234" forKey:[todo primaryKeyField]];
@@ -103,7 +101,6 @@ describe(@"Insert 1 Online, Update 1 Offline, NO CONFLICT", ^{
     });
     
 });
-
 describe(@"Insert 1 Online, Update 1 Offline at T1, Update 1 Online at T2", ^{
     __block SMTestProperties *testProperties = nil;
     beforeEach(^{
@@ -123,7 +120,6 @@ describe(@"Insert 1 Online, Update 1 Offline at T1, Update 1 Online at T2", ^{
         SM_CACHE_ENABLED = NO;
         
     });
-    
     it(@"Client Wins MP, Should send object as an update", ^{
         // Insert online
         NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
@@ -190,8 +186,6 @@ describe(@"Insert 1 Online, Update 1 Offline at T1, Update 1 Online at T2", ^{
         [[[[results objectAtIndex:0] valueForKey:@"title"] should] equal:@"offline client update"];
         
     });
-    
-    
     it(@"Last Mod Wins MP, Should update cache with server values", ^{
         // Insert online
         NSManagedObject *todo = [NSEntityDescription insertNewObjectForEntityForName:@"Todo" inManagedObjectContext:testProperties.moc];
@@ -203,7 +197,7 @@ describe(@"Insert 1 Online, Update 1 Offline at T1, Update 1 Online at T2", ^{
         [saveError shouldBeNil];
         
         [testProperties.moc refreshObject:todo mergeChanges:YES];
-        NSLog(@"After online client save, todo is %@ with lastmoddate %f", todo, [[todo valueForKey:SMLastModDateKey] timeIntervalSince1970]);
+        //NSLog(@"After online client save, todo is %@ with lastmoddate %f", todo, [[todo valueForKey:SMLastModDateKey] timeIntervalSince1970]);
         
         // Update offline at T1
         NSArray *persistentStores = [testProperties.cds.persistentStoreCoordinator persistentStores];
@@ -215,8 +209,10 @@ describe(@"Insert 1 Online, Update 1 Offline at T1, Update 1 Online at T2", ^{
         [testProperties.moc saveAndWait:&saveError];
         [saveError shouldBeNil];
         [testProperties.moc refreshObject:todo mergeChanges:YES];
-        NSLog(@"After offline client update, todo is %@ with lastmoddate %f", todo, [[todo valueForKey:SMLastModDateKey] timeIntervalSince1970]);
-        //sleep(3);
+        //NSLog(@"After offline client update, todo is %@ with lastmoddate %f", todo, [[todo valueForKey:SMLastModDateKey] timeIntervalSince1970]);
+        
+        [NSThread sleepForTimeInterval:0.5];
+        
         // Update server at T2
         dispatch_queue_t queue = dispatch_queue_create("queue", NULL);
         dispatch_group_t group = dispatch_group_create();

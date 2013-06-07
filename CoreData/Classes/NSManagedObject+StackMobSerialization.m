@@ -104,44 +104,47 @@
     
     NSDictionary *valuesToSerialize = serializeFullObjects ? [self dictionaryWithValuesForKeys:[[selfEntity propertiesByName] allKeys]] : self.changedValues;
     
+    NSMutableArray *attributesToCheckForDefaultValues = !serializeFullObjects && [self isInserted] ? [[[selfEntity attributesByName] allKeys] mutableCopy] : nil;
+    
     [valuesToSerialize enumerateKeysAndObjectsUsingBlock:^(id propertyKey, id propertyValue, BOOL *stop) {
         
         NSPropertyDescription *property = [[selfEntity propertiesByName] objectForKey:propertyKey];
         if ([property isKindOfClass:[NSAttributeDescription class]]) {
             NSAttributeDescription *attributeDescription = (NSAttributeDescription *)property;
-            if (attributeDescription.attributeType != NSUndefinedAttributeType) {
+            NSString *fieldName = [selfEntity SMFieldNameForProperty:property];
+            if (attributeDescription.attributeType != NSUndefinedAttributeType && propertyValue != nil && propertyValue != [NSNull null]) {
                 if (attributeDescription.attributeType == NSDateAttributeType) {
-                    if (propertyValue != nil && propertyValue != [NSNull null]) {
-                        NSDate *dateValue = propertyValue;
-                        long double convertedDate = (long double)[dateValue timeIntervalSince1970] * 1000.0000;
-                        //unsigned long long convertedDate = (unsigned long long)[dateValue timeIntervalSince1970] * 1000;
-                        NSNumber *numberToSet = [NSNumber numberWithUnsignedLongLong:convertedDate];
-                        [objectDictionary setObject:numberToSet forKey:[selfEntity SMFieldNameForProperty:property]];
-                    }
+                    
+                    NSDate *dateValue = propertyValue;
+                    long double convertedDate = (long double)[dateValue timeIntervalSince1970] * 1000.0000;
+                    NSNumber *numberToSet = [NSNumber numberWithUnsignedLongLong:convertedDate];
+                    [objectDictionary setObject:numberToSet forKey:fieldName];
+                    
                 } else if (attributeDescription.attributeType == NSBooleanAttributeType) {
                     // make sure that boolean values are serialized as true or false
                     id value = propertyValue;
-                    if (value != nil) {
-                        if ([value boolValue]) {
-                            [objectDictionary setObject:[NSNumber numberWithBool:YES] forKey:[selfEntity SMFieldNameForProperty:property]];
-                        }
-                        else {
-                            [objectDictionary setObject:[NSNumber numberWithBool:NO] forKey:[selfEntity SMFieldNameForProperty:property]];
-                        }
+                    if ([value boolValue]) {
+                        [objectDictionary setObject:[NSNumber numberWithBool:YES] forKey:fieldName];
+                    }
+                    else {
+                        [objectDictionary setObject:[NSNumber numberWithBool:NO] forKey:fieldName];
                     }
                 }  else if (attributeDescription.attributeType == NSTransformableAttributeType) {
                     
                     // make sure geopoint values are serialized as dictionaries
                     NSData *data = propertyValue;
                     NSDictionary *geoDictionary = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-                    [objectDictionary setObject:geoDictionary forKey:[selfEntity SMFieldNameForProperty:property]];
+                    [objectDictionary setObject:geoDictionary forKey:fieldName];
                     
                 } else {
                     id value = propertyValue;
-                    if (value != nil) {
-                        [objectDictionary setObject:value forKey:[selfEntity SMFieldNameForProperty:property]];
-                    }
+                    [objectDictionary setObject:value forKey:fieldName];
                 }
+            }
+            
+            // Remove from attributes to check for default values
+            if (attributesToCheckForDefaultValues) {
+                [attributesToCheckForDefaultValues removeObject:propertyKey];
             }
         }
         else if ([property isKindOfClass:[NSRelationshipDescription class]]) {
@@ -200,6 +203,23 @@
         }
     }];
     
+    // Check for default values
+    if (attributesToCheckForDefaultValues && [attributesToCheckForDefaultValues count] > 0) {
+        [attributesToCheckForDefaultValues enumerateObjectsUsingBlock:^(id key, NSUInteger idx, BOOL *stop) {
+            NSAttributeDescription *attribute = [[selfEntity attributesByName] objectForKey:key];
+            if ([attribute defaultValue]) {
+                NSPropertyDescription *property = [[selfEntity propertiesByName] objectForKey:key];
+                
+                if (attribute.attributeType == NSBooleanAttributeType) {
+                    NSNumber *boolNumber = [[attribute defaultValue] boolValue] ? [NSNumber numberWithBool:YES] : [NSNumber numberWithBool:NO];
+                    [objectDictionary setObject:boolNumber forKey:[selfEntity SMFieldNameForProperty:property]];
+                } else {
+                    [objectDictionary setObject:[attribute defaultValue] forKey:[selfEntity SMFieldNameForProperty:property]];
+                }
+            }
+        }];
+    }
+    
     // Add value for primary key field if needed
     NSString *primaryKeyField = [self SMPrimaryKeyField];
     if (![objectDictionary valueForKey:primaryKeyField]) {
@@ -215,7 +235,6 @@
     if ([[objectDictionary allKeys] indexOfObject:@"sm_owner"] != NSNotFound && [objectDictionary objectForKey:@"sm_owner"] == [NSNull null]) {
         [objectDictionary removeObjectForKey:@"sm_owner"];
     }
-    
     
     return objectDictionary;
 }
