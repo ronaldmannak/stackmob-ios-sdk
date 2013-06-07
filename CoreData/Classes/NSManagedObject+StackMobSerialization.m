@@ -104,7 +104,7 @@
     
     NSDictionary *valuesToSerialize = serializeFullObjects ? [self dictionaryWithValuesForKeys:[[selfEntity propertiesByName] allKeys]] : self.changedValues;
     
-    NSMutableArray *attributesToCheckForDefaultValues = !serializeFullObjects ? [[[selfEntity attributesByName] allKeys] mutableCopy] : nil;
+    NSMutableArray *attributesToCheckForDefaultValues = !serializeFullObjects && [self isInserted] ? [[[selfEntity attributesByName] allKeys] mutableCopy] : nil;
     
     [valuesToSerialize enumerateKeysAndObjectsUsingBlock:^(id propertyKey, id propertyValue, BOOL *stop) {
         

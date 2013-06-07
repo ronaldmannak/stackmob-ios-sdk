@@ -3912,7 +3912,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
                     if ([[[entityDescriptionForRelationship name] lowercaseString] isEqualToString:[self.coreDataStore.session userSchema]]) {
                         relationshipPrimaryKeyField = [self.coreDataStore.session userPrimaryKeyField];
                     } else {
-                        relationshipPrimaryKeyField = [entityDescriptionForRelationship primaryKeyField];
+                        relationshipPrimaryKeyField = [entityDescriptionForRelationship SMPrimaryKeyField];
                     }
                     NSString *referenceObject = [relationshipContents objectForKey:relationshipPrimaryKeyField];
                     NSManagedObjectID *relationshipObjectID = [self newObjectIDForEntity:entityDescriptionForRelationship referenceObject:referenceObject];

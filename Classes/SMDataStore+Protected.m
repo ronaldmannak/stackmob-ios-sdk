@@ -334,10 +334,11 @@
             } else if ([response statusCode] == SMErrorServiceUnavailable && options.numberOfRetries > 0) {
                 NSString *retryAfter = [[response allHeaderFields] valueForKey:@"Retry-After"];
                 if (retryAfter) {
+                    dispatch_queue_t retryQueue = dispatch_queue_create("com.stackmob.retry", NULL);
                     [options setNumberOfRetries:(options.numberOfRetries - 1)];
                     double delayInSeconds = [retryAfter doubleValue];
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    dispatch_after(popTime, retryQueue, ^(void){
                         if (options.retryBlock) {
                             options.retryBlock(originalRequest, response, error, JSON, options, onSuccess, onFailure);
                         } else {
@@ -393,7 +394,9 @@
                 returnValue = [NSJSONSerialization JSONObjectWithData:responseObject options:kNilOptions error:&error];
                 if (error) {
                     if (onFailure) {
-                        onFailure([operation request], [operation response], error, nil);
+                        dispatch_async(failureCallbackQueue, ^{
+                            onFailure([operation request], [operation response], error, nil);
+                        });
                     }
                 } else if (onSuccess) {
                     onSuccess(operation.request, operation.response, returnValue);
@@ -422,10 +425,11 @@
             } else if ([[operation response] statusCode] == SMErrorServiceUnavailable && options.numberOfRetries > 0) {
                 NSString *retryAfter = [[[operation response] allHeaderFields] valueForKey:@"Retry-After"];
                 if (retryAfter) {
+                    dispatch_queue_t retryQueue = dispatch_queue_create("com.stackmob.retry", NULL);
                     [options setNumberOfRetries:(options.numberOfRetries - 1)];
                     double delayInSeconds = [retryAfter doubleValue];
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    dispatch_after(popTime, retryQueue, ^(void){
                         if (options.retryBlock) {
                             options.retryBlock([operation request], [operation response], error, nil, options, onSuccess, onFailure);
                         } else {
