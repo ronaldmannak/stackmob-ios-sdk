@@ -103,6 +103,7 @@ SMMergePolicy const SMMergePolicyServerModifiedWins = ^(NSDictionary *clientObje
     self = [super initWithAPIVersion:apiVersion session:session];
     if (self) {
         _managedObjectModel = managedObjectModel;
+        _mainThreadContext = self.mainThreadContext;
         
         
         /// Init callback queues
