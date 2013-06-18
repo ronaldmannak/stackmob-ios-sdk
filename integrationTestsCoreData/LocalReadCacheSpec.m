@@ -61,7 +61,7 @@ describe(@"LocalReadCacheInitialization", ^{
     });
 });
 
-
+/*
 describe(@"Successful fetching replaces equivalent results of fetching from cache", ^{
     __block SMClient *client = nil;
     __block SMCoreDataStore *cds = nil;
@@ -146,7 +146,7 @@ describe(@"Successful fetching replaces equivalent results of fetching from cach
         
     });
 });
-
+*/
 describe(@"Fetch with Cache", ^{
     __block SMClient *client = nil;
     __block SMCoreDataStore *cds = nil;
@@ -155,7 +155,7 @@ describe(@"Fetch with Cache", ^{
     __block NSDictionary *fixtures;
     beforeEach(^{
         SM_CACHE_ENABLED = YES;
-        //SM_CORE_DATA_DEBUG = YES;
+        SM_CORE_DATA_DEBUG = YES;
         
         fixturesToLoad = [NSArray arrayWithObjects:@"person", nil];
         fixtures = [SMIntegrationTestHelpers loadFixturesNamed:fixturesToLoad];
@@ -173,6 +173,7 @@ describe(@"Fetch with Cache", ^{
         [SMIntegrationTestHelpers destroyAllForFixturesNamed:fixturesToLoad];
         SM_CACHE_ENABLED = NO;
     });
+    /*
     describe(@"Cache else network logic", ^{
         it(@"behaves properly", ^{
             __block NSArray *fetchResults = nil;
@@ -557,8 +558,9 @@ describe(@"Fetch with Cache", ^{
             }];
         });
     });
-    
+    */
     describe(@"newValuesForRelationship offline testing, To-One", ^{
+        /*
         it(@"to-one null relationship returns null", ^{
             __block NSManagedObject *jonObject = nil;
             
@@ -633,7 +635,7 @@ describe(@"Fetch with Cache", ^{
                 [error shouldBeNil];
             }];
         });
-        
+        */
         it(@"to-one relationship fault fill without internet when related object has been previously fetched returns properly", ^{
             __block NSManagedObject *jonObject = nil;
             __block NSString *superpowerId = nil;

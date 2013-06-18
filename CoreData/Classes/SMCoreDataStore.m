@@ -102,10 +102,6 @@ SMMergePolicy const SMMergePolicyServerModifiedWins = ^(NSDictionary *clientObje
 {
     self = [super initWithAPIVersion:apiVersion session:session];
     if (self) {
-        _managedObjectModel = managedObjectModel;
-        _mainThreadContext = self.mainThreadContext;
-        
-        
         /// Init callback queues
         self.syncCallbackQueue = dispatch_get_main_queue();
         self.cachePurgeQueue = dispatch_queue_create("com.stackmob.cachePurgeQueue", NULL);
@@ -136,6 +132,9 @@ SMMergePolicy const SMMergePolicyServerModifiedWins = ^(NSDictionary *clientObje
         
         // Add observer for dirty queue
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(SM_didReceiveDirtyQueueNotification:) name:SMDirtyQueueNotification object:nil];
+        
+        _managedObjectModel = managedObjectModel;
+        _mainThreadContext = self.mainThreadContext;
         
     }
     
