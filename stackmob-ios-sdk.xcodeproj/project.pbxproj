@@ -205,6 +205,20 @@
 		DEA9ED77164B1D19006B7326 /* SMPushClientSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9ED76164B1D19006B7326 /* SMPushClientSpec.m */; };
 		DEA9ED96164B2BAB006B7326 /* SystemInformation.h in Headers */ = {isa = PBXBuildFile; fileRef = DEA9ED94164B2BAB006B7326 /* SystemInformation.h */; };
 		DEA9ED97164B2BAB006B7326 /* SystemInformation.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9ED95164B2BAB006B7326 /* SystemInformation.m */; };
+		DEAA266A1773A34500A6F62F /* SMMergePolicyInsertsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC0F17309916007CBA7F /* SMMergePolicyInsertsSpec.m */; };
+		DEAA266B1773A35E00A6F62F /* SMMergePolicyUpdatesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC111730994A007CBA7F /* SMMergePolicyUpdatesSpec.m */; };
+		DEAA266C1773A36100A6F62F /* SMMergePolicyDeletesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC1317309959007CBA7F /* SMMergePolicyDeletesSpec.m */; };
+		DEAA266D1773A4C000A6F62F /* LocalWriteCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1D16A216E694590045EDB5 /* LocalWriteCacheSpec.m */; };
+		DEAA266E1773A4C300A6F62F /* NSManagedObjectContext+ConcurrencySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB68FBF169F95EE00CC45F4 /* NSManagedObjectContext+ConcurrencySpec.m */; };
+		DEAA266F1773A4C600A6F62F /* IncrementalStoreBatchOperationsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0837A5167FE65B00872116 /* IncrementalStoreBatchOperationsSpec.m */; };
+		DEAA26701773A4C900A6F62F /* LocalReadCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE96D84E165DA06500303710 /* LocalReadCacheSpec.m */; };
+		DEAA26711773A4CC00A6F62F /* SMUpdateObjectsOptimizationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE585271631F3C40009A1DE /* SMUpdateObjectsOptimizationSpec.m */; };
+		DEAA26721773A4CE00A6F62F /* CoreDataPropertyTypesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DF4D7EF1631EBF400875E0F /* CoreDataPropertyTypesSpec.m */; };
+		DEAA26731773A4D100A6F62F /* SMUserManagedObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE64D6041623894600237570 /* SMUserManagedObjectSpec.m */; };
+		DEAA26741773A4D400A6F62F /* SMBinDataConvertCDIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE05E19515E2C0BF00224E4E /* SMBinDataConvertCDIntegrationSpec.m */; };
+		DEAA26751773A4D700A6F62F /* SMCoreDataStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC570FA15D065FC00D9E44E /* SMCoreDataStoreTest.m */; };
+		DEAA26761773A4DA00A6F62F /* SMIncrementalStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0CC7A715CB5EA200E491C4 /* SMIncrementalStoreTest.m */; };
+		DEAA26771773A4DD00A6F62F /* SMIncrementalStoreFetchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0CC7A615CB5EA200E491C4 /* SMIncrementalStoreFetchTest.m */; };
 		DEB68F93169F50CF00CC45F4 /* SMIncrementalStoreNode.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEC5F9F8169B979B00A44722 /* SMIncrementalStoreNode.h */; };
 		DEB6E8A9169662A700B2C88D /* AFHTTPClient+StackMob.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DE3AE12816810FAC000B2E80 /* AFHTTPClient+StackMob.h */; };
 		DEBBBCAF15CC440600650D75 /* SMCoreDataStore.h in Headers */ = {isa = PBXBuildFile; fileRef = DEBBBCA515CC440600650D75 /* SMCoreDataStore.h */; };
@@ -244,21 +258,7 @@
 		DEE18F61160A704000BDCCC6 /* NSDictionary+AtomicCounterSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE05E18515E2C08B00224E4E /* NSDictionary+AtomicCounterSpec.m */; };
 		DEE18F62160A77A200BDCCC6 /* NSEntityDescription_StackMobSerializationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE05E18615E2C08B00224E4E /* NSEntityDescription_StackMobSerializationSpec.m */; };
 		DEE18F63160A77AD00BDCCC6 /* NSManagedObject+StackMobSerializationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE05E18715E2C08B00224E4E /* NSManagedObject+StackMobSerializationSpec.m */; };
-		DEE53F331761641700A1B192 /* SMMergePolicyDeletesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC1317309959007CBA7F /* SMMergePolicyDeletesSpec.m */; };
 		DEE53F361761669B00A1B192 /* SMMergePolicyMiscSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC1517309974007CBA7F /* SMMergePolicyMiscSpec.m */; };
-		DEE53F371761669F00A1B192 /* SMMergePolicyUpdatesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC111730994A007CBA7F /* SMMergePolicyUpdatesSpec.m */; };
-		DEE53F38176166A200A1B192 /* SMMergePolicyInsertsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BCC0F17309916007CBA7F /* SMMergePolicyInsertsSpec.m */; };
-		DEE53F391761673400A1B192 /* LocalWriteCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1D16A216E694590045EDB5 /* LocalWriteCacheSpec.m */; };
-		DEE53F3A1761673900A1B192 /* NSManagedObjectContext+ConcurrencySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB68FBF169F95EE00CC45F4 /* NSManagedObjectContext+ConcurrencySpec.m */; };
-		DEE53F3B1761673C00A1B192 /* IncrementalStoreBatchOperationsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0837A5167FE65B00872116 /* IncrementalStoreBatchOperationsSpec.m */; };
-		DEE53F3C1761673E00A1B192 /* LocalReadCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE96D84E165DA06500303710 /* LocalReadCacheSpec.m */; };
-		DEE53F3D1761674100A1B192 /* SMUpdateObjectsOptimizationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE585271631F3C40009A1DE /* SMUpdateObjectsOptimizationSpec.m */; };
-		DEE53F3E1761674500A1B192 /* CoreDataPropertyTypesSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 1DF4D7EF1631EBF400875E0F /* CoreDataPropertyTypesSpec.m */; };
-		DEE53F3F1761674700A1B192 /* SMUserManagedObjectSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE64D6041623894600237570 /* SMUserManagedObjectSpec.m */; };
-		DEE53F401761674B00A1B192 /* SMBinDataConvertCDIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE05E19515E2C0BF00224E4E /* SMBinDataConvertCDIntegrationSpec.m */; };
-		DEE53F411761674E00A1B192 /* SMCoreDataStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DEC570FA15D065FC00D9E44E /* SMCoreDataStoreTest.m */; };
-		DEE53F421761675100A1B192 /* SMIncrementalStoreTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0CC7A715CB5EA200E491C4 /* SMIncrementalStoreTest.m */; };
-		DEE53F431761675400A1B192 /* SMIncrementalStoreFetchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DE0CC7A615CB5EA200E491C4 /* SMIncrementalStoreFetchTest.m */; };
 		DEEDC32816C984B4008B1CC2 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = DEEDC32616C984B4008B1CC2 /* Common.h */; };
 		DEF756B61624918E006FD554 /* KeychainWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = DEF756B41624918E006FD554 /* KeychainWrapper.h */; };
 		DEF756B71624918E006FD554 /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = DEF756B51624918E006FD554 /* KeychainWrapper.m */; };
@@ -1415,21 +1415,21 @@
 				1D8351E016C0969A00814C71 /* SMCoreDataIntegrationTest.xcdatamodeld in Sources */,
 				DE01F13C16F78CE800453088 /* User3.m in Sources */,
 				DE1D1F3E172F44EF00B60EB0 /* SMTestProperties.m in Sources */,
-				DEE53F331761641700A1B192 /* SMMergePolicyDeletesSpec.m in Sources */,
 				DEE53F361761669B00A1B192 /* SMMergePolicyMiscSpec.m in Sources */,
-				DEE53F371761669F00A1B192 /* SMMergePolicyUpdatesSpec.m in Sources */,
-				DEE53F38176166A200A1B192 /* SMMergePolicyInsertsSpec.m in Sources */,
-				DEE53F391761673400A1B192 /* LocalWriteCacheSpec.m in Sources */,
-				DEE53F3A1761673900A1B192 /* NSManagedObjectContext+ConcurrencySpec.m in Sources */,
-				DEE53F3B1761673C00A1B192 /* IncrementalStoreBatchOperationsSpec.m in Sources */,
-				DEE53F3C1761673E00A1B192 /* LocalReadCacheSpec.m in Sources */,
-				DEE53F3D1761674100A1B192 /* SMUpdateObjectsOptimizationSpec.m in Sources */,
-				DEE53F3E1761674500A1B192 /* CoreDataPropertyTypesSpec.m in Sources */,
-				DEE53F3F1761674700A1B192 /* SMUserManagedObjectSpec.m in Sources */,
-				DEE53F401761674B00A1B192 /* SMBinDataConvertCDIntegrationSpec.m in Sources */,
-				DEE53F411761674E00A1B192 /* SMCoreDataStoreTest.m in Sources */,
-				DEE53F421761675100A1B192 /* SMIncrementalStoreTest.m in Sources */,
-				DEE53F431761675400A1B192 /* SMIncrementalStoreFetchTest.m in Sources */,
+				DEAA266A1773A34500A6F62F /* SMMergePolicyInsertsSpec.m in Sources */,
+				DEAA266B1773A35E00A6F62F /* SMMergePolicyUpdatesSpec.m in Sources */,
+				DEAA266C1773A36100A6F62F /* SMMergePolicyDeletesSpec.m in Sources */,
+				DEAA266D1773A4C000A6F62F /* LocalWriteCacheSpec.m in Sources */,
+				DEAA266E1773A4C300A6F62F /* NSManagedObjectContext+ConcurrencySpec.m in Sources */,
+				DEAA266F1773A4C600A6F62F /* IncrementalStoreBatchOperationsSpec.m in Sources */,
+				DEAA26701773A4C900A6F62F /* LocalReadCacheSpec.m in Sources */,
+				DEAA26711773A4CC00A6F62F /* SMUpdateObjectsOptimizationSpec.m in Sources */,
+				DEAA26721773A4CE00A6F62F /* CoreDataPropertyTypesSpec.m in Sources */,
+				DEAA26731773A4D100A6F62F /* SMUserManagedObjectSpec.m in Sources */,
+				DEAA26741773A4D400A6F62F /* SMBinDataConvertCDIntegrationSpec.m in Sources */,
+				DEAA26751773A4D700A6F62F /* SMCoreDataStoreTest.m in Sources */,
+				DEAA26761773A4DA00A6F62F /* SMIncrementalStoreTest.m in Sources */,
+				DEAA26771773A4DD00A6F62F /* SMIncrementalStoreFetchTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
