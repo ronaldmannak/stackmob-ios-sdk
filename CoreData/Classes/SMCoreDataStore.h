@@ -58,7 +58,7 @@ extern SMMergePolicy const SMMergePolicyServerModifiedWins;
  
  ## Using the Cache and Offline Sync ##
  
- All the settings for turing on/off the cache, managing policies and sync callbacks, and initializing the sync process can be found in the <a href="https://developer.stackmob.com/ios-sdk/offline-sync-guide" target="_blank">Offline Sync Guide</a>.
+ All the settings for turing on/off the cache, managing policies and sync callbacks, and initializing the sync process can be found in the <a href="https://developer.stackmob.com/ios-sdk/offline-sync-guide" target="_blank">Caching and Offline Sync Guide</a>.
  
  @note You should not have to initialize an instance of this class directly.  Instead, initialize an instance of <SMClient> and use the method `coreDataStoreWithManagedObjectModel:` to retrieve an instance completely configured and ready to communicate to StackMob.
  */
