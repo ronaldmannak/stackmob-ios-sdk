@@ -2997,7 +2997,10 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         
         if (self.coreDataStore.syncCompletionCallback) {
             dispatch_async(self.coreDataStore.syncCallbackQueue, ^{
-                self.coreDataStore.syncCompletionCallback(syncInsertSuccesses);
+                NSMutableArray *syncSuccesses = [NSMutableArray arrayWithArray:syncInsertSuccesses];
+                [syncSuccesses addObjectsFromArray:syncUpdateSuccesses];
+                [syncSuccesses addObjectsFromArray:syncDeleteSuccesses];
+                self.coreDataStore.syncCompletionCallback([NSArray arrayWithArray:syncSuccesses]);
             });
         }
 
@@ -3006,7 +3009,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     self.coreDataStore.syncInProgress = NO;
 }
 
-- (void)mergeDirtyInserts:(NSMutableArray **)syncSuccesses failures:(NSMutableArray **)syncFailures
+- (void)mergeDirtyInserts:(NSMutableArray *__autoreleasing*)syncSuccesses failures:(NSMutableArray *__autoreleasing*)syncFailures
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
@@ -3168,7 +3171,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     
 }
 
-- (void)mergeDirtyUpdates:(NSMutableArray **)syncSuccesses failures:(NSMutableArray **)syncFailures
+- (void)mergeDirtyUpdates:(NSMutableArray *__autoreleasing*)syncSuccesses failures:(NSMutableArray *__autoreleasing*)syncFailures
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     
@@ -3353,7 +3356,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     }
 }
 
-- (void)mergeDirtyDeletes:(NSMutableArray **)syncSuccesses failures:(NSMutableArray **)syncFailures
+- (void)mergeDirtyDeletes:(NSMutableArray *__autoreleasing*)syncSuccesses failures:(NSMutableArray *__autoreleasing*)syncFailures
 {
     if (SM_CORE_DATA_DEBUG) {DLog()}
     

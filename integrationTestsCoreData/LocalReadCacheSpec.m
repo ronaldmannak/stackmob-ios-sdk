@@ -155,7 +155,6 @@ describe(@"Fetch with Cache", ^{
     __block NSDictionary *fixtures;
     beforeEach(^{
         SM_CACHE_ENABLED = YES;
-        SM_CORE_DATA_DEBUG = YES;
         
         fixturesToLoad = [NSArray arrayWithObjects:@"person", nil];
         fixtures = [SMIntegrationTestHelpers loadFixturesNamed:fixturesToLoad];
