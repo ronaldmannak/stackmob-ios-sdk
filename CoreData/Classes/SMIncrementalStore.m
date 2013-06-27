@@ -1411,6 +1411,7 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
             __block NSManagedObject *cacheManagedObject = [self.localManagedObjectContext objectWithID:[self SM_retrieveCacheObjectForRemoteID:remoteID entityName:[[sm_managedObject entity] name] createIfNeeded:YES serverLastModDate:[serializedObjectDict objectForKey:SMLastModDateKey]]];
         
             [self SM_populateCacheManagedObject:cacheManagedObject withDictionary:serializedObjectDict entity:fetchRequest.entity];
+            if (SM_CORE_DATA_DEBUG) { DLog(@"Cache mananged object after population:\n%@", cacheManagedObject) }
             return sm_managedObject;
             
         }];
@@ -2687,6 +2688,11 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
         // Sanity check
         if (permanentIdError) {
             [NSException raise:SMExceptionCacheError format:@"Could not obtain permanent IDs for objects %@ with error %@", cacheObject, permanentIdError];
+        }
+        
+        // Remove primary key if assigned in init methods by developers
+        if ([cacheObject valueForKey:primaryKeyField]) {
+            [cacheObject setValue:nil forKey:primaryKeyField];
         }
         
         [self SM_insertRemoteID:remoteID withCacheObjectID:[cacheObject objectID] list:self.cacheMappingTable entityName:entityName serverLastModDate:serverLastModDate];
