@@ -56,10 +56,13 @@
     
     if (fetchOffset) {
         if (fetchLimit) {
-            rangeHeader = [NSString stringWithFormat:@"objects=%ld-%ld", (unsigned long)fetchOffset, (unsigned long)fetchOffset+fetchLimit];
+            rangeHeader = [NSString stringWithFormat:@"objects=%ld-%ld", (unsigned long)fetchOffset, (unsigned long)fetchOffset + (fetchLimit - 1)];
         } else {
             rangeHeader = [NSString stringWithFormat:@"objects=%ld-", (unsigned long)fetchOffset];
         }
+        [[query requestHeaders] setValue:rangeHeader forKey:@"Range"];
+    } else if (fetchLimit) {
+        rangeHeader = [NSString stringWithFormat:@"objects=0-%ld", (unsigned long)fetchLimit - 1];
         [[query requestHeaders] setValue:rangeHeader forKey:@"Range"];
     }
     
