@@ -210,6 +210,7 @@ describe(@"with fixtures", ^{
             }
         });
     });
+    
     describe(@"sorting", ^{
         __block NSFetchRequest *fetchRequest;
         __block NSArray *sortDescriptors;
@@ -246,7 +247,6 @@ describe(@"with fixtures", ^{
             }];
         });
     });
-    
     describe(@"pagination / limiting", ^{
         __block NSFetchRequest *fetchRequest;
         describe(@"fetchLimit", ^{
@@ -277,7 +277,16 @@ describe(@"with fixtures", ^{
                     [[[results objectAtIndex:0] should] haveValue:@"Vaznaian" forKey:@"last_name"];
                     [[[results objectAtIndex:1] should] haveValue:@"Williams" forKey:@"last_name"];
                 }];
-            });            
+            });
+            it(@"returns the expected results, with limit", ^{
+                [fetchRequest setFetchLimit:1];
+                [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
+                [SMCoreDataIntegrationTestHelpers executeSynchronousFetch:moc withRequest:fetchRequest andBlock:^(NSArray *results, NSError *error) {
+                    [error shouldBeNil];
+                    [[results should] haveCountOf:1];
+                    [[[results objectAtIndex:0] should] haveValue:@"Vaznaian" forKey:@"last_name"];
+                }];
+            });
         });
         
         describe(@"fetchBatchSize", ^{
