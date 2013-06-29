@@ -134,7 +134,7 @@ typedef void (^SMTokenRefreshFailureBlock)(NSError *error, SMFailureBlock origin
  
  @since Available in iOS SDK 1.2.0 and later.
  */
-- (void)refreshTokenWithSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(void (^)(NSDictionary *userObject))successBlock onFailure:(void (^)(NSError *theError))failureBlock;
+- (void)refreshTokenWithSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(void (^)(NSDictionary *userObject))successBlock onFailure:(void (^)(NSError *error))failureBlock;
 
 /**
  Initialize a user session.
@@ -174,7 +174,7 @@ typedef void (^SMTokenRefreshFailureBlock)(NSError *error, SMFailureBlock origin
  @since Available in iOS SDK 1.0.0 and later.
  */
 - (void)refreshTokenOnSuccess:(void (^)(NSDictionary *userObject))successBlock
-                    onFailure:(void (^)(NSError *theError))failureBlock;
+                    onFailure:(void (^)(NSError *error))failureBlock;
 
 /**
  Set a block to be executed whenever a token refresh request fails.  Applies only to asynchronous methods with callbacks, called instead of the original failure block.
@@ -258,7 +258,7 @@ typedef void (^SMTokenRefreshFailureBlock)(NSError *error, SMFailureBlock origin
               successCallbackQueue:(dispatch_queue_t)successCallbackQueue
               failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                          onSuccess:(void (^)(NSDictionary *userObject))successBlock
-                         onFailure:(void (^)(NSError *theError))failureBlock;
+                         onFailure:(void (^)(NSError *error))failureBlock;
 
 /**
  Parses the access token information out of an /accessToken or /refreshToken response.

@@ -118,11 +118,11 @@
      
     NSDictionary *arguments = [NSDictionary dictionaryWithObjectsAndKeys:@"My Location", @"name", location, @"location", nil];
      
-    [[[SMClient defaultClient] dataStore] createObject:arguments inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-        NSLog(@"Created object %@ in schema %@", theObject, schema);
+    [[[SMClient defaultClient] dataStore] createObject:arguments inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
+        NSLog(@"Created object %@ in schema %@", object, schema);
      
-    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-        NSLog(@"Error creating object: %@", theError);
+    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+        NSLog(@"Error creating object: %@", error);
     }];
  
  */

@@ -37,9 +37,9 @@ describe(@"SMFullResponseSuccessBlockForSchema:withSuccessBlock:", ^{
         NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:200 HTTPVersion:@"1.1" headerFields:nil];
         
         __block BOOL completionBlockDidExecute = NO;
-        SMDataStoreSuccessBlock successBlock = ^(NSDictionary* theObject, NSString *schema) {
+        SMDataStoreSuccessBlock successBlock = ^(NSDictionary* object, NSString *schema) {
             [[schema should] equal:@"book"];
-            [[theObject should] equal:responseObject];
+            [[object should] equal:responseObject];
             completionBlockDidExecute = YES;
         };
         
@@ -60,9 +60,9 @@ describe(@"-SMFullResponseFailureBlockForObject:ofSchema:withFailureBlock:", ^{
         NSHTTPURLResponse *response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:200 HTTPVersion:@"1.1" headerFields:nil];
         
         __block BOOL completionBlockDidExecute = NO;
-        SMDataStoreFailureBlock failureBlock = ^(NSError *theError, NSDictionary* theObject, NSString *schema) {
+        SMDataStoreFailureBlock failureBlock = ^(NSError *error, NSDictionary* object, NSString *schema) {
             [[schema should] equal:@"book"];
-            [[theObject should] equal:requestObject];
+            [[object should] equal:requestObject];
             completionBlockDidExecute = YES;
         };
         

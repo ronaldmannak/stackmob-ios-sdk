@@ -117,10 +117,10 @@ describe(@"Write-through of successfully inserted objects, online", ^{
         // Create bob object on the server
         NSDictionary *bobObject = [NSDictionary dictionaryWithObjectsAndKeys:@"Bob", @"first_name", nil];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[testProperties.client dataStore] createObject:bobObject inSchema:@"person" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [[testProperties.client dataStore] createObject:bobObject inSchema:@"person" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
             }];
         });
         

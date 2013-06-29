@@ -40,11 +40,11 @@ describe(@"refresh token fail block", ^{
             }];
             [[client.dataStore.session stubAndReturn:@"1234"] refreshToken];
             [[client.dataStore.session stubAndReturn:theValue(YES)] accessTokenHasExpired];
-            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
                 NSLog(@"Schema is %@", schema);
-                NSLog(@"Failure with error: %@", theError);
+                NSLog(@"Failure with error: %@", error);
             }];
         });
         
@@ -61,11 +61,11 @@ describe(@"refresh token fail block", ^{
             [[client.dataStore.session stubAndReturn:@"1234"] refreshToken];
             [[client.dataStore.session stubAndReturn:theValue(YES)] accessTokenHasExpired];
             [[client.dataStore.session stubAndReturn:theValue(NO)] eligibleForTokenRefresh:any()];
-            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"name", nil] inSchema:@"oauth2test" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"name", nil] inSchema:@"oauth2test" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
                 NSLog(@"Schema is %@", schema);
-                NSLog(@"Failure with error: %@", theError);
+                NSLog(@"Failure with error: %@", error);
             }];
         });
         
@@ -80,11 +80,11 @@ describe(@"refresh token fail block", ^{
                 syncReturn(semaphore);
             }];
             [[client.dataStore.session stubAndReturn:theValue(YES)] eligibleForTokenRefresh:any()];
-            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [client.dataStore createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"title", nil] inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
                 NSLog(@"Schema is %@", schema);
-                NSLog(@"Failure with error: %@", theError);
+                NSLog(@"Failure with error: %@", error);
             }];
         });
         
@@ -170,11 +170,11 @@ describe(@"basic auth", ^{
             __block NSString *objID;
             __block NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"bar", @"foo", @"world", @"hello", nil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    objID = [theObject valueForKey:@"restricted_id"];
+                [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    objID = [object valueForKey:@"restricted_id"];
                     createSuccess = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) { 
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) { 
                     createSuccess = NO;
                     syncReturn(semaphore);
                 }]; 
@@ -184,10 +184,10 @@ describe(@"basic auth", ^{
             
             __block BOOL readSuccess = NO;
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
                     readSuccess = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObject, NSString *schema) {
+                } onFailure:^(NSError *error, NSString *object, NSString *schema) {
                     readSuccess = NO;
                     syncReturn(semaphore);
                 }];
@@ -197,10 +197,10 @@ describe(@"basic auth", ^{
             
             __block BOOL deleteSuccess = NO;
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *objectId, NSString *schema) {
                     deleteSuccess = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                     deleteSuccess = NO;
                     syncReturn(semaphore);
                 }];
@@ -218,7 +218,7 @@ describe(@"basic auth", ^{
                     getDone = YES;
                     obj = userObject;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     syncReturn(semaphore);
                 }];
             });
@@ -241,7 +241,7 @@ describe(@"basic auth", ^{
                 [defaultClient changeLoggedInUserPasswordFrom:@"1234" to:@"4321" onSuccess:^(NSDictionary *userObject) {
                     resetDone = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     syncReturn(semaphore);
                 }];
             });
@@ -280,7 +280,7 @@ describe(@"basic auth", ^{
                 [defaultClient refreshLoginWithOnSuccess:^(NSDictionary *userObject) {
                     done = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     syncReturn(semaphore);
                 }];
             });
@@ -299,11 +299,11 @@ describe(@"basic auth", ^{
                 __block NSString *objID;
                 NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"bar", @"foo", @"world", @"hello", nil];
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                        objID = [theObject valueForKey:@"restricted_id"];
+                    [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
+                        objID = [object valueForKey:@"restricted_id"];
                         createSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) { 
+                    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) { 
                         createSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -314,10 +314,10 @@ describe(@"basic auth", ^{
                 
                 __block BOOL readSuccess = NO;
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                    [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
                         readSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSString *theObject, NSString *schema) {
+                    } onFailure:^(NSError *error, NSString *object, NSString *schema) {
                         readSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -327,10 +327,10 @@ describe(@"basic auth", ^{
                 
                 __block BOOL deleteSuccess = NO;
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                    [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *objectId, NSString *schema) {
                         deleteSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+                    } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                         deleteSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -353,11 +353,11 @@ describe(@"basic auth", ^{
                 __block NSString *objID;
                 NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"bar", @"foo", @"world", @"hello", nil];
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                        objID = [theObject valueForKey:@"restricted_id"];
+                    [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
+                        objID = [object valueForKey:@"restricted_id"];
                         createSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) { 
+                    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) { 
                         createSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -368,10 +368,10 @@ describe(@"basic auth", ^{
                 
                 __block BOOL readSuccess = NO;
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                    [dataStore readObjectWithId:objID inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
                         readSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSString *theObject, NSString *schema) {
+                    } onFailure:^(NSError *error, NSString *object, NSString *schema) {
                         readSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -381,10 +381,10 @@ describe(@"basic auth", ^{
                 
                 __block BOOL deleteSuccess = NO;
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                    [dataStore deleteObjectId:objID inSchema:@"restricted" onSuccess:^(NSString *objectId, NSString *schema) {
                         deleteSuccess = YES;
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+                    } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                         deleteSuccess = NO;
                         syncReturn(semaphore);
                     }];
@@ -426,7 +426,7 @@ describe(@"basic auth", ^{
                 [defaultClient logoutOnSuccess:^(NSDictionary *userObject) {
                     logoutDone = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     syncReturn(semaphore);
                 }];
             });
@@ -438,11 +438,11 @@ describe(@"basic auth", ^{
             NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"bar", @"foo", @"world", @"hello", nil];
             
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    objID = [theObject valueForKey:@"restricted_id"];
+                [dataStore createObject:createObjectDict inSchema:@"restricted" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    objID = [object valueForKey:@"restricted_id"];
                     createFailed = NO;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) { 
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) { 
                     createFailed = YES;
                     syncReturn(semaphore);
                 }];
@@ -490,8 +490,8 @@ describe(@"basic auth", ^{
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
                 [defaultClient getLoggedInUserOnSuccess:^(NSDictionary *userObject) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
-                    error = theError;
+                } onFailure:^(NSError *error) {
+                    error = error;
                     getDone = YES;
                     syncReturn(semaphore);
                 }];
@@ -508,8 +508,8 @@ describe(@"basic auth", ^{
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
                 [defaultClient changeLoggedInUserPasswordFrom:@"1234" to:@"4321" onSuccess:^(NSDictionary *userObject) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
-                    error = theError;
+                } onFailure:^(NSError *error) {
+                    error = error;
                     getDone = YES;
                     syncReturn(semaphore);
                 }];
@@ -526,7 +526,7 @@ describe(@"basic auth", ^{
                 [defaultClient refreshLoginWithOnSuccess:^(NSDictionary *userObject) {
                     done = NO;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     done = YES;
                     syncReturn(semaphore);
                 }];
@@ -542,7 +542,7 @@ describe(@"basic auth", ^{
                 [defaultClient logoutOnSuccess:^(NSDictionary *userObject) {
                     logoutDone = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     logoutDone = NO;
                     syncReturn(semaphore);
                 }];
@@ -566,12 +566,12 @@ describe(@"forgotPassword", ^{
         createSuccess = NO;
         NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:@"bob", @"username", @"1234", @"password", @"1234", @"email", nil];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] createObject:createObjectDict inSchema:@"cooluser" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [[client dataStore] createObject:createObjectDict inSchema:@"cooluser" onSuccess:^(NSDictionary *object, NSString *schema) {
                 createSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
                 createSuccess = NO;
-                //createSuccess = (theError.code == 409);
+                //createSuccess = (error.code == 409);
                 syncReturn(semaphore);
             }];
         });
@@ -588,10 +588,10 @@ describe(@"forgotPassword", ^{
         deleteSuccess = NO;
         
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:@"bob" inSchema:@"cooluser" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:@"bob" inSchema:@"cooluser" onSuccess:^(NSString *objectId, NSString *schema) {
                 deleteSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                 deleteSuccess = NO;
                 syncReturn(semaphore);
             }]; 

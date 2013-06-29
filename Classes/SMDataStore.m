@@ -49,17 +49,17 @@
     return self;
 }
 
-- (void)createObject:(NSDictionary *)theObject inSchema:(NSString *)schema onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)createObject:(NSDictionary *)object inSchema:(NSString *)schema onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self createObject:theObject inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+    [self createObject:object inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)createObject:(NSDictionary *)theObject inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)createObject:(NSDictionary *)object inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self createObject:theObject inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+    [self createObject:object inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)createObject:(NSDictionary *)theObject
+- (void)createObject:(NSDictionary *)object
             inSchema:(NSString *)schema
              options:(SMRequestOptions *)options
 successCallbackQueue:(dispatch_queue_t)successCallbackQueue
@@ -67,10 +67,10 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
            onSuccess:(SMDataStoreSuccessBlock)successBlock
            onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-     if (theObject == nil || schema == nil) {
+     if (object == nil || schema == nil) {
      if (failureBlock) {
      NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-     failureBlock(error, theObject, schema);
+     failureBlock(error, object, schema);
      }
      } else {
      NSString *theSchema = schema;
@@ -79,50 +79,50 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
      theSchema = [theSchema lowercaseString];
      }
      
-     NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"POST" path:theSchema parameters:theObject];
+     NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"POST" path:theSchema parameters:object];
      SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForSchema:schema withSuccessBlock:successBlock];
-     SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObject:theObject ofSchema:schema withFailureBlock:failureBlock];
+     SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObject:object ofSchema:schema withFailureBlock:failureBlock];
      [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
      }
 }
 
-- (void)readObjectWithId:(NSString *)theObjectId
+- (void)readObjectWithId:(NSString *)objectId
                 inSchema:(NSString *)schema
                onSuccess:(SMDataStoreSuccessBlock)successBlock
                onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    [self readObjectWithId:theObjectId inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+    [self readObjectWithId:objectId inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)readObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)readObjectWithId:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    [self readObjectWithId:theObjectId inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+    [self readObjectWithId:objectId inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)readObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)readObjectWithId:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    [self readObjectWithId:theObjectId inSchema:schema parameters:nil options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
+    [self readObjectWithId:objectId inSchema:schema parameters:nil options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)updateObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)updateObjectWithId:(NSString *)objectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self updateObjectWithId:theObjectId inSchema:schema update:updatedFields options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+    [self updateObjectWithId:objectId inSchema:schema update:updatedFields options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)updateObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)updateObjectWithId:(NSString *)objectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self updateObjectWithId:theObjectId inSchema:schema update:updatedFields options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+    [self updateObjectWithId:objectId inSchema:schema update:updatedFields options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)updateObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)updateObjectWithId:(NSString *)objectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    if (theObjectId == nil || schema == nil) {
+    if (objectId == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
             failureBlock(error, updatedFields, schema);
         }
     } else {
-        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:theObjectId]];
+        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]];
         
         NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"PUT" path:path parameters:updatedFields];
         
@@ -132,17 +132,17 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
     }
 }
 
-- (void)updateAtomicCounterWithId:(NSString *)theObjectId
+- (void)updateAtomicCounterWithId:(NSString *)objectId
                             field:(NSString *)field
                          inSchema:(NSString *)schema
                                by:(int)increment
                         onSuccess:(SMDataStoreSuccessBlock)successBlock
                         onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self updateAtomicCounterWithId:theObjectId field:field inSchema:schema by:increment options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+    [self updateAtomicCounterWithId:objectId field:field inSchema:schema by:increment options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)updateAtomicCounterWithId:(NSString *)theObjectId
+- (void)updateAtomicCounterWithId:(NSString *)objectId
                             field:(NSString *)field
                          inSchema:(NSString *)schema
                                by:(int)increment
@@ -150,38 +150,38 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                         onSuccess:(SMDataStoreSuccessBlock)successBlock
                         onFailure:(SMDataStoreFailureBlock)failureBlock
 {
-    [self updateAtomicCounterWithId:theObjectId field:field inSchema:schema by:increment options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+    [self updateAtomicCounterWithId:objectId field:field inSchema:schema by:increment options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)updateAtomicCounterWithId:(NSString *)theObjectId field:(NSString *)field inSchema:(NSString *)schema by:(int)increment options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
+- (void)updateAtomicCounterWithId:(NSString *)objectId field:(NSString *)field inSchema:(NSString *)schema by:(int)increment options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreFailureBlock)failureBlock
 {
     NSDictionary *args = [[NSDictionary dictionary] dictionaryByAppendingCounterUpdateForField:field by:increment];
-    [self updateObjectWithId:theObjectId inSchema:schema update:args options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
+    [self updateObjectWithId:objectId inSchema:schema update:args options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)deleteObjectId:(NSString *)theObjectId inSchema:(NSString *)schema onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)deleteObjectId:(NSString *)objectId inSchema:(NSString *)schema onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    [self deleteObjectId:theObjectId inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+    [self deleteObjectId:objectId inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)deleteObjectId:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)deleteObjectId:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    [self deleteObjectId:theObjectId inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+    [self deleteObjectId:objectId inSchema:schema options:options successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)deleteObjectId:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)deleteObjectId:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    if (theObjectId == nil || schema == nil) {
+    if (objectId == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-            failureBlock(error, theObjectId, schema);
+            failureBlock(error, objectId, schema);
         }
     } else {
-        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:theObjectId]];
+        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]];
         
         NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"DELETE" path:path parameters:nil];
-        SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForObjectId:theObjectId ofSchema:schema withSuccessBlock:successBlock];
-        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:theObjectId ofSchema:schema withFailureBlock:failureBlock];
+        SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForObjectId:objectId ofSchema:schema withSuccessBlock:successBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:objectId ofSchema:schema withFailureBlock:failureBlock];
         [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
     }
 }

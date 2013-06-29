@@ -36,7 +36,7 @@ describe(@"SMPushClient", ^{
             [defaultClient registerDeviceToken:token0 withUser:@"bodie" onSuccess:^{
                 createSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 createSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -48,7 +48,7 @@ describe(@"SMPushClient", ^{
             [defaultClient registerDeviceToken:token1 withUser:@"bodie" onSuccess:^{
                 createSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 createSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -60,7 +60,7 @@ describe(@"SMPushClient", ^{
             [defaultClient registerDeviceToken:token2 withUser:@"nola" onSuccess:^{
                 createSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 createSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -74,7 +74,7 @@ describe(@"SMPushClient", ^{
             [defaultClient deleteToken:token0 onSuccess:^{
                 deleteSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 deleteSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -87,7 +87,7 @@ describe(@"SMPushClient", ^{
             [defaultClient deleteToken:token1 onSuccess:^{
                 deleteSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 deleteSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -100,7 +100,7 @@ describe(@"SMPushClient", ^{
             [defaultClient deleteToken:token2 onSuccess:^{
                 deleteSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError) {
+            } onFailure:^(NSError *error) {
                 deleteSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -115,7 +115,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token1 withUser:@"herc" overwrite:NO onSuccess:^{
                     failed = NO;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     failed = YES;
                     syncReturn(semaphore);
                 }];
@@ -128,7 +128,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:@"tooshort" withUser:@"herc" onSuccess:^{
                     failed = NO;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     failed = YES;
                     syncReturn(semaphore);
                 }];
@@ -141,7 +141,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token1 withUser:@"herc" onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -155,7 +155,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token withUser:@"herc" overwrite:YES onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -169,7 +169,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token withUser:@"herc" onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -181,7 +181,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient deleteToken:token3 onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = YES;
                     syncReturn(semaphore);
                 }];
@@ -196,7 +196,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token withUser:@"kodi" onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -207,7 +207,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient deleteToken:token onSuccess:^{
                     deleteSuccess = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     deleteSuccess = NO;
                     syncReturn(semaphore);
                 }];
@@ -221,7 +221,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient deleteToken:@"notatoken" onSuccess:^{
                     failed = NO;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     failed = YES;
                     syncReturn(semaphore);
                 }];
@@ -238,7 +238,7 @@ describe(@"SMPushClient", ^{
                     succeeded = YES;
                     result = tokens;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -255,7 +255,7 @@ describe(@"SMPushClient", ^{
                     succeeded = YES;
                     result = tokens;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -276,7 +276,7 @@ describe(@"SMPushClient", ^{
                     succeeded = YES;
                     result = tokens;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -308,7 +308,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient registerDeviceToken:token withUser:@"kodi" onSuccess:^{
                     succeeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -321,7 +321,7 @@ describe(@"SMPushClient", ^{
                     succeeded = YES;
                     result = tokens;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -339,7 +339,7 @@ describe(@"SMPushClient", ^{
                 [defaultClient deleteToken:token onSuccess:^{
                     deleteSuccess = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     deleteSuccess = NO;
                     syncReturn(semaphore);
                 }];
@@ -361,7 +361,7 @@ describe(@"SMPushClient", ^{
                     succeeded = YES;
                     result = tokens;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError) {
+                } onFailure:^(NSError *error) {
                     succeeded = NO;
                     syncReturn(semaphore);
                 }];
@@ -383,7 +383,7 @@ describe(@"SMPushClient", ^{
          succeeded = YES;
          result = tokens;
          syncReturn(semaphore);
-         } onFailure:^(NSError *theError) {
+         } onFailure:^(NSError *error) {
          succeeded = NO;
          syncReturn(semaphore);
          }];
@@ -402,7 +402,7 @@ describe(@"SMPushClient", ^{
          succeeded = YES;
          result = tokens;
          syncReturn(semaphore);
-         } onFailure:^(NSError *theError) {
+         } onFailure:^(NSError *error) {
          succeeded = NO;
          syncReturn(semaphore);
          }];
@@ -424,7 +424,7 @@ describe(@"SMPushClient", ^{
          succeeded = YES;
          result = tokens;
          syncReturn(semaphore);
-         } onFailure:^(NSError *theError) {
+         } onFailure:^(NSError *error) {
          succeeded = NO;
          syncReturn(semaphore);
          }];

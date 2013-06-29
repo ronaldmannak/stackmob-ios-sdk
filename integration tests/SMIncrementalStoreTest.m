@@ -161,11 +161,11 @@ describe(@"with fixtures", ^{
                 }];
                 
                 // TODO MAKE SYNC
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[superpower SMObjectId] inSchema:[superpower SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[superpower SMObjectId] inSchema:[superpower SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted superpower");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete superpower with error userInfo %@", [theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete superpower with error userInfo %@", [error userInfo]);
                 }];
             });
 
@@ -261,17 +261,17 @@ describe(@"with fixtures", ^{
                 }];
 
                 // TODO MAKE SYNC
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[basketball SMObjectId] inSchema:[basketball SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[basketball SMObjectId] inSchema:[basketball SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted basketball");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete basketball with error userInfo %@",[theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete basketball with error userInfo %@",[error userInfo]);
                 }];
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[tennis SMObjectId] inSchema:[tennis SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[tennis SMObjectId] inSchema:[tennis SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted tennis");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete tennis with error userInfo %@",[theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete tennis with error userInfo %@",[error userInfo]);
                 }];
                 
             });
@@ -429,17 +429,17 @@ describe(@"with fixtures", ^{
                 
                 
                 // delete objects
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[blueBottle SMObjectId] inSchema:[blueBottle SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[blueBottle SMObjectId] inSchema:[blueBottle SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted blueBottle");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete blueBottle with error userInfo %@",[theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete blueBottle with error userInfo %@",[error userInfo]);
                 }];
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[batman SMObjectId] inSchema:[batman SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[batman SMObjectId] inSchema:[batman SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted batman");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete batman with error userInfo %@",[theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete batman with error userInfo %@",[error userInfo]);
                 }];
                 
             });
@@ -571,11 +571,11 @@ describe(@"with fixtures", ^{
                     [[theValue(countOfPeopleAfterDelete) should] equal:theValue(countOfPeopleBeforeDelete - 1)];
                 }];
                 
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[batman SMObjectId] inSchema:[batman SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[batman SMObjectId] inSchema:[batman SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted batman");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete batman with error userInfo %@",[theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete batman with error userInfo %@",[error userInfo]);
                 }];
                 
             });
@@ -645,17 +645,17 @@ describe(@"with fixtures", ^{
                 }];
                 
                 // delete objects
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[basketball SMObjectId] inSchema:[basketball SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[basketball SMObjectId] inSchema:[basketball SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted basketball");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"Did not delete basketball with error userInfo %@", [theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"Did not delete basketball with error userInfo %@", [error userInfo]);
                 }];
-                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[tennis SMObjectId] inSchema:[tennis SMSchema] onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [[[SMIntegrationTestHelpers defaultClient] dataStore] deleteObjectId:[tennis SMObjectId] inSchema:[tennis SMSchema] onSuccess:^(NSString *objectId, NSString *schema) {
                     DLog(@"Deleted tennis");
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
-                    DLog(@"did not delete tennis with error userInfo %@", [theError userInfo]);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
+                    DLog(@"did not delete tennis with error userInfo %@", [error userInfo]);
                 }];
 
             });

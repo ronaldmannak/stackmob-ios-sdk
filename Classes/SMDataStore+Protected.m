@@ -45,12 +45,12 @@
     };
 }
 
-- (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForObjectId:(NSString *)theObjectId ofSchema:(NSString *)schema withSuccessBlock:(SMDataStoreObjectIdSuccessBlock)successBlock 
+- (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withSuccessBlock:(SMDataStoreObjectIdSuccessBlock)successBlock 
 {
     return ^void(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
     {
         if (successBlock) {
-            successBlock(theObjectId, schema);
+            successBlock(objectId, schema);
         }
     };
 }
@@ -96,22 +96,22 @@
 }
 
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)theObject ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock
 {
     return ^void(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)
     {
         if (failureBlock) {
-            response == nil ? failureBlock(error, theObject, schema) : failureBlock([self errorFromResponse:response JSON:JSON], theObject, schema);
+            response == nil ? failureBlock(error, object, schema) : failureBlock([self errorFromResponse:response JSON:JSON], object, schema);
         }
     };
 }
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)theObjectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
     return ^void(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)
     {
         if (failureBlock) {
-            response == nil ? failureBlock(error, theObjectId, schema) : failureBlock([self errorFromResponse:response JSON:JSON], theObjectId, schema);
+            response == nil ? failureBlock(error, objectId, schema) : failureBlock([self errorFromResponse:response JSON:JSON], objectId, schema);
         }
     };
 }
@@ -126,12 +126,12 @@
     };
 }
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)theObject options:(SMRequestOptions *)options originalSuccessBlock:(SMResultSuccessBlock)originalSuccessBlock coreDataSaveFailureBlock:(SMCoreDataSaveFailureBlock)failureBlock
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object options:(SMRequestOptions *)options originalSuccessBlock:(SMResultSuccessBlock)originalSuccessBlock coreDataSaveFailureBlock:(SMCoreDataSaveFailureBlock)failureBlock
 {
     return ^void(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)
     {
         if (failureBlock) {
-            response == nil ? failureBlock(request, error, theObject, options, originalSuccessBlock) : failureBlock(request, [self errorFromResponse:response JSON:JSON], theObject, options, originalSuccessBlock);
+            response == nil ? failureBlock(request, error, object, options, originalSuccessBlock) : failureBlock(request, [self errorFromResponse:response JSON:JSON], object, options, originalSuccessBlock);
         }
     };
 }
@@ -153,18 +153,18 @@
     } 
 }
 
-- (void)readObjectWithId:(NSString *)theObjectId inSchema:(NSString *)schema parameters:(NSDictionary *)parameters options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (void)readObjectWithId:(NSString *)objectId inSchema:(NSString *)schema parameters:(NSDictionary *)parameters options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
-    if (theObjectId == nil || schema == nil) {
+    if (objectId == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-            failureBlock(error, theObjectId, schema);
+            failureBlock(error, objectId, schema);
         }
     } else {
-        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:theObjectId]];
+        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]];
         NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"GET" path:path parameters:parameters];
         SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForSchema:schema withSuccessBlock:successBlock];
-        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:theObjectId ofSchema:schema withFailureBlock:failureBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:objectId ofSchema:schema withFailureBlock:failureBlock];
         [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
     }
 }
@@ -184,16 +184,16 @@
         [self.session refreshTokenWithSuccessCallbackQueue:newQueueForRefresh failureCallbackQueue:newQueueForRefresh onSuccess:^(NSDictionary *userObject) {
             [self queueRequest:[self.session signRequest:request] options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
          
-        } onFailure:^(NSError *theError) {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:theError, SMRefreshErrorObjectKey, @"Attempt to refresh access token failed.", NSLocalizedDescriptionKey, nil];
+        } onFailure:^(NSError *error) {
+            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:error, SMRefreshErrorObjectKey, @"Attempt to refresh access token failed.", NSLocalizedDescriptionKey, nil];
             if (originalError) {
                 [userInfo setObject:originalError forKey:SMOriginalErrorCausingRefreshKey];
             }
             __block NSError *refreshError = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorRefreshTokenFailed userInfo:userInfo];
             if (self.session.tokenRefreshFailureBlock) {
                 dispatch_async(failureCallbackQueue, ^{
-                    SMFailureBlock newFailureBlock = ^(NSError *error){
-                        failureBlock(nil, nil, error, nil);
+                    SMFailureBlock newFailureBlock = ^(NSError *anError){
+                        failureBlock(nil, nil, anError, nil);
                     };
                     self.session.tokenRefreshFailureBlock(refreshError, newFailureBlock);
                 });
@@ -221,16 +221,16 @@
         [self.session refreshTokenWithSuccessCallbackQueue:newQueueForRefresh failureCallbackQueue:newQueueForRefresh onSuccess:^(NSDictionary *userObject) {
             [self queueCustomCodeRequest:[self.session signRequest:request] customCodeRequestInstance:customCodeRequest options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
             
-        } onFailure:^(NSError *theError) {
-            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:theError, SMRefreshErrorObjectKey, @"Attempt to refresh access token failed.", NSLocalizedDescriptionKey, nil];
+        } onFailure:^(NSError *error) {
+            NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:error, SMRefreshErrorObjectKey, @"Attempt to refresh access token failed.", NSLocalizedDescriptionKey, nil];
             if (originalError) {
                 [userInfo setObject:originalError forKey:SMOriginalErrorCausingRefreshKey];
             }
             __block NSError *refreshError = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorRefreshTokenFailed userInfo:userInfo];
             if (self.session.tokenRefreshFailureBlock) {
                 dispatch_async(failureCallbackQueue, ^{
-                    SMFailureBlock newFailureBlock = ^(NSError *error){
-                        failureBlock(nil, nil, error, nil);
+                    SMFailureBlock newFailureBlock = ^(NSError *anError){
+                        failureBlock(nil, nil, anError, nil);
                     };
                     self.session.tokenRefreshFailureBlock(refreshError, newFailureBlock);
                 });
@@ -483,13 +483,13 @@
 
 // Operational methods
 
-- (AFJSONRequestOperation *)postOperationForObject:(NSDictionary *)theObject inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
+- (AFJSONRequestOperation *)postOperationForObject:(NSDictionary *)object inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
 {
     
-    if (theObject == nil || schema == nil) {
+    if (object == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-            failureBlock(nil, error, theObject, options, nil);
+            failureBlock(nil, error, object, options, nil);
         }
         return nil;
     } else {
@@ -499,23 +499,23 @@
             theSchema = [theSchema lowercaseString];
         }
         
-        NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"POST" path:theSchema parameters:theObject];
+        NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"POST" path:theSchema parameters:object];
         SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForResultSuccessBlock:successBlock];
-        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObject:theObject options:options originalSuccessBlock:successBlock coreDataSaveFailureBlock:failureBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObject:object options:options originalSuccessBlock:successBlock coreDataSaveFailureBlock:failureBlock];
         return [self newOperationForRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
     }
 }
 
-- (AFJSONRequestOperation *)putOperationForObjectID:(NSString *)theObjectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
+- (AFJSONRequestOperation *)putOperationForObjectID:(NSString *)objectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
 {
-    if (theObjectId == nil || schema == nil) {
+    if (objectId == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
             failureBlock(nil, error, updatedFields, options, nil);
         }
         return nil;
     } else {
-        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:theObjectId]];
+        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]];
         
         NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"PUT" path:path parameters:updatedFields];
         
@@ -525,16 +525,16 @@
     }
 }
 
-- (AFJSONRequestOperation *)deleteOperationForObjectID:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
+- (AFJSONRequestOperation *)deleteOperationForObjectID:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock
 {
-    if (theObjectId == nil || schema == nil) {
+    if (objectId == nil || schema == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
             failureBlock(nil, error, nil, options, nil);
         }
         return nil;
     } else {
-        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:theObjectId]];
+        NSString *path = [[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]];
         
         NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"DELETE" path:path parameters:nil];
         SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForResultSuccessBlock:successBlock];

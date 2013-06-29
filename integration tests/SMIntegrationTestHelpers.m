@@ -89,11 +89,11 @@ void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQueryBlock blo
             NSString *uuid = [(NSDictionary *)obj objectForKey:uuid_field];
             
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [sm deleteObjectId:uuid inSchema:fixtureName onSuccess:^(NSString *theObjectId, NSString *schema) {
-                    NSLog(@"Deleted %@ from schema %@", theObjectId, schema);
+                [sm deleteObjectId:uuid inSchema:fixtureName onSuccess:^(NSString *objectId, NSString *schema) {
+                    NSLog(@"Deleted %@ from schema %@", objectId, schema);
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    NSLog(@"Failed to delete %@ from schema %@: %@", theObjectId, schema, theError);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    NSLog(@"Failed to delete %@ from schema %@: %@", objectId, schema, error);
                     syncReturn(semaphore);  
                 }];
             });
@@ -120,12 +120,12 @@ void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQueryBlock blo
     
     [objToInsert enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         dispatch_group_enter(group);
-        [smClient createObject:(NSDictionary *)obj inSchema:fixtureName options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
-            NSLog(@"Created object in schema %@:\n%@", schema, theObject);
-            [insertedObjectsForFixture addObject:theObject];
+        [smClient createObject:(NSDictionary *)obj inSchema:fixtureName options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
+            NSLog(@"Created object in schema %@:\n%@", schema, object);
+            [insertedObjectsForFixture addObject:object];
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            NSLog(@"Failed to create a new %@: %@", schema, theError);
+        } onFailure:^(NSError *anError, NSDictionary *object, NSString *schema) {
+            NSLog(@"Failed to create a new %@: %@", schema, anError);
             dispatch_group_leave(group);
         }];
     }];
@@ -153,11 +153,11 @@ void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQueryBlock blo
     [[_insertedObjects objectForKey:fixtureName] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         dispatch_group_enter(group);
         NSString *uuid = [(NSDictionary *)obj objectForKey:idField];
-        [smClient deleteObjectId:uuid inSchema:fixtureName onSuccess:^(NSString *theObjectId, NSString *schema) {
-            NSLog(@"Deleted %@ from schema %@", theObjectId, schema);
+        [smClient deleteObjectId:uuid inSchema:fixtureName onSuccess:^(NSString *objectId, NSString *schema) {
+            NSLog(@"Deleted %@ from schema %@", objectId, schema);
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-            NSLog(@"Failed to delete %@ from schema %@: %@", theObjectId, schema, theError);
+        } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+            NSLog(@"Failed to delete %@ from schema %@: %@", objectId, schema, error);
             dispatch_group_leave(group);
         }];
     }];
@@ -175,11 +175,11 @@ void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQueryBlock blo
     __block BOOL createSuccess = NO;
     __block NSDictionary *createObjectDict = [NSDictionary dictionaryWithObjectsAndKeys:username, @"username", password, @"password", @"value", @"randomfield", nil];
     syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-        [dataStore createObject:createObjectDict inSchema:@"user" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [dataStore createObject:createObjectDict inSchema:@"user" onSuccess:^(NSDictionary *object, NSString *schema) {
             createSuccess = YES;
             syncReturn(semaphore);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            createSuccess = (theError.code == 409);
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            createSuccess = (error.code == 409);
             syncReturn(semaphore);
         }];
     });
@@ -191,10 +191,10 @@ void synchronousQuery(SMDataStore *sm, SMQuery *query, SynchronousQueryBlock blo
 {
     __block BOOL deleteSuccess = NO;
     syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-        [dataStore deleteObjectId:username inSchema:@"user" onSuccess:^(NSString *theObjectId, NSString *schema) {
+        [dataStore deleteObjectId:username inSchema:@"user" onSuccess:^(NSString *objectId, NSString *schema) {
             deleteSuccess = YES;
             syncReturn(semaphore);
-        } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+        } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
             deleteSuccess = NO;
             syncReturn(semaphore);
         }];

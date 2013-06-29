@@ -118,10 +118,10 @@ describe(@"Successful fetching replaces equivalent results of fetching from cach
         // Delete a Matt from the server
         __block BOOL deleteSuccess = NO;
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:mattObjectID inSchema:@"person" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:mattObjectID inSchema:@"person" onSuccess:^(NSString *objectId, NSString *schema) {
                 deleteSuccess = YES;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                 deleteSuccess = NO;
                 syncReturn(semaphore);
             }];
@@ -285,10 +285,10 @@ describe(@"Fetch with Cache", ^{
             // update object on the server
             NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Bob", @"first_name", nil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [[client dataStore] updateObjectWithId:personId inSchema:@"person" update:dict onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                [[client dataStore] updateObjectWithId:personId inSchema:@"person" update:dict onSuccess:^(NSDictionary *object, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });
@@ -380,10 +380,10 @@ describe(@"Fetch with Cache", ^{
             // update object on the server
             NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:@"Bob", @"first_name", nil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [[client dataStore] updateObjectWithId:personId inSchema:@"person" update:dict onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                [[client dataStore] updateObjectWithId:personId inSchema:@"person" update:dict onSuccess:^(NSDictionary *object, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });
@@ -1515,11 +1515,11 @@ describe(@"Testing cache using Entity with a GeoPoint attribute", ^{
  // create an object
  NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"1234", @"todo_id", @"new todo", @"title", nil];
  syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
- [[client dataStore] createObject:dictionary inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+ [[client dataStore] createObject:dictionary inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
  NSLog(@"successful create");
  syncReturn(semaphore);
- } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
- NSLog(@"failure creating: %@", theError);
+ } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+ NSLog(@"failure creating: %@", error);
  syncReturn(semaphore);
  }];
  });
@@ -1528,11 +1528,11 @@ describe(@"Testing cache using Entity with a GeoPoint attribute", ^{
  afterEach(^{
  [cds setCachePolicy:SMCachePolicyTryNetworkOnly];
  syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
- [[client dataStore] deleteObjectId:@"1234" inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+ [[client dataStore] deleteObjectId:@"1234" inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
  NSLog(@"successful delete");
  syncReturn(semaphore);
- } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
- NSLog(@"error deleting: %@", theError);
+ } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+ NSLog(@"error deleting: %@", error);
  syncReturn(semaphore);
  }];
  });

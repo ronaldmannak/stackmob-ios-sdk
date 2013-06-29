@@ -147,15 +147,9 @@
 		DE2EA1A116CC7304001FA904 /* SMGeoPoint.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D83529416C5ACD000814C71 /* SMGeoPoint.h */; };
 		DE2EA1A216CC7304001FA904 /* SMLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 1D8352A716C8512400814C71 /* SMLocationManager.h */; };
 		DE2EA1A316CC7304001FA904 /* Common.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = DEEDC32616C984B4008B1CC2 /* Common.h */; };
-		DE342430176013980033B419 /* SMCusCodeReqIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB16BCB15DC606300893EE5 /* SMCusCodeReqIntegrationSpec.m */; };
-		DE342431176017630033B419 /* QueryTestsWithPermissionsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE1BDE2D1682BFEC009282BA /* QueryTestsWithPermissionsSpec.m */; };
-		DE342432176017660033B419 /* QueryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 619EDF11159292AC0075BB93 /* QueryTests.m */; };
-		DE342433176017690033B419 /* SMClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEB8474D159A74D000FF37A3 /* SMClientIntegrationSpec.m */; };
-		DE3424341760176B0033B419 /* CRUDTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8C33B0641591355A00BE2570 /* CRUDTests.m */; };
-		DE3424351760176F0033B419 /* SMPushClientIntegrationSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9ED78164B1D43006B7326 /* SMPushClientIntegrationSpec.m */; };
-		DE342436176017720033B419 /* SMNetworkReachabilitySpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DEA9EEBE164B4F24006B7326 /* SMNetworkReachabilitySpec.m */; };
 		DE3AE12A16810FAC000B2E80 /* AFHTTPClient+StackMob.h in Headers */ = {isa = PBXBuildFile; fileRef = DE3AE12816810FAC000B2E80 /* AFHTTPClient+StackMob.h */; };
 		DE3AE12B16810FAC000B2E80 /* AFHTTPClient+StackMob.m in Sources */ = {isa = PBXBuildFile; fileRef = DE3AE12916810FAC000B2E80 /* AFHTTPClient+StackMob.m */; };
+		DE4FBFCF177E741D00E13A22 /* RelationshipsSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = DE4FBFCE177E741D00E13A22 /* RelationshipsSpec.m */; };
 		DE64D6011623777900237570 /* SMUserManagedObject.h in Headers */ = {isa = PBXBuildFile; fileRef = DE64D5FF1623777900237570 /* SMUserManagedObject.h */; };
 		DE64D6021623777900237570 /* SMUserManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DE64D6001623777900237570 /* SMUserManagedObject.m */; };
 		DE64D61C1623BAE800237570 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE64D61B1623BAE800237570 /* Security.framework */; };
@@ -469,6 +463,7 @@
 		DE1F26681733375F00DA734F /* FileManagement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManagement.m; sourceTree = "<group>"; };
 		DE3AE12816810FAC000B2E80 /* AFHTTPClient+StackMob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AFHTTPClient+StackMob.h"; sourceTree = "<group>"; };
 		DE3AE12916810FAC000B2E80 /* AFHTTPClient+StackMob.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AFHTTPClient+StackMob.m"; sourceTree = "<group>"; };
+		DE4FBFCE177E741D00E13A22 /* RelationshipsSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RelationshipsSpec.m; sourceTree = "<group>"; };
 		DE64D5FF1623777900237570 /* SMUserManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMUserManagedObject.h; sourceTree = "<group>"; };
 		DE64D6001623777900237570 /* SMUserManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUserManagedObject.m; sourceTree = "<group>"; };
 		DE64D6041623894600237570 /* SMUserManagedObjectSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMUserManagedObjectSpec.m; sourceTree = "<group>"; };
@@ -627,9 +622,11 @@
 				DE1BDE2D1682BFEC009282BA /* QueryTestsWithPermissionsSpec.m */,
 				DEB16BCB15DC606300893EE5 /* SMCusCodeReqIntegrationSpec.m */,
 				DEA9ED78164B1D43006B7326 /* SMPushClientIntegrationSpec.m */,
+				DE4FBFCE177E741D00E13A22 /* RelationshipsSpec.m */,
 				DEA9EEBE164B4F24006B7326 /* SMNetworkReachabilitySpec.m */,
 				DEA9EEC0164B4F7E006B7326 /* SMNetworkReachabilityHelper.h */,
 				DEA9EEC1164B4F7E006B7326 /* SMNetworkReachabilityHelper.m */,
+				DE0CC7BC15CB6A9000E491C4 /* integrationTestsCoreData */,
 			);
 			name = "Integration Tests";
 			path = "integration tests";
@@ -661,7 +658,6 @@
 				DEA9ED61164B1CBF006B7326 /* Push */,
 				8CCCE4FF1580389800C38962 /* Tests */,
 				8C33B04C15912B1F00BE2570 /* Integration Tests */,
-				DE0CC7BC15CB6A9000E491C4 /* integrationTestsCoreData */,
 				8CCCE4E81580389800C38962 /* Frameworks */,
 				8CCCE4E71580389800C38962 /* Products */,
 				1C66BB747CC543ECA80B6D69 /* Pods.xcconfig */,
@@ -856,7 +852,8 @@
 				DE9BCC1517309974007CBA7F /* SMMergePolicyMiscSpec.m */,
 				DEA052E316EEADF9009F7462 /* OfflineLocalWriteCacheSpec.m */,
 			);
-			path = integrationTestsCoreData;
+			name = integrationTestsCoreData;
+			path = ../integrationTestsCoreData;
 			sourceTree = "<group>";
 		};
 		DE0CC7BD15CB6A9000E491C4 /* Supporting Files */ = {
@@ -1324,13 +1321,7 @@
 				1DDAE4691656EF15001DFAEF /* SMNetworkReachabilityHelper.m in Sources */,
 				1D8351CF16C08D7000814C71 /* Random.m in Sources */,
 				1D8351DF16C0969900814C71 /* SMCoreDataIntegrationTest.xcdatamodeld in Sources */,
-				DE342430176013980033B419 /* SMCusCodeReqIntegrationSpec.m in Sources */,
-				DE342431176017630033B419 /* QueryTestsWithPermissionsSpec.m in Sources */,
-				DE342432176017660033B419 /* QueryTests.m in Sources */,
-				DE342433176017690033B419 /* SMClientIntegrationSpec.m in Sources */,
-				DE3424341760176B0033B419 /* CRUDTests.m in Sources */,
-				DE3424351760176F0033B419 /* SMPushClientIntegrationSpec.m in Sources */,
-				DE342436176017720033B419 /* SMNetworkReachabilitySpec.m in Sources */,
+				DE4FBFCF177E741D00E13A22 /* RelationshipsSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

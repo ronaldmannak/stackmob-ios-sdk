@@ -70,12 +70,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore createObject:nil inSchema:@"book" onSuccess:^(NSDictionary *responseObject, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [theObject shouldBeNil];
+                    [object shouldBeNil];
                     [[schema should] equal:@"book"];
                     failureBlockCalled = YES;
                 }];
@@ -89,12 +89,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore createObject:objectToCreate inSchema:nil onSuccess:^(NSDictionary *responseObject, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [[theObject should] equal:objectToCreate];
+                    [[object should] equal:objectToCreate];
                     [schema shouldBeNil];
                     failureBlockCalled = YES;
                 }];
@@ -126,12 +126,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore readObjectWithId:nil inSchema:@"book" onSuccess:^(NSDictionary *responseObject, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [theObjectId shouldBeNil];
+                    [objectId shouldBeNil];
                     [[schema should] equal:@"book"];
                     failureBlockCalled = YES;
                 }];
@@ -145,12 +145,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore readObjectWithId:@"1234" inSchema:nil onSuccess:^(NSDictionary *responseObject, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [[theObjectId should] equal:@"1234"];
+                    [[objectId should] equal:@"1234"];
                     [schema shouldBeNil];
                     failureBlockCalled = YES;
                 }];
@@ -183,12 +183,12 @@ describe(@"CRUD", ^{
                     __block BOOL successBlockCalled = NO;
                     [dataStore updateObjectWithId:nil inSchema:@"book" update:updatedFields onSuccess:^(NSDictionary *responseObject, NSString *schema){
                         successBlockCalled = YES;
-                    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                        [theError shouldNotBeNil];
-                        [[theError.domain should] equal:SMErrorDomain];
-                        [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                        [error shouldNotBeNil];
+                        [[error.domain should] equal:SMErrorDomain];
+                        [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                         
-                        [[theObject should] equal:updatedFields];
+                        [[object should] equal:updatedFields];
                         [[schema should] equal:@"book"];
                         failureBlockCalled = YES;
                     }];
@@ -202,12 +202,12 @@ describe(@"CRUD", ^{
                     __block BOOL successBlockCalled = NO;
                     [dataStore updateObjectWithId:@"1234" inSchema:nil update:updatedFields onSuccess:^(NSDictionary *responseObject, NSString *schema){
                         successBlockCalled = YES;
-                    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                        [theError shouldNotBeNil];
-                        [[theError.domain should] equal:SMErrorDomain];
-                        [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                        [error shouldNotBeNil];
+                        [[error.domain should] equal:SMErrorDomain];
+                        [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                         
-                        [[theObject should] equal:updatedFields];
+                        [[object should] equal:updatedFields];
                         [schema shouldBeNil];
                         failureBlockCalled = YES;
                     }];
@@ -241,12 +241,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore deleteObjectId:nil inSchema:@"book" onSuccess:^(NSString *objectId, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [theObjectId shouldBeNil];
+                    [objectId shouldBeNil];
                     [[schema should] equal:@"book"];
                     failureBlockCalled = YES;
                 }];
@@ -260,12 +260,12 @@ describe(@"CRUD", ^{
                 __block BOOL successBlockCalled = NO;
                 [dataStore deleteObjectId:@"1234" inSchema:nil onSuccess:^(NSString *objectId, NSString *schema){
                     successBlockCalled = YES;
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldNotBeNil];
-                    [[theError.domain should] equal:SMErrorDomain];
-                    [[theValue(theError.code) should] equal:theValue(SMErrorInvalidArguments)];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldNotBeNil];
+                    [[error.domain should] equal:SMErrorDomain];
+                    [[theValue(error.code) should] equal:theValue(SMErrorInvalidArguments)];
                     
-                    [[theObjectId should] equal:@"1234"];
+                    [[objectId should] equal:@"1234"];
                     [schema shouldBeNil];
                     failureBlockCalled = YES;
                 }];

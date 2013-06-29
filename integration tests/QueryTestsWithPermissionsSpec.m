@@ -544,19 +544,19 @@ describe(@"with a prepopulated database of people", ^{
             // Create objects for testing empty string
             NSDictionary *emptyStringDict = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"first_name", @"1234", @"personpermissions_id", nil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [sm createObject:emptyStringDict inSchema:@"personpermissions" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                [sm createObject:emptyStringDict inSchema:@"personpermissions" onSuccess:^(NSDictionary *object, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });
             NSDictionary *nonEmptyStringDict = [NSDictionary dictionaryWithObjectsAndKeys:@"full", @"first_name", @"5678", @"personpermissions_id", nil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [sm createObject:nonEmptyStringDict inSchema:@"personpermissions" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+                [sm createObject:nonEmptyStringDict inSchema:@"personpermissions" onSuccess:^(NSDictionary *object, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });
@@ -565,18 +565,18 @@ describe(@"with a prepopulated database of people", ^{
         afterEach(^{
             
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [sm deleteObjectId:@"1234" inSchema:@"personpermissions" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [sm deleteObjectId:@"1234" inSchema:@"personpermissions" onSuccess:^(NSString *objectId, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [sm deleteObjectId:@"5678" inSchema:@"personpermissions" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [sm deleteObjectId:@"5678" inSchema:@"personpermissions" onSuccess:^(NSString *objectId, NSString *schema) {
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    [theError shouldBeNil];
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    [error shouldBeNil];
                     syncReturn(semaphore);
                 }];
             });

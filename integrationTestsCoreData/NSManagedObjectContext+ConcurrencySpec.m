@@ -952,10 +952,10 @@ describe(@"testing getting 500s", ^{
  
  for (NSString *objID in objectIDS) {
  syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
- [client.dataStore deleteObjectId:objID inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+ [client.dataStore deleteObjectId:objID inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
  saveSucess = YES;
  syncReturn(semaphore);
- } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+ } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
  saveSucess = NO;
  syncReturn(semaphore);
  }];

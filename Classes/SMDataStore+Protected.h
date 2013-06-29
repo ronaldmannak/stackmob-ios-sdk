@@ -32,7 +32,7 @@
 - (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForSchema:(NSString *)schema withSuccessBlock:(SMDataStoreSuccessBlock)successBlock;
 
 
-- (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForObjectId:(NSString *)theObjectId ofSchema:(NSString *)schema withSuccessBlock:(SMDataStoreObjectIdSuccessBlock)successBlock;
+- (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withSuccessBlock:(SMDataStoreObjectIdSuccessBlock)successBlock;
 
 
 - (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForSuccessBlock:(SMSuccessBlock)successBlock ;
@@ -47,13 +47,13 @@
 - (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForQuerySuccessBlock:(SMResultsSuccessBlock)successBlock;
 
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)theObject ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock;
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock;
 
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)theObjectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock;
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock;
 
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)theObject options:(SMRequestOptions *)options originalSuccessBlock:(SMResultSuccessBlock)originalSuccessBlock coreDataSaveFailureBlock:(SMCoreDataSaveFailureBlock)failureBlock;
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object options:(SMRequestOptions *)options originalSuccessBlock:(SMResultSuccessBlock)originalSuccessBlock coreDataSaveFailureBlock:(SMCoreDataSaveFailureBlock)failureBlock;
 
 
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForFailureBlock:(SMFailureBlock)failureBlock;
@@ -63,7 +63,7 @@
 - (int)countFromRangeHeader:(NSString *)rangeHeader results:(NSArray *)results;
 
 
-- (void)readObjectWithId:(NSString *)theObjectId 
+- (void)readObjectWithId:(NSString *)objectId 
                 inSchema:(NSString *)schema 
               parameters:(NSDictionary *)parameters
                  options:(SMRequestOptions *)options
@@ -80,11 +80,11 @@
 
 - (AFJSONRequestOperation *)newOperationForRequest:(NSURLRequest *)request options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMFullResponseSuccessBlock)successBlock onFailure:(SMFullResponseFailureBlock)failureBlock;
 
-- (AFJSONRequestOperation *)postOperationForObject:(NSDictionary *)theObject inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
+- (AFJSONRequestOperation *)postOperationForObject:(NSDictionary *)object inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
 
-- (AFJSONRequestOperation *)putOperationForObjectID:(NSString *)theObjectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
+- (AFJSONRequestOperation *)putOperationForObjectID:(NSString *)objectId inSchema:(NSString *)schema update:(NSDictionary *)updatedFields options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
 
-- (AFJSONRequestOperation *)deleteOperationForObjectID:(NSString *)theObjectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
+- (AFJSONRequestOperation *)deleteOperationForObjectID:(NSString *)objectId inSchema:(NSString *)schema options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMResultSuccessBlock)successBlock onFailure:(SMCoreDataSaveFailureBlock)failureBlock;
 
 
 @end

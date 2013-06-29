@@ -74,44 +74,44 @@ typedef void (^SMFullResponseFailureBlock)(NSURLRequest *request, NSHTTPURLRespo
 /**
  The block parameters expected for a success response from a call to the Datastore which returns the full object and schema. 
  
- @param theObject An updated dictionary representation of the requested object.
+ @param object An updated dictionary representation of the requested object.
  @param schema The schema to which the object belongs.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-typedef void (^SMDataStoreSuccessBlock)(NSDictionary* theObject, NSString *schema);
+typedef void (^SMDataStoreSuccessBlock)(NSDictionary* object, NSString *schema);
 
 /**
  The block parameters expected for a success response from a call to the Datastore which returns the object ID and schema.
  
- @param theObjectId The object id used in this operation.
+ @param objectId The object id used in this operation.
  @param schema The schema to which the object belongs.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-typedef void (^SMDataStoreObjectIdSuccessBlock)(NSString* theObjectId, NSString *schema);
+typedef void (^SMDataStoreObjectIdSuccessBlock)(NSString* objectId, NSString *schema);
 
 /** 
  The block parameters expected for a failure response from a call to the Datastore which returns the error, full object and schema.
  
- @param theError An error object describing the failure.
- @param theObject The dictionary representation of the object sent as part of the failed operation.
+ @param error An error object describing the failure.
+ @param object The dictionary representation of the object sent as part of the failed operation.
  @param schema The schema to which the object belongs.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-typedef void (^SMDataStoreFailureBlock)(NSError *theError, NSDictionary* theObject, NSString *schema);
+typedef void (^SMDataStoreFailureBlock)(NSError *error, NSDictionary* object, NSString *schema);
 
 /** 
  The block parameters expected for a failure response from a call to the Datastore which returns the error, object ID and schema.
  
- @param theError An error object describing the failure.
- @param theObjectId The object id sent as part of the failed operation.
+ @param error An error object describing the failure.
+ @param objectId The object id sent as part of the failed operation.
  @param schema The schema to which the object belongs.
  
  @since Available in iOS SDK 1.0.0 and later.
  */
-typedef void (^SMDataStoreObjectIdFailureBlock)(NSError *theError, NSString* theObjectId, NSString *schema);
+typedef void (^SMDataStoreObjectIdFailureBlock)(NSError *error, NSString* objectId, NSString *schema);
 
 /** 
  The block parameters expected for a success response from query count call.
@@ -141,14 +141,14 @@ typedef void (^SMFailureRetryBlock)(NSURLRequest *request, NSHTTPURLResponse *re
  Used internally for requests that fail during a core data save.
  
  @param theRequest The original request in `NSURLRequest` form.
- @param theError The error, if any.
- @param theObject The original object being saved.
+ @param error The error, if any.
+ @param object The original object being saved.
  @param theOptions The SMRequestOption instance passed to the request.
  @param originalSuccessBlock The block passed to original request.
  
  @since Available in iOS SDK 1.2.0 and later.
  */
-typedef void (^SMCoreDataSaveFailureBlock)(NSURLRequest *theRequest, NSError *theError, NSDictionary *theObject, SMRequestOptions *theOptions, SMResultSuccessBlock originalSuccessBlock);
+typedef void (^SMCoreDataSaveFailureBlock)(NSURLRequest *theRequest, NSError *error, NSDictionary *object, SMRequestOptions *theOptions, SMResultSuccessBlock originalSuccessBlock);
 
 /**
  Used interally for custom code requests.

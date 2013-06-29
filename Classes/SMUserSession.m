@@ -109,13 +109,13 @@
 }
 
 - (void)refreshTokenOnSuccess:(void (^)(NSDictionary *userObject))successBlock
-                    onFailure:(void (^)(NSError *theError))failureBlock
+                    onFailure:(void (^)(NSError *error))failureBlock
 {
     
     [self refreshTokenWithSuccessCallbackQueue:nil failureCallbackQueue:nil onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)refreshTokenWithSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(void (^)(NSDictionary *userObject))successBlock onFailure:(void (^)(NSError *theError))failureBlock
+- (void)refreshTokenWithSuccessCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(void (^)(NSDictionary *userObject))successBlock onFailure:(void (^)(NSError *error))failureBlock
 {
     if (!successCallbackQueue) {
         successCallbackQueue = dispatch_get_main_queue();
@@ -151,7 +151,7 @@
               successCallbackQueue:(dispatch_queue_t)successCallbackQueue
               failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                          onSuccess:(void (^)(NSDictionary *userObject))successBlock
-                         onFailure:(void (^)(NSError *theError))failureBlock
+                         onFailure:(void (^)(NSError *error))failureBlock
 {
     NSMutableDictionary *args = [credentials mutableCopy];
     [args setValue:@"mac" forKey:@"token_type"];

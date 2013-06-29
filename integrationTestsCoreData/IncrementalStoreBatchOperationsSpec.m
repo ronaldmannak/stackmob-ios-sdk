@@ -113,10 +113,10 @@ describe(@"With a non-401 error", ^{
     afterEach(^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:@"primarykey" inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:@"primarykey" inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
@@ -379,10 +379,10 @@ describe(@"With 401s and other errors", ^{
     afterEach(^{
         [[client.session.networkMonitor stubAndReturn:theValue(1)] currentNetworkStatus];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:@"primarykey" inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:@"primarykey" inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });

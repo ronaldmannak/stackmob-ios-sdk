@@ -549,37 +549,37 @@ describe(@"empty string", ^{
         // Create objects for testing empty string
         NSDictionary *emptyStringDict = [NSDictionary dictionaryWithObjectsAndKeys:@"", @"title", @"1234", @"todo_id", nil];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [sm createObject:emptyStringDict inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [sm createObject:emptyStringDict inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
         NSDictionary *nonEmptyStringDict = [NSDictionary dictionaryWithObjectsAndKeys:@"full", @"title", @"5678", @"todo_id", nil];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [sm createObject:nonEmptyStringDict inSchema:@"todo" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [sm createObject:nonEmptyStringDict inSchema:@"todo" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
     });
     afterEach(^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [sm deleteObjectId:@"1234" inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [sm deleteObjectId:@"1234" inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [sm deleteObjectId:@"5678" inSchema:@"todo" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [sm deleteObjectId:@"5678" inSchema:@"todo" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });

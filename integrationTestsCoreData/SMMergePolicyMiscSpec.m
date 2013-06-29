@@ -230,20 +230,20 @@ describe(@"Insert 5 Online, Go offline and delete 5, T2 update 2 Online", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -356,20 +356,20 @@ describe(@"Insert 5 Online, Go offline and delete 5, T2 update 2 Online", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -483,20 +483,20 @@ describe(@"Insert 5 Online, Go offline and delete 5, T2 update 2 Online", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -612,20 +612,20 @@ describe(@"Insert 5 Online, Update 2 Online T1, Go offline and delete 5 T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -740,20 +740,20 @@ describe(@"Insert 5 Online, Update 2 Online T1, Go offline and delete 5 T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -869,20 +869,20 @@ describe(@"Insert 5 Online, Update 2 Online T1, Go offline and delete 5 T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"1234" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
         dispatch_group_enter(group);
-        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds updateObjectWithId:@"5678" inSchema:@"todo" update:[NSDictionary dictionaryWithObjectsAndKeys:@"T2 server update", @"title", nil] options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -1094,9 +1094,9 @@ describe(@"Sync Errors, Updating offline to a forbidden schema with GET perms", 
         
         dispatch_group_enter(group);
         
-        [testProperties.cds deleteObjectId:@"1234" inSchema:@"offlinepermsget" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSString *theObjectId, NSString *schema) {
+        [testProperties.cds deleteObjectId:@"1234" inSchema:@"offlinepermsget" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSString *objectId, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+        } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
             dispatch_group_leave(group);
         }];
         

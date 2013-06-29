@@ -42,12 +42,12 @@ describe(@"CRUD", ^{
             
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore createObject:book inSchema:@"book" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    newBook = theObject;
+                [dataStore createObject:book inSchema:@"book" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    newBook = object;
                     syncReturn(semaphore);
-                    NSLog(@"Created %@", theObject);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    NSLog(@"Failed to create a new %@: %@", schema, theError);
+                    NSLog(@"Created %@", object);
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    NSLog(@"Failed to create a new %@: %@", schema, error);
                     syncReturn(semaphore);
                 }];
             });
@@ -55,9 +55,9 @@ describe(@"CRUD", ^{
             [newBook shouldNotBeNil];
         });
         afterEach(^{
-            [dataStore deleteObjectId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSString *theObjectId, NSString *schema) {
-                NSLog(@"Deleted %@", theObjectId);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+            [dataStore deleteObjectId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSString *objectId, NSString *schema) {
+                NSLog(@"Deleted %@", objectId);
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                 NSLog(@"Failed to delete %@", [newBook objectForKey:@"book_id"]);
             }];
             newBook = nil;
@@ -73,12 +73,12 @@ describe(@"CRUD", ^{
             __block NSDictionary *readBook = nil;
             beforeEach(^{
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore readObjectWithId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                        readBook = theObject;
-                        NSLog(@"Read %@", theObject);
+                    [dataStore readObjectWithId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSDictionary *object, NSString *schema) {
+                        readBook = object;
+                        NSLog(@"Read %@", object);
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                        NSLog(@"failed to read the object with error: %@", theError);
+                    } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                        NSLog(@"failed to read the object with error: %@", error);
                         syncReturn(semaphore);
                     }]; 
                 });
@@ -96,12 +96,12 @@ describe(@"CRUD", ^{
             beforeEach(^{
                 updatedFields = [NSDictionary dictionaryWithObjectsAndKeys:@"Coolest Author Ever", @"author", nil];
                 syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                    [dataStore updateObjectWithId:[newBook objectForKey:@"book_id"] inSchema:@"book" update:updatedFields onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                        updatedBook = theObject;
-                        NSLog(@"updated %@", theObject);
+                    [dataStore updateObjectWithId:[newBook objectForKey:@"book_id"] inSchema:@"book" update:updatedFields onSuccess:^(NSDictionary *object, NSString *schema) {
+                        updatedBook = object;
+                        NSLog(@"updated %@", object);
                         syncReturn(semaphore);
-                    } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                        NSLog(@"failed to update the object with error: %@", theError);
+                    } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                        NSLog(@"failed to update the object with error: %@", error);
                         syncReturn(semaphore);
                     }]; 
                 });
@@ -128,12 +128,12 @@ describe(@"CRUD", ^{
             
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore createObject:book inSchema:@"book" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    newBook = theObject;
+                [dataStore createObject:book inSchema:@"book" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    newBook = object;
                     syncReturn(semaphore);
-                    NSLog(@"Created %@", theObject);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    NSLog(@"Failed to create a new %@: %@", schema, theError);
+                    NSLog(@"Created %@", object);
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    NSLog(@"Failed to create a new %@: %@", schema, error);
                     syncReturn(semaphore);
                 }];
             });
@@ -145,12 +145,12 @@ describe(@"CRUD", ^{
         it(@"deletes the object", ^{
             deleteSucceeded = NO;
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore deleteObjectId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSString *theObjectId, NSString *schema) {
-                    NSLog(@"deleted %@", theObjectId);
+                [dataStore deleteObjectId:[newBook objectForKey:@"book_id"] inSchema:@"book" onSuccess:^(NSString *objectId, NSString *schema) {
+                    NSLog(@"deleted %@", objectId);
                     deleteSucceeded = YES;
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    NSLog(@"failed to delete the object with error: %@", theError);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    NSLog(@"failed to delete the object with error: %@", error);
                     syncReturn(semaphore);
                 }];
             });
@@ -177,14 +177,14 @@ describe(@"CRUD", ^{
                     nil];
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore createObject:book inSchema:@"Book" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    newBook = theObject;
+                [dataStore createObject:book inSchema:@"Book" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    newBook = object;
                     returnedSchema = schema;
-                    objectId = [theObject objectForKey:@"book_id"];
-                    NSLog(@"Created %@", theObject);
+                    objectId = [object objectForKey:@"book_id"];
+                    NSLog(@"Created %@", object);
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    NSLog(@"Failed to create a new %@: %@", schema, theError);
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    NSLog(@"Failed to create a new %@: %@", schema, error);
                     newBook = nil;
                     syncReturn(semaphore);
                 }];
@@ -195,13 +195,13 @@ describe(@"CRUD", ^{
         it(@"Should read given non-lowercase schema name", ^{
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore readObjectWithId:objectId inSchema:@"Book" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    newBook = theObject;
+                [dataStore readObjectWithId:objectId inSchema:@"Book" onSuccess:^(NSDictionary *object, NSString *schema) {
+                    newBook = object;
                     returnedSchema = schema;
-                    NSLog(@"Read %@", theObject);
+                    NSLog(@"Read %@", object);
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    NSLog(@"Failed to read %@: %@", theObjectId, theError);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    NSLog(@"Failed to read %@: %@", objectId, error);
                     newBook = nil;
                     syncReturn(semaphore);
                 }];
@@ -216,13 +216,13 @@ describe(@"CRUD", ^{
                     nil];
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore updateObjectWithId:objectId inSchema:@"Book" update:book onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                    newBook = theObject;
+                [dataStore updateObjectWithId:objectId inSchema:@"Book" update:book onSuccess:^(NSDictionary *object, NSString *schema) {
+                    newBook = object;
                     returnedSchema = schema;
-                    NSLog(@"Updated %@", theObject);
+                    NSLog(@"Updated %@", object);
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                    NSLog(@"Failed to update %@: %@", schema, theError);
+                } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                    NSLog(@"Failed to update %@: %@", schema, error);
                     newBook = nil;
                     syncReturn(semaphore);
                 }];
@@ -233,12 +233,12 @@ describe(@"CRUD", ^{
         it(@"Should delete given non-lowercase schema name", ^{
             [[dataStore.session.regularOAuthClient operationQueue] shouldNotBeNil];
             syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-                [dataStore deleteObjectId:objectId inSchema:@"Book" onSuccess:^(NSString *theObjectId, NSString *schema) {
+                [dataStore deleteObjectId:objectId inSchema:@"Book" onSuccess:^(NSString *objectId, NSString *schema) {
                     returnedSchema = schema;
-                    NSLog(@"Deleted %@", theObjectId);
+                    NSLog(@"Deleted %@", objectId);
                     syncReturn(semaphore);
-                } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                    NSLog(@"Failed to delete %@: %@", schema, theError);
+                } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                    NSLog(@"Failed to delete %@: %@", schema, error);
                     syncReturn(semaphore);
                 }];
             });
@@ -265,19 +265,19 @@ describe(@"CRUD with GeoPoints", ^{
         NSDictionary *args = [NSDictionary dictionaryWithObjectsAndKeys:@"StackMob", @"name", point, @"geopoint", nil];
         
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [dataStore createObject:args inSchema:@"random" onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                object = theObject;
+            [dataStore createObject:args inSchema:@"random" onSuccess:^(NSDictionary *object, NSString *schema) {
+                object = object;
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
             }];
         });
     });
     afterEach(^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [dataStore deleteObjectId:[object objectForKey:@"random_id"] inSchema:@"random" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [dataStore deleteObjectId:[object objectForKey:@"random_id"] inSchema:@"random" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
             }];
         });
@@ -306,42 +306,42 @@ describe(@"read value containing special chartacters", ^{
         client = [SMIntegrationTestHelpers defaultClient];
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             NSDictionary *createDict = [NSDictionary dictionaryWithObjectsAndKeys:objectId, primaryKey, fieldValue, fieldKey, nil];
-            [[client dataStore] createObject:createDict inSchema:schemaName onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:fieldValue];
+            [[client dataStore] createObject:createDict inSchema:schemaName onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:fieldValue];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
     });
     afterEach(^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:objectId inSchema:schemaName onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:objectId inSchema:schemaName onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
     });
     it(@"reads and updates the value with special characters", ^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] readObjectWithId:objectId inSchema:schemaName onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:fieldValue];
+            [[client dataStore] readObjectWithId:objectId inSchema:schemaName onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:fieldValue];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             NSDictionary *updateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"c*oo^l$blog", fieldKey, nil];
-            [[client dataStore] updateObjectWithId:objectId inSchema:schemaName update:updateDict onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:@"c*oo^l$blog"];
+            [[client dataStore] updateObjectWithId:objectId inSchema:schemaName update:updateDict onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:@"c*oo^l$blog"];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
@@ -362,10 +362,10 @@ describe(@"read value containing special chartacters in schema with permissions"
         // create user 3
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             NSDictionary *userDict = [NSDictionary dictionaryWithObjectsAndKeys:objectId, @"username", @"1234", @"password", nil];
-            [[client dataStore] createObject:userDict inSchema:@"user3" onSuccess:^(NSDictionary *theObject, NSString *schema) {
+            [[client dataStore] createObject:userDict inSchema:@"user3" onSuccess:^(NSDictionary *object, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
@@ -383,11 +383,11 @@ describe(@"read value containing special chartacters in schema with permissions"
         // create blog2
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             NSDictionary *createDict = [NSDictionary dictionaryWithObjectsAndKeys:objectId, primaryKey, fieldValue, fieldKey, nil];
-            [[client dataStore] createObject:createDict inSchema:schemaName onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:fieldValue];
+            [[client dataStore] createObject:createDict inSchema:schemaName onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:fieldValue];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
@@ -406,41 +406,41 @@ describe(@"read value containing special chartacters in schema with permissions"
         
         // delete blog2
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:objectId inSchema:schemaName onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:objectId inSchema:schemaName onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
         
         // delete user3
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] deleteObjectId:objectId inSchema:@"user3" onSuccess:^(NSString *theObjectId, NSString *schema) {
+            [[client dataStore] deleteObjectId:objectId inSchema:@"user3" onSuccess:^(NSString *objectId, NSString *schema) {
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
     });
     it(@"reads and updates the value with special characters", ^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
-            [[client dataStore] readObjectWithId:objectId inSchema:schemaName onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:fieldValue];
+            [[client dataStore] readObjectWithId:objectId inSchema:schemaName onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:fieldValue];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             NSDictionary *updateDict = [NSDictionary dictionaryWithObjectsAndKeys:@"c*ool$blog", fieldKey, nil];
-            [[client dataStore] updateObjectWithId:objectId inSchema:schemaName update:updateDict onSuccess:^(NSDictionary *theObject, NSString *schema) {
-                [[[theObject objectForKey:fieldKey] should] equal:@"c*ool$blog"];
+            [[client dataStore] updateObjectWithId:objectId inSchema:schemaName update:updateDict onSuccess:^(NSDictionary *object, NSString *schema) {
+                [[[object objectForKey:fieldKey] should] equal:@"c*ool$blog"];
                 syncReturn(semaphore);
-            } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                [theError shouldBeNil];
+            } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                [error shouldBeNil];
                 syncReturn(semaphore);
             }];
         });
@@ -456,13 +456,13 @@ describe(@"setExpandDepth", ^{
     it(@"Works with 1-1 read", ^{
         syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
             SMRequestOptions *options = [SMRequestOptions optionsWithExpandDepth:1];
-            [[client dataStore] readObjectWithId:@"1234" inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *theObject, NSString *schema)
+            [[client dataStore] readObjectWithId:@"1234" inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *object, NSString *schema)
              {
-                 [[theValue([[[theObject objectForKey:@"child"] class] isSubclassOfClass:[NSDictionary class]]) should] beYes];
-                 [[[[theObject objectForKey:@"child"] objectForKey:@"name"] should] equal:@"bob"];
+                 [[theValue([[[object objectForKey:@"child"] class] isSubclassOfClass:[NSDictionary class]]) should] beYes];
+                 [[[[object objectForKey:@"child"] objectForKey:@"name"] should] equal:@"bob"];
                  syncReturn(semaphore);
-             } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                 [theError shouldBeNil];
+             } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                 [error shouldBeNil];
                  syncReturn(semaphore);
              }];
         });
@@ -471,15 +471,15 @@ describe(@"setExpandDepth", ^{
      it(@"Works with 1-many read", ^{
          syncWithSemaphore(^(dispatch_semaphore_t semaphore) {
              SMRequestOptions *options = [SMRequestOptions optionsWithExpandDepth:1];
-             [[client dataStore] readObjectWithId:@"5678" inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *theObject, NSString *schema)
+             [[client dataStore] readObjectWithId:@"5678" inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *object, NSString *schema)
              {
-                NSLog(@"the object is %@", theObject);
-                 [[theValue([[theObject objectForKey:@"children"] count]) should] equal:theValue(3)];
-                 [[theValue([[[theObject objectForKey:@"children"] class] isSubclassOfClass:[NSArray class]]) should] beYes];
-                 [[theValue([[[[theObject objectForKey:@"children"] objectAtIndex:0] class] isSubclassOfClass:[NSDictionary class]]) should] beYes];
+                NSLog(@"the object is %@", object);
+                 [[theValue([[object objectForKey:@"children"] count]) should] equal:theValue(3)];
+                 [[theValue([[[object objectForKey:@"children"] class] isSubclassOfClass:[NSArray class]]) should] beYes];
+                 [[theValue([[[[object objectForKey:@"children"] objectAtIndex:0] class] isSubclassOfClass:[NSDictionary class]]) should] beYes];
                  syncReturn(semaphore);
-             } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-                 [theError shouldBeNil];
+             } onFailure:^(NSError *error, NSString *objectId, NSString *schema) {
+                 [error shouldBeNil];
                  syncReturn(semaphore);
              }];
          });
@@ -553,12 +553,12 @@ describe(@"setExpandDepth", ^{
         SMRequestOptions *options = [SMRequestOptions optionsWithExpandDepth:1];
         NSDictionary *toCreate = [NSDictionary dictionaryWithObjectsAndKeys:@"1234", @"expanddepthtest_id", nil];
         [[theBlock(^{
-            [[client dataStore] createObject:toCreate inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *theObject, NSString *schema)
+            [[client dataStore] createObject:toCreate inSchema:@"expanddepthtest" options:options onSuccess:^(NSDictionary *object, NSString *schema)
              {
                  // Doesn't matter
-             } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                 [theError shouldNotBeNil];
-                 [[theValue([theError code]) should] equal:theValue(SMErrorInvalidArguments)];
+             } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                 [error shouldNotBeNil];
+                 [[theValue([error code]) should] equal:theValue(SMErrorInvalidArguments)];
              }];
         }) should] raiseWithReason:@"Expand depth is not supported for creates or updates.  Please check your requests and edit accordingly."];
         
@@ -568,12 +568,12 @@ describe(@"setExpandDepth", ^{
         SMRequestOptions *options = [SMRequestOptions optionsWithExpandDepth:1];
         NSDictionary *toCreate = [NSDictionary dictionaryWithObjectsAndKeys:@"1234", @"expanddepthtest_id", nil];
         [[theBlock(^{
-            [[client dataStore] updateObjectWithId:@"1234" inSchema:@"expanddepthtest" update:toCreate options:options onSuccess:^(NSDictionary *theObject, NSString *schema)
+            [[client dataStore] updateObjectWithId:@"1234" inSchema:@"expanddepthtest" update:toCreate options:options onSuccess:^(NSDictionary *object, NSString *schema)
              {
                  // Doesn't matter
-             } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-                 [theError shouldNotBeNil];
-                 [[theValue([theError code]) should] equal:theValue(SMErrorInvalidArguments)];
+             } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+                 [error shouldNotBeNil];
+                 [[theValue([error code]) should] equal:theValue(SMErrorInvalidArguments)];
              }];
         }) should] raiseWithReason:@"Expand depth is not supported for creates or updates.  Please check your requests and edit accordingly."];
     });

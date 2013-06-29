@@ -177,4 +177,19 @@
  */
 - (void)addSMErrorServiceUnavailableRetryBlock:(SMFailureRetryBlock)retryBlock;
 
+/**
+ Associates a relationship key with its schema.
+ 
+ Used when including nested related objects as full dictionaries or arrays of dictionaries to associate the relationship key with its schema on StackMob.
+ 
+ This method should only be used when creating/updating objects using the datastore API.
+ 
+ @param key The name of the relationship key.
+ @param schema The name of the related schema.
+ 
+ @since Available in iOS SDK 2.1.0 and later.
+ */
+- (void)associateKey:(NSString *)key withSchema:(NSString *)schema;
+
+
 @end

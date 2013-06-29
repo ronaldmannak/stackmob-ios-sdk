@@ -152,10 +152,10 @@ describe(@"Insert 1 Offline at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -224,10 +224,10 @@ describe(@"Insert 1 Offline at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -296,10 +296,10 @@ describe(@"Insert 1 Offline at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -373,10 +373,10 @@ describe(@"While offline, Insert 1 Online at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -445,10 +445,10 @@ describe(@"While offline, Insert 1 Online at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         
@@ -517,10 +517,10 @@ describe(@"While offline, Insert 1 Online at T1, Insert 1 Offline at T2", ^{
         dispatch_group_t group = dispatch_group_create();
         
         dispatch_group_enter(group);
-        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
+        [testProperties.cds createObject:[NSDictionary dictionaryWithObjectsAndKeys:@"online server insert", @"title", @"1234", @"todo_id", nil] inSchema:@"todo" options:[SMRequestOptions options] successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
             dispatch_group_leave(group);
-        } onFailure:^(NSError *theError, NSDictionary *theObject, NSString *schema) {
-            [theError shouldBeNil];
+        } onFailure:^(NSError *error, NSDictionary *object, NSString *schema) {
+            [error shouldBeNil];
             dispatch_group_leave(group);
         }];
         

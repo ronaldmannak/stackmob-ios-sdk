@@ -2296,14 +2296,14 @@ NSString* truncateOutputIfExceedsMaxLogLength(id objectToCheck) {
     dispatch_group_t group = dispatch_group_create();
     
     dispatch_group_enter(group);
-    [self.coreDataStore readObjectWithId:objectID inSchema:schemaName options:options successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *theObject, NSString *schema) {
-        objectFromServer = theObject;
+    [self.coreDataStore readObjectWithId:objectID inSchema:schemaName options:options successCallbackQueue:queue failureCallbackQueue:queue onSuccess:^(NSDictionary *object, NSString *schema) {
+        objectFromServer = object;
         readSuccess = YES;
         dispatch_group_leave(group);
-    } onFailure:^(NSError *theError, NSString *theObjectId, NSString *schema) {
-        if (SM_CORE_DATA_DEBUG) { DLog(@"Could not read the object with objectId %@ and error userInfo %@", theObjectId, [theError userInfo]) }
+    } onFailure:^(NSError *anError, NSString *objectId, NSString *schema) {
+        if (SM_CORE_DATA_DEBUG) { DLog(@"Could not read the object with objectId %@ and error userInfo %@", objectId, [anError userInfo]) }
         readSuccess = NO;
-        blockError = theError;
+        blockError = anError;
         dispatch_group_leave(group);
     }];
     
