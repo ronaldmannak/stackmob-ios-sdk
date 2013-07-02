@@ -95,6 +95,16 @@
     };
 }
 
+- (SMFullResponseSuccessBlock)SMFullResponseSuccessBlockForBulkSuccessBlock:(SMDataStoreBulkSuccessBlock)successBlock
+{
+    return ^void(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
+    {
+        if (successBlock) {
+            NSDictionary *jsonDict = (NSDictionary *)JSON;
+            successBlock([jsonDict objectForKey:@"succeeded"], [jsonDict objectForKey:@"failed"]);
+        }
+    };
+}
 
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock
 {

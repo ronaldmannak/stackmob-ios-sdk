@@ -334,6 +334,10 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
                         onSuccess:(SMDataStoreSuccessBlock)successBlock
                         onFailure:(SMDataStoreFailureBlock)failureBlock;
 
+- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMFailureBlock)failureBlock;
+
+
+
 #pragma mark - Delete an Object
 ///-------------------------------
 /// @name Delete an Object

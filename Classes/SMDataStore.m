@@ -159,6 +159,55 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
     [self updateObjectWithId:objectId inSchema:schema update:args options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
 }
 
+- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMFailureBlock)failureBlock
+{
+    if (objectId == nil || schema == nil || field == nil || objects == nil) {
+        if (failureBlock) {
+            NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+            failureBlock(error);
+            // FIX!
+            //failureBlock(error, updatedFields, schema);
+        }
+    } else {
+        NSString *path = [[[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]] stringByAppendingPathComponent:field];
+        
+        NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"POST" path:path parameters:nil];
+        
+        if (![NSJSONSerialization isValidJSONObject:objects]) {
+            NSError *jsonError = nil;
+            if (jsonError) {
+                if (failureBlock) {
+                    NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+                    failureBlock(error);
+                    // FIX!
+                    //failureBlock(error, updatedFields, schema);
+                }
+            }
+            return;
+        }
+        
+        NSError *jsonError = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:objects options:0 error:&jsonError];
+        
+        if (jsonError) {
+            if (failureBlock) {
+                NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+                failureBlock(error);
+                // FIX!
+                //failureBlock(error, updatedFields, schema);
+            }
+            return;
+        }
+
+        
+        [request setHTTPBody:jsonData];
+        
+        SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForBulkSuccessBlock:successBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForFailureBlock:failureBlock];
+        [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
+    }
+}
+
 - (void)deleteObjectId:(NSString *)objectId inSchema:(NSString *)schema onSuccess:(SMDataStoreObjectIdSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
     [self deleteObjectId:objectId inSchema:schema options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
