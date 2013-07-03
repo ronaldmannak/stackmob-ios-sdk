@@ -65,6 +65,16 @@
     return opt;
 }
 
+- (void)setValue:(NSString *)value forHeaderKey:(NSString *)key
+{
+    if (!self.headers) {
+        self.headers = [NSDictionary dictionary];
+    }
+    NSMutableDictionary *tempHeadersDict = [self.headers mutableCopy];
+    [tempHeadersDict setObject:value forKey:key];
+    self.headers = tempHeadersDict;
+}
+
 - (void)setExpandDepth:(NSUInteger)depth
 {
     if (!self.headers) {

@@ -116,7 +116,7 @@
     };
 }
 
-- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock
+- (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock;
 {
     return ^void(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON)
     {

@@ -128,6 +128,21 @@
  */
 + (SMRequestOptions *)optionsWithReturnedFieldsRestrictedTo:(NSArray *)fields;
 
+#pragma mark - Adding Headers
+///-------------------------------
+/// @name Adding Headers
+///-------------------------------
+
+/**
+ Adds a new request header.
+ 
+ @param value The value of the header.
+ @param key The header key.
+ 
+ @since Available in iOS SDK 2.1.0 and later.
+ */
+- (void)setValue:(NSString *)value forHeaderKey:(NSString *)key;
+
 #pragma mark - Expanding relationships
 ///-------------------------------
 /// @name Expanding Relationships
@@ -176,6 +191,11 @@
  @since Available in iOS SDK 1.0.0 and later.
  */
 - (void)addSMErrorServiceUnavailableRetryBlock:(SMFailureRetryBlock)retryBlock;
+
+#pragma mark - Associating Keys With Schemas
+///-------------------------------
+/// @name Associating Keys With Schemas
+///-------------------------------
 
 /**
  Associates a relationship key with its schema.

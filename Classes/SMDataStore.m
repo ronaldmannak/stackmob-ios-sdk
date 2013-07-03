@@ -159,14 +159,22 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
     [self updateObjectWithId:objectId inSchema:schema update:args options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:successBlock onFailure:failureBlock];
 }
 
-- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMFailureBlock)failureBlock
+- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self createAndAppendRelatedObjects:objects toObjectWithId:objectId inSchema:schema relatedField:field options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field options:(SMRequestOptions *)options onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self createAndAppendRelatedObjects:objects toObjectWithId:objectId inSchema:schema relatedField:field options:[SMRequestOptions options] successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)createAndAppendRelatedObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema relatedField:(NSString *)field options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreBulkSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
 {
     if (objectId == nil || schema == nil || field == nil || objects == nil) {
         if (failureBlock) {
             NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-            failureBlock(error);
-            // FIX!
-            //failureBlock(error, updatedFields, schema);
+            failureBlock(error, objectId, schema);
         }
     } else {
         NSString *path = [[[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]] stringByAppendingPathComponent:field];
@@ -178,9 +186,7 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
             if (jsonError) {
                 if (failureBlock) {
                     NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-                    failureBlock(error);
-                    // FIX!
-                    //failureBlock(error, updatedFields, schema);
+                    failureBlock(error, objectId, schema);
                 }
             }
             return;
@@ -192,9 +198,7 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
         if (jsonError) {
             if (failureBlock) {
                 NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
-                failureBlock(error);
-                // FIX!
-                //failureBlock(error, updatedFields, schema);
+                failureBlock(error, objectId, schema);
             }
             return;
         }
@@ -203,7 +207,93 @@ failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue
         [request setHTTPBody:jsonData];
         
         SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForBulkSuccessBlock:successBlock];
-        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForFailureBlock:failureBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:objectId ofSchema:schema withFailureBlock:failureBlock];
+        [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
+    }
+}
+
+- (void)appendObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self appendObjects:objects toObjectWithId:objectId inSchema:schema field:field options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)appendObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field options:(SMRequestOptions *)options onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self appendObjects:objects toObjectWithId:objectId inSchema:schema field:field options:[SMRequestOptions options] successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)appendObjects:(NSArray *)objects toObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMDataStoreSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    if (objectId == nil || schema == nil || field == nil || objects == nil) {
+        if (failureBlock) {
+            NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+            failureBlock(error, objectId, schema);
+        }
+    } else {
+        NSString *path = [[[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]] stringByAppendingPathComponent:field];
+        
+        NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"PUT" path:path parameters:nil];
+        
+        if (![NSJSONSerialization isValidJSONObject:objects]) {
+            NSError *jsonError = nil;
+            if (jsonError) {
+                if (failureBlock) {
+                    NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+                    failureBlock(error, objectId, schema);
+                }
+            }
+            return;
+        }
+        
+        NSError *jsonError = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:objects options:0 error:&jsonError];
+        
+        if (jsonError) {
+            if (failureBlock) {
+                NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+                failureBlock(error, objectId, schema);
+            }
+            return;
+        }
+        
+        
+        [request setHTTPBody:jsonData];
+        
+        SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForSchema:schema withSuccessBlock:successBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:objectId ofSchema:schema withFailureBlock:failureBlock];
+        [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
+    }
+}
+
+- (void)deleteRelatedObjects:(NSArray *)objects fromObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field cascadeDelete:(BOOL)cascadeDelete onSuccess:(SMSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self deleteRelatedObjects:objects fromObjectWithId:objectId inSchema:schema field:field cascadeDelete:cascadeDelete options:[SMRequestOptions options] onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)deleteRelatedObjects:(NSArray *)objects fromObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field cascadeDelete:(BOOL)cascadeDelete options:(SMRequestOptions *)options onSuccess:(SMSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    [self deleteRelatedObjects:objects fromObjectWithId:objectId inSchema:schema field:field cascadeDelete:cascadeDelete options:[SMRequestOptions options] successCallbackQueue:dispatch_get_main_queue() failureCallbackQueue:dispatch_get_main_queue() onSuccess:successBlock onFailure:failureBlock];
+}
+
+- (void)deleteRelatedObjects:(NSArray *)objects fromObjectWithId:(NSString *)objectId inSchema:(NSString *)schema field:(NSString *)field cascadeDelete:(BOOL)cascadeDelete options:(SMRequestOptions *)options successCallbackQueue:(dispatch_queue_t)successCallbackQueue failureCallbackQueue:(dispatch_queue_t)failureCallbackQueue onSuccess:(SMSuccessBlock)successBlock onFailure:(SMDataStoreObjectIdFailureBlock)failureBlock
+{
+    if (objectId == nil || schema == nil || field == nil || objects == nil) {
+        if (failureBlock) {
+            NSError *error = [[NSError alloc] initWithDomain:SMErrorDomain code:SMErrorInvalidArguments userInfo:nil];
+            failureBlock(error, objectId, schema);
+        }
+    } else {
+        NSString *objectsString = [objects componentsJoinedByString:@","];
+        NSString *path = [[[[schema lowercaseString] stringByAppendingPathComponent:[self URLEncodedStringFromValue:objectId]] stringByAppendingPathComponent:field] stringByAppendingPathComponent:objectsString];
+        
+        NSMutableURLRequest *request = [[self.session oauthClientWithHTTPS:options.isSecure] requestWithMethod:@"DELETE" path:path parameters:nil];
+        
+        if (cascadeDelete) {
+            [options setValue:@"true" forHeaderKey:@"X-StackMob-CascadeDelete"];
+        }
+        
+        SMFullResponseSuccessBlock urlSuccessBlock = [self SMFullResponseSuccessBlockForSuccessBlock:successBlock];
+        SMFullResponseFailureBlock urlFailureBlock = [self SMFullResponseFailureBlockForObjectId:objectId ofSchema:schema withFailureBlock:failureBlock];
         [self queueRequest:request options:options successCallbackQueue:successCallbackQueue failureCallbackQueue:failureCallbackQueue onSuccess:urlSuccessBlock onFailure:urlFailureBlock];
     }
 }

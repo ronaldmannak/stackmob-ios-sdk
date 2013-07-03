@@ -50,12 +50,9 @@
 
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreFailureBlock)failureBlock;
 
-
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObjectId:(NSString *)objectId ofSchema:(NSString *)schema withFailureBlock:(SMDataStoreObjectIdFailureBlock)failureBlock;
 
-
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForObject:(NSDictionary *)object options:(SMRequestOptions *)options originalSuccessBlock:(SMResultSuccessBlock)originalSuccessBlock coreDataSaveFailureBlock:(SMCoreDataSaveFailureBlock)failureBlock;
-
 
 - (SMFullResponseFailureBlock)SMFullResponseFailureBlockForFailureBlock:(SMFailureBlock)failureBlock;
 
