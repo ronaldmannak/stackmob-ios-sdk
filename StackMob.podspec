@@ -24,4 +24,16 @@ Pod::Spec.new do |s|
     	'--no-merge-categories',
     	'--install-docset'
     ]}
+  s.prefix_header_contents = <<-EOS
+	#if __IPHONE_OS_VERSION_MIN_REQUIRED
+		#import <SystemConfiguration/SystemConfiguration.h>
+  		#import <MobileCoreServices/MobileCoreServices.h>
+  		#import <Security/Security.h>
+	#else
+  		#import <SystemConfiguration/SystemConfiguration.h>
+  		#import <CoreServices/CoreServices.h>
+  		#import <Security/Security.h>
+	#endif
+  EOS
+
 end
